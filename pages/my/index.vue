@@ -12,10 +12,12 @@
 </template>
 
 <script setup>
-	let title = ref("my");
-	onMounted(() => {
-	  console.log('我的页面：', title)
-	});
+let title = ref("my");
+onMounted(() => {
+  console.log('我的页面：', title)
+});
+onShow(() => {
+})
 </script>
 
 <style lang="scss" scoped>

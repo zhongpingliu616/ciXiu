@@ -82,71 +82,84 @@
 </template>
 
 <script setup>
-	import IndexXn from '../../components/index/Xn.vue'
-	import IndexGz from '../../components/index/Gz.vue'
-	const componentMap = {
-	  IndexXn,
-	  IndexGz
-	};
-	const { proxy } = getCurrentInstance()
-	const swiperList = [
-			'/static/images/index/swiper-1.png',
-			'/static/images/index/swiper-2.png',
-			'/static/images/index/swiper-3.png'
-		];
-	const announcementList = [
-	  { type: 'text', text: '您的第一期收益已到账”“NFT藏品XXX价格上涨10%' },
-	  { type: 'text', text: '您的第二期收益已到账”“NFT藏品XXX价格上涨10%2' },
-	  { type: 'text', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
-	  { type: 'text', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
+import { useLoginStore } from '@/stores/userLogin'
+import IndexXn from '../../components/index/Xn.vue'
+import IndexGz from '../../components/index/Gz.vue'
+const componentMap = {
+  IndexXn,
+  IndexGz
+};
+const { proxy } = getCurrentInstance()
+const swiperList = [
+		'/static/images/index/swiper-1.png',
+		'/static/images/index/swiper-2.png',
+		'/static/images/index/swiper-3.png'
 	];
-	let current = ref(1);
-	let swiperUniIndex = ref(0);
-	let collectionCurIndex = ref(0);
-	let swiperUniItem = ref({});
-	let title = ref("1200");
-	let searchKey = ref("");
-	let tabIndex = ref(0);
-	const lineBg = ref('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAAASCAMAAAA0cZ07AAAA9lBMVEUAAAD//6r//7//1Kr//6r//9T/5rPo0aLo0bno6KLo6Lnt26Tt27bz26rz4bDz4bbz57z03q704LP047nz2J7z3Kb02J703Kj05r/25sH26srz153z3Kf05b706sj04bH04bH04rX04rb04LL047X147j03q/04K/04bP04bT047fz157z26bz3Kf05sH06sjz2J7z2Z7z26Xz3Kj05sH06sn15r/z2J7z2J/z2aDz2aHz2qLz2qPz2qTz26Xz26bz3Kf04LD04LH04bL04bT04rX04rb15sD158H158L158P16MT16MX16cX16cb16cf16sj16smb3zkwAAAAN3RSTlMAAwQGBgYKCwsLCw4OKioqKnV1dZCQkJCQkJCRkZGRoKGhoaKi4uPj4+Pj7u7u7u7v7+/v7+/vMgiCywAAAM5JREFUOMtjYMALmJgYKAFsbBRpZ2amSDs/P0XahYQo0c2poclFwHci2uZQYGFpaWVtY2unIwrzsbyziyKUySqp5+nl7ePr5x8QEAgB+lKsDCLm5uja7R3EwTrYFZycXVyVOMAcCXcPdO2BgVIMhti0GzOyMfMKqjmCtLupCvOzsDGaYdNuil27LiM3M5+gOkS7lrAAKw927foM0ti0y2A6XhabdjkGZjEDdO1GMrCgU3Z2UYEHnQm6dlM5VkojjpbJhtJES2GWoTDDEiouANDFSl0mbzP2AAAAAElFTkSuQmCC');
-	const activeStyle = ref({
-				color: '#FFF'
-			});
-	const inactiveStyle = ref({
-				color: '#CCBCBC'
-			});
-	const topTabItems = ref([
-				{ name: '公众端',rolse: "IndexGz" },
-				{ name: '绣娘端',rolse: "IndexXn"}
-			]);
-			// cxScrollViewRef.value.scrollToNext();
+const announcementList = [
+  { type: 'text', text: '您的第一期收益已到账”“NFT藏品XXX价格上涨10%' },
+  { type: 'text', text: '您的第二期收益已到账”“NFT藏品XXX价格上涨10%2' },
+  { type: 'text', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
+  { type: 'text', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
+];
+	
+const userStore = useLoginStore();
+let current = ref(1);
+let swiperUniIndex = ref(0);
+let collectionCurIndex = ref(0);
+let swiperUniItem = ref({});
+let title = ref("1200");
+let searchKey = ref("");
+let tabIndex = ref(0);
+const lineBg = ref('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAAASCAMAAAA0cZ07AAAA9lBMVEUAAAD//6r//7//1Kr//6r//9T/5rPo0aLo0bno6KLo6Lnt26Tt27bz26rz4bDz4bbz57z03q704LP047nz2J7z3Kb02J703Kj05r/25sH26srz153z3Kf05b706sj04bH04bH04rX04rb04LL047X147j03q/04K/04bP04bT047fz157z26bz3Kf05sH06sjz2J7z2Z7z26Xz3Kj05sH06sn15r/z2J7z2J/z2aDz2aHz2qLz2qPz2qTz26Xz26bz3Kf04LD04LH04bL04bT04rX04rb15sD158H158L158P16MT16MX16cX16cb16cf16sj16smb3zkwAAAAN3RSTlMAAwQGBgYKCwsLCw4OKioqKnV1dZCQkJCQkJCRkZGRoKGhoaKi4uPj4+Pj7u7u7u7v7+/v7+/vMgiCywAAAM5JREFUOMtjYMALmJgYKAFsbBRpZ2amSDs/P0XahYQo0c2poclFwHci2uZQYGFpaWVtY2unIwrzsbyziyKUySqp5+nl7ePr5x8QEAgB+lKsDCLm5uja7R3EwTrYFZycXVyVOMAcCXcPdO2BgVIMhti0GzOyMfMKqjmCtLupCvOzsDGaYdNuil27LiM3M5+gOkS7lrAAKw927foM0ti0y2A6XhabdjkGZjEDdO1GMrCgU3Z2UYEHnQm6dlM5VkojjpbJhtJES2GWoTDDEiouANDFSl0mbzP2AAAAAElFTkSuQmCC');
+const activeStyle = ref({
+			color: '#FFF'
+		});
+const inactiveStyle = ref({
+			color: '#CCBCBC'
+		});
+const topTabItems = ref([
+			{ name: '公众端',rolse: "IndexGz" },
+			{ name: '绣娘端',rolse: "IndexXn"}
+		]);
+		// cxScrollViewRef.value.scrollToNext();
 	
 const announcementDetail = (e)=>{
-		proxy.$u.toast(`跳转到公告详情${swiperUniIndex.value}`)
-		uni.navigateTo({
-			url:`pages/my/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp`
-		})
-	};	
-	const currentRole = computed(()=>{
-		const comRole = componentMap[topTabItems.value[tabIndex.value].rolse];
-		return  comRole
-	});
-	const changeRole = ({index, item})=>{
-		tabIndex.value = index;
-		console.log("角色切换",item)
-	};
-	const onSwiperChange = ({ index, item }) => {
-		swiperUniIndex.value = index || 0;
-		swiperUniItem.value = item || {};
-	};	
-	const search = ()=>{
-		console.log("搜索关键字",searchKey.value);
-	};
-	onMounted(() => {
-	  console.log('is tab page', title)
-	});
-	onShow(()=>{
-		// uni.hideTabBar();
-	});
+	proxy.$u.toast(`跳转到公告详情${swiperUniIndex.value}`)
+	uni.navigateTo({
+		url:`pages/my/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp`
+	})
+};	
+const currentRole = computed(()=>{
+	const comRole = componentMap[topTabItems.value[tabIndex.value].rolse];
+	return  comRole
+});
+const changeRole = ({index, item})=>{
+	tabIndex.value = index;
+	console.log("角色切换",item)
+};
+const onSwiperChange = ({ index, item }) => {
+	swiperUniIndex.value = index || 0;
+	swiperUniItem.value = item || {};
+};	
+const search = ()=>{
+	console.log("搜索关键字",searchKey.value);
+};
+onMounted(() => {
+  console.log('is tab page', title)
+});
+
+onShow(() => {
+  const token =
+	userStore.userInfoXn?.token ||
+	userStore.userInfoGz?.token ||
+	uni.getStorageSync('tokenXn') ||
+	uni.getStorageSync('tokenGz')
+  if (!token) {
+	uni.redirectTo({
+	  url: '/pages/my/login'
+	})
+  }
+})
 </script>
 
 <style lang="scss" scoped>
