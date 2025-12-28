@@ -1,0 +1,15 @@
+bash.exe.stackdump
+node_modules
+dist
+uni_modules
+unpackage
+package-lock.json
+.vscode/*
+
+# 打包新加的
+code.iconset
+code.icns
+code.png
+resource
+build
+

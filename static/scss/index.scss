@@ -1,0 +1,17 @@
+
+$app-active-text:#F5EAC9;
+$app-border-color:#FFE185;
+body{
+	font-size: 24rpx;
+}
+.page-wrap{
+	 height: 100vh;
+	  display: grid;
+	  grid-template-rows: 80rpx 1fr 120rpx;
+}
+.page-content{
+	overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  padding: 20rpx;
+}
