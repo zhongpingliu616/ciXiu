@@ -85,6 +85,7 @@
 import { useLoginStore } from '@/stores/userLogin'
 import IndexXn from '../../components/index/Xn.vue'
 import IndexGz from '../../components/index/Gz.vue'
+
 const componentMap = {
   IndexXn,
   IndexGz
@@ -122,12 +123,11 @@ const topTabItems = ref([
 			{ name: '绣娘端',rolse: "IndexXn"}
 		]);
 		// cxScrollViewRef.value.scrollToNext();
-	
+let tokenXn = userStore.userInfoXn?.token || uni.getStorageSync('tokenXn');
+let tokenGz = userStore.userInfoGz?.token || uni.getStorageSync('tokenGz');
 const announcementDetail = (e)=>{
 	proxy.$u.toast(`跳转到公告详情${swiperUniIndex.value}`)
-	uni.navigateTo({
-		url:`pages/my/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp`
-	})
+	uni.navigateTo({ url: `/pages/my/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp` });
 };	
 const currentRole = computed(()=>{
 	const comRole = componentMap[topTabItems.value[tabIndex.value].rolse];
@@ -135,27 +135,33 @@ const currentRole = computed(()=>{
 });
 const changeRole = ({index, item})=>{
 	tabIndex.value = index;
-	console.log("角色切换",item)
+	tokenXn = userStore.userInfoXn?.token || uni.getStorageSync('tokenXn');
+	tokenGz = userStore.userInfoGz?.token || uni.getStorageSync('tokenGz');
+	if (index==0 && !tokenGz) {
+		uni.navigateTo({
+		  url: '/pages/my/login'
+		})
+	};
+	if (index==1 && !tokenXn) {
+		uni.navigateTo({
+		  url: '/pages/my/login?role=xn'
+		})
+	};
 };
 const onSwiperChange = ({ index, item }) => {
 	swiperUniIndex.value = index || 0;
 	swiperUniItem.value = item || {};
 };	
-const search = ()=>{
+const search = () => {
 	console.log("搜索关键字",searchKey.value);
 };
 onMounted(() => {
   console.log('is tab page', title)
 });
 
-onShow(() => {
-  const token =
-	userStore.userInfoXn?.token ||
-	userStore.userInfoGz?.token ||
-	uni.getStorageSync('tokenXn') ||
-	uni.getStorageSync('tokenGz')
-  if (!token) {
-	uni.redirectTo({
+onShow(() => {  
+  if (!tokenGz && !tokenXn) {
+	uni.navigateTo({
 	  url: '/pages/my/login'
 	})
   }

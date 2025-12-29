@@ -13,10 +13,11 @@
 			  placeholder="请输入手机号"
 			  clearable
 			  type="number"
-			  class="login-item"
+			  class="login-item"			  
+			  placeholderStyle="color: #999999; font-size: 20rpx;"
 			>
 		
-			<template #prefix>
+			<template #prefix>&nbsp;&nbsp;&nbsp;&nbsp;
 			  <image
 				class="input-icon"
 				src="/static/images/user/shouji.png"
@@ -29,14 +30,15 @@
 	  <!-- 密码 -->
 	  <up-form-item prop="password">
 		<up-input
-		ref="passwordRef"
-		  v-model="form.password"
-		  :password="!showPwd"
-		  placeholder="请输入密码"
-		  clearable
-		  class="login-item"
-		>
-		  <template #prefix>
+			ref="passwordRef"
+			  v-model="form.password"
+			  :password="!showPwd"
+			  placeholder="请输入密码"
+			  clearable
+			  class="login-item"
+			  placeholderStyle="color: #999999; font-size: 20rpx;"
+			>
+		  <template #prefix>&nbsp;&nbsp;&nbsp;&nbsp;
 		    <image
 				class="input-icon"
 				src="/static/images/user/mima.png"
@@ -48,7 +50,7 @@
 		  <template #suffix>
 			<up-icon
 			  :name="showPwd ? 'eye-off' : ''"
-			  size="20"
+			  size="40rpx"
 			  color="#999"
 			  @click="showPwd = !showPwd"
 			/>
@@ -56,22 +58,28 @@
 		</up-input>
 	  </up-form-item>
 	</up-form>
+	 <view class="register-forgot-container">
+	    <view class="left-text" @click="goToPhoneRegister">
+	      手机号注册 >
+	    </view>
+	
+	    <view class="right-text" @click="goToForgotPassword">
+	      忘记密码？
+	    </view>
+	  </view>
 	<view class="agreement">
-		<up-checkbox-group v-model="greetment">
-			<up-checkbox
-			  name="hasAgreed"
-			  shape="circle"
-			  activeColor="#F83021"
-			>
-			
-			</up-checkbox>我已阅读并同意<up-text
-			    type="error"
+		<view class="agreement-wrap">
+			<CxCheckbox
+			 v-model="greetment"
+			/>   &nbsp;<span>我已阅读并同意</span> <up-text
 			    text="《用户协议条款》"
 				:customStyle="{
-				    fontWeight: 'bold'
+				    fontWeight: 'bold',
+					color:'#fff',
+					fontSize: '24rpx'
 				  }"
 			></up-text>
-		</up-checkbox-group>
+		</view>
 	</view>
 </template>
 
@@ -81,7 +89,7 @@
 	const passwordRef = ref(null)
 	const loading = ref(false)
 	const showPwd = ref(false)
-	let greetment = ref([]);
+	let greetment = ref(false);
 	const form = ref({
 	  mobile: '',
 	  password: ''
@@ -101,6 +109,17 @@
 	    { min: 6, message: '密码至少6位', trigger: 'blur' }
 	  ]
 	}
+const goToPhoneRegister = () => {
+  uni.navigateTo({
+    url: '/pages/my/regist-xn'
+  });
+};
+
+const goToForgotPassword = () => {
+  uni.navigateTo({
+    url: '/pages/auth/forgot-password'
+  });
+};
 	const validateLoginForm = async (cb) => {
 	  try {
 		const valid = await formRef.value.validate()
@@ -116,12 +135,48 @@
 </script>
 
 <style scoped lang="scss">
+::v-deep .uni-input-input {
+  font-size: 26rpx;
+}
+
+.agreement-wrap{
+	display: flex;
+	justify-content: center;
+}
+.agreement{
+	margin-top: 82rpx;
+	color: #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+.register-forgot-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+margin-top: 12rpx;
+  .left-text {
+    font-size: 24rpx;
+    color: #333;
+    &:active {
+      opacity: 0.7;
+    }
+  }
+
+  .right-text {
+    font-size: 24rpx;
+    color: #F82B1D;
+    &:active {
+      opacity: 0.7;
+    }
+  }
+}
 .login-item{
 	border-radius: 64rpx;
 	border: 4rpx solid #F3D89E;
 	border-color: #F3D89E;
-	line-height: 54rpx;
-	background-color: #F6F6F6;
+	line-height: 64rpx;
+	background-color: #fff;
 }
 .input-icon {
   width: 36rpx;

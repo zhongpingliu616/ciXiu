@@ -22,7 +22,7 @@
 <view class="recommend-product">
 	   <CommonTitleList
 		 title="推荐商品"
-		 moreUrl="/pages/product/list"
+		 moreUrl="/pages/my/login"
 	   >
 		 <view class="recommend-content">
 			<BaseProductList
@@ -50,11 +50,10 @@ const nftList = [
 const announcementDetail = (item)=>{
 	proxy.$u.toast(`${item.text}`)
 	uni.navigateTo({
-		url:`pages/my/login?announcementIndex=${item.text}&name=uniapp`
+		url:`/pages/my/login?announcementIndex=${item.text}&name=uniapp`
 	})
 };	
 const handleProductItem = ({index,item})=>{
-		console.log("产品点击","/pages/my/login", index, item);
 		uni.navigateTo({
 			url:`/pages/my/login?title=${item.title}&index=${index}`
 		})
@@ -64,7 +63,7 @@ const fetchProductList = async (page, pageSize) => {
 	
 	  const mockData = Array.from({ length: pageSize }, (_, i) => ({
 		id: (page - 1) * pageSize + i + 1,
-		image: `https://picsum.photos/seed/${Math.random()}/400/300`,
+		image: `https://picsum.photos/seed/${Math.random()}/120/80`,
 		artist: '李柳柳',
 		title: '东方美学 | 绣春花',
 		price: 666.66

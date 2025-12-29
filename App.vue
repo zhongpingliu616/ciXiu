@@ -25,12 +25,16 @@ import { useLoginStore } from './stores/userLogin'
 		// }
 		;['navigateTo', 'redirectTo', 'reLaunch', 'switchTab'].forEach(method => {
 			uni.addInterceptor(method, {
-				invoke(args) {
-					proxy.$u.toast('请登录系统')
+				invoke(args) {					
 					const url = args.url
 					if (!url) return true;
-					const token = userStore.userInfoXn?.token || userStore.userInfoGz?.token;
+					const token =
+						userStore.userInfoXn?.token ||
+						userStore.userInfoGz?.token ||
+						uni.getStorageSync('tokenXn') ||
+						uni.getStorageSync('tokenGz');
 					if (!token && needLogin(url)) {
+						proxy.$u.toast('请登录系统')
 						setTimeout(() => {
 							uni.navigateTo({
 								url: '/pages/my/login'

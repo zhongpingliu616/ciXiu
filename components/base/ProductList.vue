@@ -121,7 +121,6 @@ const onScrollToLower = () => {
 
 // 模拟点击事件
 const handleItemClick = ({item,index}) => {
-  uni.showToast({ title: `查看作品详情：${item.title}`, icon: 'none' })  
   emit('click', {
     item,
     index

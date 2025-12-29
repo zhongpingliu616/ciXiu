@@ -4,7 +4,7 @@ export const useLoginStore = defineStore('loginInfo',() => {
 			count:0,
 			user: "admin" , 			
 			// token: "dfd984jdfjjhfah42387", 			
-			token: "dfd984jdfjjhfah42387", 			
+			token: "", 			
 			id: "45665785785" ,
 			status: 0 
 		})

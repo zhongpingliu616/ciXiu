@@ -23,7 +23,7 @@
 			</template>
 		  </CxScrollView>
 	  </view>
-	</CommonTitleList>				
+	</CommonTitleList>
 </view>
 <view class="portfolio">
 	<CxTabs

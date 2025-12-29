@@ -53,7 +53,6 @@ onShow(() => {
 
 function go(path) {
   if (path === current.value) return;
-  console.log("跳转到",path);
   uni.navigateTo({ url: path });
 }
 </script>

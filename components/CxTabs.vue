@@ -9,7 +9,7 @@
 		:itemStyle="mergedItemStyle"
 	    :scrollable="scrollable"
 		:current="tabActiveIndex"
-		lineBgSize="100% 110%"
+		lineBgSize="100% 100%"
 	    @change="tabSwitch"
 	</up-tabs>
 </template>
@@ -74,8 +74,7 @@ const props = defineProps({
 	default: "18rpx"
   }
 });
-
-let tabActiveIndex = ref(props.modelValue);
+let tabActiveIndex = ref(props.modelValue.value);
 const emit = defineEmits(['changeTab']);
 
 const mergedActiveStyle = computed(() => ({
@@ -106,4 +105,7 @@ function tabSwitch({ index, name }){
 </script>
 
 <style lang="scss" scoped>
+:deep(.u-tabs__wrapper__nav__item){
+	z-index: 2;
+	}
 </style>
