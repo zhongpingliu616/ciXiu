@@ -31,6 +31,24 @@
 			}
 		},
 		{
+			"path": "pages/my/identity-authentication",
+			"style": {
+				"navigationBarTitleText": "身份认证"
+			}
+		},
+		{
+			"path": "pages/my/work-management",
+			"style": {
+				"navigationBarTitleText": "作品管理"
+			}
+		},
+		{
+			"path": "pages/my/user-agreement",
+			"style": {
+				"navigationBarTitleText": "用户协议"
+			}
+		},
+		{
 			"path": "pages/my/shopping-cart",
 			"style": {
 				"navigationBarTitleText": "购物车"
@@ -40,6 +58,18 @@
 			"path": "pages/my/login",
 			"style": {
 				"navigationBarTitleText": "登录"
+			}
+		},
+		{
+			"path": "pages/my/system-notification",
+			"style": {
+				"navigationBarTitleText": "系统通知"
+			}
+		},
+		{
+			"path": "pages/my/system-notification-detail",
+			"style": {
+				"navigationBarTitleText": "系统通知详情"
 			}
 		},
 		{

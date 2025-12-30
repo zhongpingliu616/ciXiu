@@ -25,29 +25,7 @@
 		  @tap="onItemClick(item, index)"
         >
           <slot name="item" :item="item" :index="index">
-            <!-- <view class="default-item">
-              <image
-                v-if="item.src"
-                :src="item.src"
-                mode="aspectFill"
-                class="default-img"
-              />
-              <text
-                class="cx-text"
-                :class="{
-                  'line-1': textConfig.lines === 1,
-                  'line-multi': textConfig.lines > 1
-                }"
-                :style="{
-                  color: textConfig.color,
-                  fontSize: textConfig.fontSize,
-                  lineHeight: textConfig.lineHeight,
-                  WebkitLineClamp: textConfig.lines
-                }"
-              >
-                {{ item.text }}
-              </text>
-            </view> -->
+            
           </slot>
         </view>
       </view>

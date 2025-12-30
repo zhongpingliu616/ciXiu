@@ -76,7 +76,7 @@ const props = defineProps({
 });
 
 let tabActiveIndex = ref(props.modelValue);
-const emit = defineEmits(['changeTab']);
+const emit = defineEmits(['changeTab','update:modelValue']);
 
 const mergedActiveStyle = computed(() => ({
   ...defaultActiveStyle,

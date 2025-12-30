@@ -8,7 +8,7 @@
 	  <!-- 手机号 -->
 	  <up-form-item prop="mobile">
 			<up-input
-			ref="mobileRef"
+			  ref="mobileRef"
 			  v-model="form.mobile"
 			  placeholder="请输入手机号"
 			  clearable
@@ -71,44 +71,67 @@
 		<view class="agreement-wrap">
 			<CxCheckbox
 			 v-model="greetment"
-			/>   &nbsp;<span>我已阅读并同意</span> <up-text
+			 @change="changeAgree"
+			/>   &nbsp;<span>我已阅读并同意</span> 
+			<up-text
 			    text="《用户协议条款》"
 				:customStyle="{
 				    fontWeight: 'bold',
 					color:'#fff',
 					fontSize: '24rpx'
 				  }"
+				  @tap="userAgreement"
 			></up-text>
 		</view>
 	</view>
 </template>
 
 <script setup name="login">
-	const formRef = ref(null)
-	const mobileRef = ref(null)
-	const passwordRef = ref(null)
-	const loading = ref(false)
-	const showPwd = ref(false)
-	let greetment = ref(false);
-	const form = ref({
-	  mobile: '',
-	  password: ''
-	})
-	
-	const rules = {
-	  mobile: [
-	    { required: true, message: '请输入手机号', trigger: 'blur' },
-	    {
-	      pattern: /^1[3-9]\d{9}$/,
-	      message: '手机号格式不正确',
-	      trigger: 'blur'
-	    }
-	  ],
-	  password: [
-	    { required: true, message: '请输入密码', trigger: 'blur' },
-	    { min: 6, message: '密码至少6位', trigger: 'blur' }
-	  ]
+const formRef = ref(null)
+const mobileRef = ref(null)
+const passwordRef = ref(null)
+const loading = ref(false)
+const showPwd = ref(false)
+const form = ref({
+  mobile: '',
+  password: ''
+})
+const props = defineProps({
+  modelValue: {
+    type: Boolean,
+    default: false
+  }
+})
+let greetment = ref(props.modelValue.value);
+const emit = defineEmits(['update:modelValue']);
+watch(
+  () => props.modelValue,
+  (val) => {
+	  greetment.value = val;
+  },{
+	  immediate: true
+  }
+);
+const changeAgree = () => {
+	emit('update:modelValue', greetment);
+};
+const rules = {
+  mobile: [
+	{ required: true, message: '请输入手机号', trigger: 'blur' },
+	{
+	  pattern: /^1[3-9]\d{9}$/,
+	  message: '手机号格式不正确',
+	  trigger: 'blur'
 	}
+  ],
+  password: [
+	{ required: true, message: '请输入密码', trigger: 'blur' },
+	{ min: 6, message: '密码至少6位', trigger: 'blur' }
+  ]
+}
+const userAgreement = () => {
+	uni.navigateTo({ url: '/pages/my/user-agreement?role=xn' });
+};
 const goToPhoneRegister = () => {
   uni.navigateTo({
     url: '/pages/my/regist-xn'
@@ -120,24 +143,22 @@ const goToForgotPassword = () => {
     url: '/pages/auth/forgot-password'
   });
 };
-	const validateLoginForm = async (cb) => {
-	  try {
-		const valid = await formRef.value.validate()
-		cb && cb(valid)
-	  } catch (err) {
-		cb && cb(false)
-	  }
-	}
-	defineExpose({
-	  validateLoginForm,
-	  greetment
-	})
+const validateLoginForm = async (cb) => {
+  try {
+	const valid = await formRef.value.validate()
+	cb && cb(valid)
+  } catch (err) {
+	cb && cb(false)
+  }
+}
+defineExpose({
+  validateLoginForm,
+  greetment
+})
 </script>
 
 <style scoped lang="scss">
-::v-deep .uni-input-input {
-  font-size: 26rpx;
-}
+
 
 .agreement-wrap{
 	display: flex;

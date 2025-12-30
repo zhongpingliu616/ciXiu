@@ -1,10 +1,11 @@
 <template>
 	<up-button
+	:plain="mergedBtnStyle.plain"
 	:text="text"
 	:loading="loading"
 	:disabled="loading"
 	color="linear-gradient(to right, #F82B1C, RGBA(252, 124, 89, 1))"
-	:customStyle="defaultBtnStyle"
+	:customStyle="mergedBtnStyle"
 	>
 		<text class="btn-text" :style="mergedTextStyle">{{ text }}</text>
 	</up-button>
@@ -31,7 +32,8 @@ const defaultBtnStyle = {
 	border: '2rpx solid #FFE185',
 	borderRadius: '100rpx',
 	height: '80rpx',
-	boxSizing: 'border-box'
+	boxSizing: 'border-box',
+	plain: false
 };
 const defaultTextStyle = {
 	fontSize: '30rpx'
@@ -42,7 +44,7 @@ const mergedBtnStyle = computed(() => ({
 }));
 const mergedTextStyle = computed(() => ({
   ...defaultTextStyle,
-  ...props.TextStyle
+  ...props.textStyle
 }));
 </script>
 

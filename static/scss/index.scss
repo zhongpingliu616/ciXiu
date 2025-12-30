@@ -1,11 +1,18 @@
 
 $app-active-text:#F5EAC9;
 $app-border-color:#FFE185;
+$app-main-dark:#13161F;
+
+::v-deep .uni-input-input {
+  font-size: 24rpx;
+}
 body{
 	font-size: 24rpx;
 }
 .page-wrap{
 	 height: 100vh;
+	 background:
+	 url("/static/images/index/bg.png") no-repeat center/cover;
 	  display: grid;
 	  grid-template-rows: 80rpx 1fr 120rpx;
 }

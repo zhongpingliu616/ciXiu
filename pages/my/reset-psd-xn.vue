@@ -3,25 +3,6 @@
 	<LayoutNavigation :title="title" />
 		<view class="page-content">
 			<view class="container">
-				<!-- 账户名 -->
-				<view class="input-item">
-				  <image
-				  	class="input-icon"
-				  	src="/static/images/user/zhanghao.png"
-				  	mode="aspectFit"
-				  />
-				  <u-input
-				    v-model="form.accoutName"
-				    placeholder="请输入账户名"
-				    type="text"
-				    :border="'none'"
-				    maxlength="11"
-				    input-align="left"
-					@update:modelValue="clearError('accoutName')"
-				    placeholder-style="color: #999; font-size: 24rpx;"
-				  />
-				  <u-text class="error-text" v-if="errors.accoutName" :text="errors.accoutName" color="#ff4d4d" size="20" margin="0 0 0rpx 90rpx"></u-text>
-				</view>
 			    <!-- 手机号输入 -->
 			    <view class="input-item">
 			      <image
@@ -121,7 +102,7 @@
 			  </view>
 			  
 			  <view class="regist-btn-wrap">
-			  	<CxComfirmBtn text="确认注册" :loading="loading" @click="handleRegister" />
+			  	<CxComfirmBtn text="确认修改" :loading="loading" @click="handleReset" />
 			  </view>
 		</view>
 	 <view></view>
@@ -130,17 +111,15 @@
 
 
 <script setup name="registXn">
-let title = ref("注册用户");	
+let title = ref("注册绣娘");	
 let loading = ref(false);
 const form = reactive({
-	accoutName:"",
 	phone:"",
 	code:"",
 	password:"",
 	confirmPassword:""
 });
 const errors = reactive({
-  accoutName:"",
   phone:"",
   code:"",
   password:"",
@@ -156,17 +135,6 @@ const clearError = (field) => {
 // 校验方法
 const validateForm = () => {
   let isValid = true
-  const name = form.accoutName?.trim()
-  if (!name) {
-    errors.accoutName = '用户名不能为空'
-    isValid = false;
-  } else if (name.length < 2) {
-    errors.accoutName = '用户名至少2个字符'
-    isValid = false;
-  } else if (!/^[\u4e00-\u9fa5a-zA-Z0-9]{2,20}$/.test(name)) {
-    errors.accoutName = '用户名只能包含中文、英文或数字';
-    isValid = false;
-  }
   // 手机号校验
   if (!form.phone) {
     errors.phone = '手机号不能为空';
@@ -209,14 +177,14 @@ const validateForm = () => {
   return isValid;
 };
 
-// 注册提交
-const handleRegister = () => {
+// 修改提交
+const handleReset = () => {
 	loading.value = true;
   if (validateForm()) {
-    uni.showToast({ title: '注册成功！', icon: 'success' })
+    uni.showToast({ title: '修改成功！', icon: 'success' });
 	loading.value = false;
   };
- } 
+ };
 // 密码显示开关
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
@@ -235,14 +203,14 @@ const getVerifyCode = () => {
   // 模拟发送验证码
   uni.showToast({ title: '验证码已发送', icon: 'success' })
 
-  isCounting.value = true;
+  isCounting.value = true
   const timer = setInterval(() => {
     countdown.value--
     if (countdown.value <= 0) {
-      clearInterval(timer);
-      isCounting.value = false;
-      countdown.value = 60;
-    };
+      clearInterval(timer)
+      isCounting.value = false
+      countdown.value = 60
+    }
   }, 1000)
 };
 

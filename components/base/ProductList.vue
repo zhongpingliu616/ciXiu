@@ -7,24 +7,27 @@
         <u-icon name="arrow-down" size="28" color="#999"></u-icon>
       </view>
     </u-sticky> -->
-
     <scroll-view
       class="scroll-wrapper"
       scroll-y
+	  :enable-back-to-top="true"
       :refresher-enabled="enableRefresh"
       :refresher-triggered="isRefreshing"
+	  :refresher-default-style="'black'"
       @refresherrefresh="onRefresh"
       @scrolltolower="onScrollToLower"
       :scroll-with-animation="true"
 	  refresher-background="none"
+	  :lower-threshold="100"
     >
       <!-- 商品列表 -->
-	  <CommonProductCol
-	  :colNum="colNum"
-	  :productList="productList"
-	  @click="handleItemClick"
-	  ></CommonProductCol>
-    
+	  <slot name="scrollContain">
+		  <!-- <CommonProductCol
+		  :colNum="colNum"
+		  :productList="productList"
+		  @click="handleItemClick"
+		  ></CommonProductCol> -->
+	  </slot>
       <!-- 加载状态提示 -->
       <u-loadmore
 	    v-if="enableLoadMore"
@@ -39,96 +42,42 @@
 </template>
 
 <script setup>
-// 默认配置：每行显示 2 个商品
 const props = defineProps({
-  colNum: {
-    type: Number,
-    default: 2
+  isRefreshing: {
+    type: Boolean,
+    default: false // 下拉刷新状态
   },
-  api: {
-    type: Function,
-    required: true // 必须传入获取数据的函数
+  loadStatus: {
+    type: String,
+    default: 'loadmore' // 'loadmore', 'loading', 'nomore'
+  },
+  iconType: {
+    type: String,
+    default: 'flower'
   },
   enableLoadMore: { type: Boolean, default: false }, // 上拉加载
   enableRefresh: { type: Boolean, default: false }  // 下拉刷新
-})
-const isRefreshing = ref(false) // 下拉刷新状态
-const productList = ref([])
-const loadStatus = ref('loadmore') // 'loadmore', 'loading', 'nomore'
-const iconType = ref('flower')
+});
 const loadText = ref({
   loadmore: '上拉加载更多',
   loading: '正在加载...',
   nomore: '没有更多了'
 })
-const emit = defineEmits(['click']);
-let page = 1
-const pageSize = 10
-let hasMore = true
-let isLoading = false // 防止重复触发
+const emit = defineEmits(['onRefresh','onScrollToLower']);
 
-// 初始化数据
-const fetchData = async () => {
-  if (!hasMore || isLoading) return
 
-  isLoading = true
-  loadStatus.value = 'loading'
-  try {
-    const res = await props.api(page, pageSize)
-    if (res && Array.isArray(res.list)) {
-      productList.value = [...productList.value, ...res.list]
-      page++
-      hasMore = res.hasMore ?? false
-      loadStatus.value = hasMore ? 'loadmore' : 'nomore'
-    } else {
-      loadStatus.value = 'nomore'
-    }
-  } catch (err) {
-    loadStatus.value = 'loadmore'
-    console.error('加载失败:', err)
-  } finally {
-    isLoading = false
-  }
-}
 // 下拉刷新处理
 const onRefresh = async () => {
-  if (!props.enableRefresh || isLoading) return
-  isRefreshing.value = true
-  page = 1
-  hasMore = true
-  try {
-    const res = await props.api(page, pageSize)
-    if (res && Array.isArray(res.list)) {
-      productList.value = res.list // 刷新数据，替换原有列表
-      page++
-      hasMore = res.hasMore ?? false
-      loadStatus.value = hasMore ? 'loadmore' : 'nomore'
-    } else {
-      productList.value = []
-      loadStatus.value = 'nomore'
-    }
-  } catch (err) {
-    console.error('刷新失败:', err)
-  } finally {
-    isRefreshing.value = false
-  }
+	emit('onRefresh');
 }
 // 上拉到底部时自动触发
 const onScrollToLower = () => {
- if (!props.enableLoadMore || !hasMore || isLoading) return
-  fetchData()
+ if (!props.enableLoadMore) return
+  emit('onScrollToLower');
 }
 
-// 模拟点击事件
-const handleItemClick = ({item,index}) => {
-  emit('click', {
-    item,
-    index
-  });
-}
 
 onMounted(() => {
-  fetchData() // 首次加载
 })
 </script>
 

@@ -38,7 +38,7 @@ function back() {
 .nav {
 	position: sticky;
 	top: 40rpx;
-	z-index: 1000;
+	z-index: 888;
 }
 .bar {
   height: 80rpx;

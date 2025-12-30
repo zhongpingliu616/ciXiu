@@ -26,10 +26,20 @@
 	   >
 		 <view class="recommend-content">
 			<BaseProductList
-			:col-num="2"
-			@click="handleProductItem"
-			:api="fetchProductList"
+			@onScrollToLower="scrollToLower"
+			@onRefresh="refreshList"
+			:isRefreshing="isRefreshing"
+			:loadStatus="loadStatus"
+			:iconType="iconType"
+			:enableRefresh="true"
 			>
+				<template #scrollContain>
+					<CommonProductCol
+					:colNum="2"
+					:productList="productList"
+					@click="handleProductItem"
+					></CommonProductCol>
+				</template>
 			</BaseProductList>
 		 </view>
 	   </CommonTitleList>
@@ -38,6 +48,14 @@
 
 <script setup name="IndexGz">
 const {proxy} = getCurrentInstance()
+const isRefreshing = ref(false) // 下拉刷新状态
+const productList = ref([])
+const loadStatus = ref('loadmore') // 'loadmore', 'loading', 'nomore'
+const iconType = ref('flower')
+let page = 1
+const pageSize = 10
+let hasMore = true
+let isLoading = false // 防止重复触发
 const nftList = [
 	{ src: '/static/images/index/swiper-1.png', text: '我的藏品' },
 	{ src: '/static/images/index/swiper-2.png', text: 'NFT' },
@@ -47,12 +65,44 @@ const nftList = [
 	{ src: '/static/images/index/swiper-3.png', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
 	{ src: '/static/images/index/swiper-1.png', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
 ];
+const emit = defineEmits(['itemClick']);
 const announcementDetail = (item)=>{
 	proxy.$u.toast(`${item.text}`)
 	uni.navigateTo({
 		url:`/pages/my/login?announcementIndex=${item.text}&name=uniapp`
 	})
-};	
+};
+// 初始化数据
+const fetchData = async (isRefresh) => {
+	if(isRefresh){
+		if (isLoading) return
+		isRefreshing.value = true
+		page = 1
+		hasMore = true
+	};
+  if (!hasMore || isLoading) return
+
+  isLoading = true
+  loadStatus.value = 'loading'
+  try {
+    const res = await fetchProductList(page, pageSize)
+    if (res && Array.isArray(res.list)) {
+      productList.value = isRefresh?res.list:[...productList.value, ...res.list]
+      page++
+      hasMore = res.hasMore ?? false
+      loadStatus.value = hasMore ? 'loadmore' : 'nomore'
+    } else {
+		if(isRefresh)productList.value = []
+      loadStatus.value = 'nomore'
+    }
+  } catch (err) {
+    if(!isRefresh)loadStatus.value = 'loadmore'
+    console.error('加载失败:', err)
+  } finally {
+    isLoading = false
+	isRefreshing.value = false
+  }
+}
 const handleProductItem = ({index,item})=>{
 		uni.navigateTo({
 			url:`/pages/my/login?title=${item.title}&index=${index}`
@@ -75,7 +125,18 @@ const fetchProductList = async (page, pageSize) => {
 		list: mockData,
 		hasMore
 	  }
-	}
+};
+const refreshList = ()=>{
+	fetchData(true)
+};
+const scrollToLower = ()=>{
+	if (!hasMore || isLoading) return
+	fetchData()
+};
+onMounted(() => {
+	fetchData(true)
+})
+
 </script>
 
 <style lang="scss" scoped>

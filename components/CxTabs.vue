@@ -11,10 +11,28 @@
 		:current="tabActiveIndex"
 		lineBgSize="100% 100%"
 	    @change="tabSwitch"
+	> 
+		  <template
+			 v-if="$slots.tabItem"
+			#content="{ item, index, active }"
+		  >
+			<!-- <view class="up-tab-item" :class="{ active }"> -->
+			  <slot
+				name="tabItem"
+				:item="item"
+				:index="index"
+				:active="active"
+			  />
+			<!-- </view> -->
+		  </template>
 	</up-tabs>
 </template>
 
 <script setup name="tabs">
+const slots = useSlots()
+const hasTabItemSlot = computed(() => {
+  return !!slots.tabItem
+})
 const defaultActiveStyle = {
 				color: '#D62B2B',
 				fontWeight: 'bold',
@@ -75,7 +93,7 @@ const props = defineProps({
   }
 });
 let tabActiveIndex = ref(props.modelValue.value);
-const emit = defineEmits(['changeTab']);
+const emit = defineEmits(['changeTab','update:modelValue']);
 
 const mergedActiveStyle = computed(() => ({
   ...defaultActiveStyle,
@@ -93,7 +111,9 @@ const mergedItemStyle = computed(() => ({
 watch(
   () => props.modelValue,
   (val) => {
-    tabActiveIndex.value = val
+	  tabActiveIndex.value = val;
+  },{
+	  immediate: true
   }
 )
 function tabSwitch({ index, name }){

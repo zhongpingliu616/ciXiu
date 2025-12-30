@@ -14,11 +14,14 @@
 					  :tabItems="loginTabs"
 					  />
 					  <view v-show="tabActiveIndex === 1" class="xiuliang-form">
-					    <UserLoginXn ref="xiuliangFormRef" />
+					    <UserLoginXn ref="xiuliangFormRef"
+						 v-model="mentStatusXn"
+						 />
 					  </view>
 					  
 					  <view v-show="tabActiveIndex === 0" class="gongzhong-form">
-					    <UserLoginGz ref="gongzhongFormRef" />
+					    <UserLoginGz ref="gongzhongFormRef"
+						 v-model="mentStatusGz" />
 					  </view>
 				</view>
 			</view>
@@ -74,6 +77,8 @@ import { login } from '@/api/index'
 
 	const xiuliangFormRef = ref(null);
 	const gongzhongFormRef = ref(null);
+	let mentStatusXn = ref(false);
+	let mentStatusGz = ref(false);
 	const loading = ref(false);
 	let title = ref("login");
 	let tabActiveIndex = ref(1);
@@ -152,7 +157,14 @@ const handleWechatLogin = () => {
 		 })
 	};
 onLoad((query) => {
+  const pages = getCurrentPages();
+  const prevPage = pages[pages.length - 2];
   tabActiveIndex.value=query.role=='xn'?1:0;
+  if(query.role=='xn'){	  
+	  mentStatusXn.value = JSON.parse(query.consentStatus);
+  }else{
+   mentStatusGz.value = JSON.parse(query.consentStatus);
+  };
 })
 </script>
 
