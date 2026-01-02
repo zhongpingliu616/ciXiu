@@ -17,11 +17,13 @@ import uviewPlus from '@/uni_modules/uview-plus'
 
 export function createApp() {
   const app = createSSRApp(App);
-  app.use(Pinia.createPinia());
+  const pinia = Pinia.createPinia();
+  app.use(pinia);
   app.use(uviewPlus)
   return {
     app,
-	Pinia,
+	Pinia, // 这里保持原样导出 Pinia 类库
+	pinia, // 导出 pinia 实例
   }
 }
 // #endif

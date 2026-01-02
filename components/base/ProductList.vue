@@ -75,20 +75,17 @@ const onScrollToLower = () => {
  if (!props.enableLoadMore) return
   emit('onScrollToLower');
 }
-
-
 onMounted(() => {
 })
 </script>
 
 <style lang="scss" scoped>
 .product-list-container {
-  height: 100vh;
+  height: 100%;
 }
 
 .scroll-wrapper {
-  // height: calc(100vh - 100rpx); /* 减去标题栏高度 */
-  height: calc(100vh); /* 减去标题栏高度 */
+  height: calc(100%); /* 减去标题栏高度 */
   box-sizing: border-box;
   padding: 20rpx 0;
 }

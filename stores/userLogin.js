@@ -1,5 +1,8 @@
 import { defineStore } from 'pinia';
+import { reactive, ref } from 'vue';
+
 export const useLoginStore = defineStore('loginInfo',() => {
+	let currentRole = ref(''); // 'xn' or 'gz'
 	let userInfoXn = reactive({
 			count:0,
 			user: "admin" , 			
@@ -12,12 +15,24 @@ export const useLoginStore = defineStore('loginInfo',() => {
 			zcount:0,
 			user: "admin" , 			
 			// token: "dfd984jdfjjhfah42387", 			
-			token: "34564563345",
+			token: "",
 			id: "45665785785" ,
 			status: 0 
 		})
 	function increment() {
 			this.count++;
 		}
-	return { userInfoXn, userInfoGz, increment };
+	
+	function setRole(role) {
+		currentRole.value = role;
+		uni.setStorageSync('currentRole', role);
+	}
+	
+	// 初始化时从 storage 读取
+	const storedRole = uni.getStorageSync('currentRole');
+	if (storedRole) {
+		currentRole.value = storedRole;
+	}
+
+	return { userInfoXn, userInfoGz, increment, currentRole, setRole };
 });

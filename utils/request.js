@@ -1,4 +1,6 @@
-const BASE_URL = import.meta.env.APP_BASE_URL || ''
+const BASE_URL = import.meta.env.VITE_APP_BASE_URL || ''
+console.log("当前环境",import.meta.env.VITE_APP_BASE_URL)
+import { useLoginStore } from '@/stores/userLogin'
 
 function request(options) {
   const {
@@ -11,7 +13,23 @@ function request(options) {
 
   showLoading && uni.showLoading({ title: '加载中' })
 
-  const token = uni.getStorageSync('tokenXn')
+  // 获取 store 实例
+  // 注意：在非组件中使用 store，需要确保 pinia 已经安装，通常在 request 调用时 pinia 已就绪
+  const userStore = useLoginStore()
+  
+  // 根据 currentRole 动态获取 token
+  // 如果 currentRole 是 'xn'，取 userInfoXn.token
+  // 如果 currentRole 是 'gz'，取 userInfoGz.token
+  // 也可以根据业务需求，如果没有 role，默认取某个或都不取
+  let token = ''
+  if (userStore.currentRole === 'xn') {
+	  token = userStore.userInfoXn.token
+  } else if (userStore.currentRole === 'gz') {
+	  token = userStore.userInfoGz.token
+  } else {
+	  // 如果没有明确角色，尝试获取任意一个存在的 token，或者不传
+	  token = userStore.userInfoXn.token || userStore.userInfoGz.token || ''
+  }
 
   return new Promise((resolve, reject) => {
     uni.request({
@@ -26,10 +44,11 @@ function request(options) {
       },
 
       success(res) {
+        showLoading && uni.hideLoading()
         const { statusCode, data } = res
 
         /** HTTP 层错误 */
-        if (statusCode !== 200) {
+        if (statusCode !== 200 && statusCode !== 304) {
           uni.showToast({
             title: '服务器异常',
             icon: 'none'
@@ -38,26 +57,57 @@ function request(options) {
           return
         }
 
-        /** 业务层约定（按你后端改） */
-        if (data.code === 401) {
-          // 登录失效
-          uni.removeStorageSync('token')
-          uni.showToast({
-            title: '登录已过期',
-            icon: 'none'
-          })
-
-          setTimeout(() => {
-            uni.reLaunch({
-              url: '/pages/my/login'
-            })
-          }, 500)
-
-          reject(data)
-          return
+        // 304 兼容处理：如果是 304，通常没有 data，或者 data 为空
+        // 此时直接 resolve，或者根据业务需要处理
+        if (statusCode === 304) {
+           // 如果 304 返回了 data，则继续走下面的业务逻辑检查
+           // 如果没有 data，直接返回 data 本身或空对象，防止读取 code 报错
+           if (!data) {
+               resolve(data)
+               return
+           }
         }
 
-        if (data.code !== 0) {
+        /** 业务层约定（按你后端改） */
+        // 注意：有些接口成功时 code 也是 200，或者其他约定。请根据后端实际情况调整。
+        // 这里假设 data.code === 0 为成功。
+        // 增加对 code 200 的兼容，防止部分接口返回 200 但非 0 被误判
+        if (data.code !== 0 && data.code !== 200) {
+          if (data.code === 401) {
+             // ... 401 逻辑 ...
+             // 登录失效
+             // 根据当前角色清除对应 token
+             if (userStore.currentRole === 'xn') {
+                 userStore.userInfoXn.token = ''
+                 uni.removeStorageSync('tokenXn')
+             } else if (userStore.currentRole === 'gz') {
+                 userStore.userInfoGz.token = ''
+                 uni.removeStorageSync('tokenGz')
+             } else {
+                 userStore.userInfoXn.token = ''
+                 userStore.userInfoGz.token = ''
+                 uni.removeStorageSync('tokenXn')
+                 uni.removeStorageSync('tokenGz')
+             }
+             
+             uni.showToast({
+               title: '登录已过期',
+               icon: 'none'
+             })
+             
+             // 记录过期时的角色，以便跳转后恢复
+             const expiredRole = userStore.currentRole;
+    
+             setTimeout(() => {
+               uni.reLaunch({
+                 url: `/pages/my/login?role=${expiredRole}`
+               })
+             }, 500)
+    
+             reject({ code: 401, message: '登录已过期' })
+             return
+          };
+		  
           uni.showToast({
             title: data.message || '请求失败',
             icon: 'none'
@@ -66,10 +116,17 @@ function request(options) {
           return
         }
 
-        resolve(data.data)
+        // 优先返回 data.data，如果不存在则返回整个 data
+        // 这样可以兼容某些直接返回结果的接口，或者 304 无 body 的情况
+        if (data && Object.prototype.hasOwnProperty.call(data, 'data')) {
+            resolve(data.data)
+        } else {
+            resolve(data)
+        }
       },
 
       fail(err) {
+        showLoading && uni.hideLoading()
         uni.showToast({
           title: '网络异常',
           icon: 'none'
@@ -78,7 +135,7 @@ function request(options) {
       },
 
       complete() {
-        showLoading && uni.hideLoading()
+        // showLoading && uni.hideLoading()
       }
     })
   })

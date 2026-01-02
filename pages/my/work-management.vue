@@ -8,7 +8,8 @@
 			 lineHeight="0"
 			 lineWidth="0"
 			 :itemStyle="{
-				 padding:0
+				 paddingLeft: '0rpx',
+				 paddingRight: '0rpx',
 			 }"
 			 lineColor="rgba(244, 229, 188, 1)"
 			 v-model="currentWorkIndex"

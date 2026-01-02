@@ -18,7 +18,7 @@
 								    placeholderColor="#AC9394"
 								    searchIconColor="#672227"
 								    borderColor="#FFE185"
-								    height="60rpx"
+								    height="46rpx"
 									@search="onSearch"
 								    :show-action="false"
 								    clearabled
@@ -185,7 +185,9 @@ const handleGrab = (item) => {
 
 // 页面加载时初始化数据
 onMounted(() => {
-  fetchData()
+  if (listData.value.length === 0) {
+    fetchData()
+  }
 })
 
 
@@ -208,6 +210,7 @@ onUnmounted(() => {
 onShow(()=>{
 	// uni.hideTabBar();
 });
+
 function useDebounce(fn, delay = 1500) {
   let timer = null;
 
@@ -229,6 +232,9 @@ function useDebounce(fn, delay = 1500) {
 </script>
 
 <style>
+:deep(.uni-scroll-view){
+	padding-right: 18rpx;
+}
 .order-container {
   height: 80vh;
 }

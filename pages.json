@@ -9,7 +9,26 @@
 		{
 			"path": "pages/orders/index",
 			"style": {
-				"navigationBarTitleText": "订单"
+				"navigationBarTitleText": "订单",
+				"keepAlive": true
+			}
+		},
+		{
+			"path": "pages/orders/order-management",
+			"style": {
+				"navigationBarTitleText": "订单管理"
+			}
+		},
+		{
+			"path": "pages/orders/detail",
+			"style": {
+				"navigationBarTitleText": "订单详情"
+			}
+		},
+		{
+			"path": "pages/orders/edit-address",
+			"style": {
+				"navigationBarTitleText": "编辑收货地址"
 			}
 		},
 		{
@@ -107,6 +126,36 @@
 			"style": {
 				"navigationBarTitleText": "RWA"
 			}
+		},
+		{
+			"path": "pages/my/deposit",
+			"style": {
+				"navigationBarTitleText": "压金"
+			}
+		},
+		{
+			"path": "pages/my/profile-edit",
+			"style": {
+				"navigationBarTitleText": "编辑资料"
+			}
+		},
+		{
+			"path": "pages/income/withdraw",
+			"style": {
+				"navigationBarTitleText": "提现"
+			}
+		},
+		{
+			"path": "pages/income/refund-detail",
+			"style": {
+				"navigationBarTitleText": "押金退还"
+			}
+		},
+		{
+			"path": "pages/my/reset-psd-xn",
+			"style": {
+				"navigationBarTitleText": "重置密码"
+			}
 		}
 	],
 	"tabBar": {
@@ -116,24 +165,30 @@
 		"borderStyle": "black",
 		"backgroundColor": "#77171D",
 		"list": [
-			// {
-			// "pagePath": "pages/index/index",
-			// "iconPath": "static/images/icon_component.png",
-			// "selectedIconPath": "static/images/icon_component_HL.png",
-			// "text": "首页"
-			// },
-			// {
-			// 	"pagePath": "pages/orders/index",
-			// 	"text": "订单"
-			// }, 
-			// {
-			// 	"pagePath": "pages/income/index",
-			// 	"text": "收益"
-			// }, 
-			// {
-			// 	"pagePath": "pages/my/index",
-			// 	"text": "我的"
-			// }
+			{
+			"pagePath": "pages/index/index",
+			"iconPath": "static/images/index_gray_icon.png",
+			"selectedIconPath": "static/images/index_active_icon.png",
+			"text": "首页"
+			},
+			{
+				"pagePath": "pages/orders/index",
+				"iconPath": "static/images/order_gray_icon.png",
+				"selectedIconPath": "static/images/order_active_icon.png",
+				"text": "订单"
+			}, 
+			{
+				"pagePath": "pages/income/index",
+				"iconPath": "static/images/income_gray_icon.png",
+				"selectedIconPath": "static/images/income_active_icon.png",
+				"text": "收益"
+			}, 
+			{
+				"pagePath": "pages/my/index",
+				"iconPath": "static/images/my_gray_icon.png",
+				"selectedIconPath": "static/images/my_active_icon.png",
+				"text": "我的"
+			}
 		]
 	},
 

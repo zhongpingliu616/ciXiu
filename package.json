@@ -1,5 +1,5 @@
 {
-	"dependencies": {
-	  "uview-plus": "^3.3.64"
+	"scripts": {
+	  "build:h5": "vue-cli-service build"
 	}
 }

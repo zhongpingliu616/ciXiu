@@ -86,8 +86,8 @@
 		  :isRefreshing="refreshing"
 		  :loadStatus="loadStatus"
 		  :iconType="iconType"
-		  :enableRefresh="true"
-		  :enableLoadMore="true"
+		  :enableRefresh="false"
+		  :enableLoadMore="false"
 		  >
 		  	<template #scrollContain>
 		  		<!-- 商品列表 -->
@@ -274,11 +274,17 @@ const collectionItemClick = ({index,item})=>{
 
 <style lang="scss" scoped>
 .index-order-list{
-	height: 40vh;
+	// height: 40vh;
 }
-:deep(.header){
-	margin-bottom: 0;
+::v-deep{
+	.index-order-list .uni-scroll-view{
+		padding-right: 18rpx;
+	}
+	.header{
+		margin-bottom: 0;
+	}
 }
+
 .order-list-wrap{
 	margin-top: 48rpx;
 }

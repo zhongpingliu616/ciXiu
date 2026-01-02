@@ -56,5 +56,6 @@ function back() {
   flex: 1;
   text-align: center;
   color: #fff;
+  font-size: 28rpx;
 }
 </style>

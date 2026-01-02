@@ -133,21 +133,24 @@
 
     <!-- 右侧操作按钮区 -->
     <view class="right-buttons">
-	<view class="gradient-btn-item shopping-cart" @click="handleAddToCart">
+	<view class="gradient-btn-item shopping-cart" @click="handlePayDeposit">
 	   <view class="gradient-button">
 			
 		</view>
 		<view class="button-inner">
-			加入购物车
+			支付押金
+			<view class="update-tip">
+				需要升等级
+			</view>
 		</view>
 	 </view>
 	 
-	 <view class="gradient-btn-item buy-now" @click="handleBuyNow">
+	 <view class="gradient-btn-item buy-now" :class="{'filter-gray':isUpgrade}" @click="handleGrabOrder">
 	    <view class="gradient-button">
 	 		
 	 	</view>
 	 	<view class="button-inner">
-	 		立即购买
+	 		一键抢单
 	 	</view>
 	  </view>
     </view>
@@ -156,7 +159,7 @@
 
 
 <script setup name="NftDetail">
-
+let isUpgrade = ref(true);
 
 
 const handleCollect = ()=> {
@@ -167,13 +170,24 @@ const handleService = ()=> {
   // 客服逻辑
   console.log('客服');
 };
-const handleAddToCart = ()=> {
-  // 加入购物车逻辑
-  console.log('加入购物车');
+const handlePayDeposit = ()=> {
+  // 支付押金逻辑 - 跳转到压金页面
+  console.log('支付押金');
+  uni.navigateTo({
+    url: '/pages/my/deposit'
+  })
 };
-const handleBuyNow = ()=> {
-  // 立即购买逻辑
-  console.log('立即购买');
+const handleGrabOrder = ()=> {
+  if(isUpgrade.value) {
+	  handlePayDeposit();
+	  return;
+  };
+  console.log('一键抢单');
+  // 这里可以添加抢单逻辑，或者提示
+  uni.showToast({
+    title: '抢单成功',
+    icon: 'success'
+  })
 };
 const handleClick = (cellPrm)=>{
 	console.log("点击了正品保障",cellPrm);
@@ -181,15 +195,35 @@ const handleClick = (cellPrm)=>{
 </script>
 
 <style lang="scss" scoped>
+
+	.filter-gray{
+		filter: grayscale(1);
+	}
 .shopping-cart{
 	.gradient-button{		
 		border-radius: 20rpx 10rpx 6rpx 40rpx;
 		background: linear-gradient(90deg, #F3D89E, #F5EAC9);
 		transform: skewY(-15deg) rotateZ(15deg); 
 	}
+	.update-tip{
+		position: absolute;
+		top: -38rpx;
+		right: -82rpx;
+		padding: 0rpx 20rpx;
+		background: #FE3A3A;
+		border-radius: 30rpx;
+		border-bottom-left-radius:0;
+		color: #fff;
+		font-size: 18rpx;
+		z-index: 2;
+	}
 	.button-inner{
 		color: #805536;
 	}
+}
+.right-buttons{
+		position: relative;
+	
 }
 .shopping-cart{
 	

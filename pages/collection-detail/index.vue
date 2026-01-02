@@ -26,7 +26,7 @@ import CollectionDetail from '@/components/workDetail/CollectionDetail.vue'
 import NftDetail from '@/components/workDetail/NftDetail.vue'
 let title =ref("作品详情");
 let avatarUrl=ref('https://via.placeholder.com/80');
-let workType = ref("CollectionDetail");
+let workType = ref("NftDetail");
 const componentMap = {
   CollectionDetail,
   NftDetail

@@ -10,6 +10,13 @@
 		<view class="artist-name">
 			<text class="artist">绣娘：{{ item.artist }}</text>
 		</view>
+		<view class="favorite-column">
+			<up-icon
+			 color="#FE3838"
+			 size="48"
+			 :name="item.favoriteType||'heart'"
+			></up-icon>
+		</view>
 	  </view>
 	  <view class="card-content">
 		
@@ -23,10 +30,12 @@
 		  <text class="price">¥ {{ item.price }}</text>
 		</view>
 	  </view>
+	  
 	</view>
   </view>	
 </template>
 <script setup name="block">
+	
 	const props = defineProps(
 		{
 		  colNum: {
@@ -93,6 +102,12 @@ const handleItemClick = (item, index) => {
   object-fit: cover;
   border-top-left-radius: 20rpx;
   border-top-right-radius: 20rpx;
+}
+.favorite-column{
+	position: absolute;
+	top: 12rpx;
+	right: 12rpx;
+	padding: 6rpx 12rpx;
 }
 .artist-name{
 	position: absolute;

@@ -12,7 +12,7 @@
 				  />
 				  <u-input
 				    v-model="form.accoutName"
-				    placeholder="请输入账户名"
+				    placeholder="账户名字母开头6-20非中文字符"
 				    type="text"
 				    :border="'none'"
 				    maxlength="11"
@@ -78,7 +78,7 @@
 			      />
 			      <u-input
 			        v-model="form.password"
-			        placeholder="请设置密码"
+			        placeholder="字母开头,必须包含特殊字符6-20位"
 			        :type="showPassword ? 'text' : 'password'"
 			        :border="'none'"
 			        input-align="left"
@@ -163,8 +163,8 @@ const validateForm = () => {
   } else if (name.length < 2) {
     errors.accoutName = '用户名至少2个字符'
     isValid = false;
-  } else if (!/^[\u4e00-\u9fa5a-zA-Z0-9]{2,20}$/.test(name)) {
-    errors.accoutName = '用户名只能包含中文、英文或数字';
+  } else if (!/^[a-zA-Z]\w{5,19}$/.test(name)) { // /^[\u4e00-\u9fa5a-zA-Z0-9]{2,20}$/ 用户名只能包含中文、英文或数字
+    errors.accoutName = '字母开头6-20非中文字符';
     isValid = false;
   }
   // 手机号校验
@@ -190,11 +190,11 @@ const validateForm = () => {
   if (!pwd) {
     errors.password = '密码不能为空';
     isValid = false;
-  } else if (pwd.length < 8) {
-    errors.password = '密码长度不能少于8位';
+  } else if (pwd.length < 6 || pwd.length > 20) {
+    errors.password = '密码长度6-20位';
     isValid = false;
-  } else if (!/^(?=.*[0-9])(?=.*[a-zA-Z])/.test(pwd)) {
-    errors.password = '密码必须包含数字和字母';
+  } else if (!/^[A-Za-z](?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?])[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]{5,19}$/.test(pwd)) { // /^(?=.*[0-9])(?=.*[a-zA-Z])/
+    errors.password = '密码必须字母开头,必须包含特殊字符';
     isValid = false;
   }
 
@@ -227,7 +227,7 @@ const countdown = ref(60);
 
 const getVerifyCode = () => {
   if (isCounting.value) return;
-  if (!phone.value || phone.value.length !== 11) {
+  if (!form.phone || form.phone.length !== 11) {
     uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
     return;
   };

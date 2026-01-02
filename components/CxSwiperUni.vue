@@ -4,6 +4,8 @@
     :style="{ '--swiper-height': swiperHeight }"
     :circular="mergedConfig.circular"
     :indicator-dots="mergedConfig.indicatorDots"
+	:indicator-active-color="mergedConfig.indicatorActiveColor"
+	:active-class="mergedConfig.activeClass"
     :autoplay="mergedConfig.autoplay"
     :interval="mergedConfig.interval"
     :duration="mergedConfig.duration"

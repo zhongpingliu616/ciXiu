@@ -59,7 +59,7 @@
 			      />
 			      <u-input
 			        v-model="form.password"
-			        placeholder="请设置密码"
+			        placeholder="字母开头,必须包含特殊字符6-20位"
 			        :type="showPassword ? 'text' : 'password'"
 			        :border="'none'"
 			        input-align="left"
@@ -158,10 +158,10 @@ const validateForm = () => {
   if (!pwd) {
     errors.password = '密码不能为空';
     isValid = false;
-  } else if (pwd.length < 8) {
-    errors.password = '密码长度不能少于8位';
+  } else if (pwd.length < 6 || pwd.length > 20) {
+    errors.password = '密码长度6-20位';
     isValid = false;
-  } else if (!/^(?=.*[0-9])(?=.*[a-zA-Z])/.test(pwd)) {
+  } else if (!/^[A-Za-z](?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?])[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]{5,19}$/.test(pwd)) { // /^(?=.*[0-9])(?=.*[a-zA-Z])/
     errors.password = '密码必须包含数字和字母';
     isValid = false;
   }

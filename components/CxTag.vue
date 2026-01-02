@@ -33,7 +33,7 @@
 <script setup name="tag">
 const emit = defineEmits(['click'])
 const defaultTextStyle = {
-	  fontSize: "16rpx",
+	  fontSize: "26rpx",
 	  color:"#D1A156",
 	  padding:"8rpx 0rpx"
 	  

@@ -36,7 +36,7 @@ const defaultBtnStyle = {
 	plain: false
 };
 const defaultTextStyle = {
-	fontSize: '30rpx'
+	fontSize: '28rpx'
 };
 const mergedBtnStyle = computed(() => ({
   ...defaultBtnStyle,

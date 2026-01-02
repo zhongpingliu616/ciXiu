@@ -6,7 +6,10 @@ import { useLoginStore } from './stores/userLogin'
 	
 		const whiteList = [
 			// '/pages/my/index',
-			'/pages/my/login'
+			'/pages/my/login',
+			'/pages/my/regist-xn',
+			'/pages/my/reset-psd-xn',
+			'/pages/orders/detail'
 		]
 	
 		const needLogin = (url) => {
@@ -33,10 +36,12 @@ import { useLoginStore } from './stores/userLogin'
 						userStore.userInfoGz?.token ||
 						uni.getStorageSync('tokenXn') ||
 						uni.getStorageSync('tokenGz');
+					
+					// 首页也需要登录，如果不在白名单且没有 token，拦截
 					if (!token && needLogin(url)) {
-						proxy.$u.toast('请登录系统')
+						// proxy.$u.toast('请登录系统')
 						setTimeout(() => {
-							uni.navigateTo({
+							uni.reLaunch({
 								url: '/pages/my/login'
 							})
 						}, 100)

@@ -81,9 +81,9 @@ import { login } from '@/api/index'
 	let mentStatusGz = ref(false);
 	const loading = ref(false);
 	let title = ref("login");
-	let tabActiveIndex = ref(1);
+	let tabActiveIndex = ref(0);
 	const userStore = useLoginStore()
-	const lineBg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAAASCAMAAAA0cZ07AAABSlBMVEUAAAD/VQD/VVX/QED/KgD/Kir/VSr/VVX/f1X/TTPoRi7/Ri7tNyTtWzf5STH5Tzf5VTf5Wz3/STH/VTf/W0P4TDT4Uzn4Uzv4XD/7TDT7XD/4Kxz6Qi76Qy77Y0f7ZUf9fFn4Khz4Qy76ZEb7e1j7fVj6UTn6Tzf6Vjz6Vz76UDn6VTz6WT/5Tjb5Ujn5VDz7Tjb7Wj/4LB35QC35Qy/7Zkj8e1j8fFn4LB35Kxz5QC35Qy/7Y0b7Zkn8fFn8fVr4Kx34LB34LB74LR/4Lh/4LyD4MCH4MSL4MyL4NCP5NST5NiX5OCb5OSf5Oij5PCn5PSr5Pyv5QC35Qi76Tzf6UTn6Ujr6VDv6Vjz6Vz77ZUf7Zkj7aEr7aUv7a0z7bE37bk77b0/7cFD7clH7c1L8dFP8dVT8dlX8eFX8eVb8elf8e1j8fFj8fFlFVbOBAAAAQHRSTlMAAwMEBgYGBgYKCwsODioqKioqKip1dXV1dXWQkJCQkJCRkZGRkaChoaGiouLj4+Pj4+7u7u7u7u/v7+/v7+/vJ9rf/wAAANxJREFUOMtjYMALmJkZKAGcnBRpZ2OjSDu/AEXaxcQp0c2tp8+NXwWLtJGTs4urm7uHp5e3j6+ff0CgsQwrVFItLFwDymSXN42JjYtPSExKTklNS8/IzMo2U+BgkHZwRNceFCwL1sGlHhoWHqHJBebIRUWja8/JVWCwxKbdmpGTlU9UNwSkPVJHQpCNk8kGm3Z77NpNGHlYhSQNINoNpUTYeLFrN2dQxKZdCRJwyI5XxqZdFRh0FujarZRgQacVFq4NDzpbdO12KhyURhwtkw0Dv/BAZhkKMyyh4gIA26VeW8woj3cAAAAASUVORK5CYII=";
+	const lineBg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAAASCAMAAAA0cZ07AAABSlBMVEUAAAD/VQD/VVX/QED/KgD/Kir/VSr/VVX/f1X/TTPoRi7/Ri7tNyTtWzf5STH5Tzf5VTf5Wz3/STH/VTf/W0P4TDT4Uzn4Uzv4XD/7TDT7XD/4Kxz6Qi76Qy77Y0f7ZUf9fFn4Khz4Qy76ZEb7e1j7fVj6UTn6Tzf6Vjz6Vz76UDn6VTz6WT/5Tjb5Ujn5VDz7Tjb7Wj/4LB35QC35Qy/7Zkj8e1j8fFn4LB35Kxz5QC35Qy/7Y0b7Zkn8fFn8fVr4Kx34LB34LB74LR/4Lh/4LyD4MCH4MSL4MyL4NCP5NST5NiX5OCb5OSf5Oij5PCn5PSr5Pyv5QC35Qi76Tzf6UTn6Ujr6VDv6Vjz6Vz77ZUf7Zkj7aEr7aUv7a0z7bE37bk77b0/7cFD7clH7c1L8dFP8dVT8dlX8eFX8eVb8elf8e1j8fFj8fFlFVbOBAAAAQHRSTlMAAwMEBgYGBgYKCwsODioqKioqKip1dXV1dXWQkJCQkJCRkZGRkaChoaGiouLj4+Pj4+7u7u7u7u/v7+/v7+/v7+/vJ9rf/wAAANxJREFUOMtjYMALmJkZKAGcnBRpZ2OjSDu/AEXaxcQp0c2tp8+NXwWLtJGTs4urm7uHp5e3j6+ff0CgsQwrVFItLFwDymSXN42JjYtPSExKTklNS8/IzMo2U+BgkHZwRNceFCwL1sGlHhoWHqHJBebIRUWja8/JVWCwxKbdmpGTlU9UNwSkPVJHQpCNk8kGm3Z77NpNGHlYhSQNINoNpUTYeLFrN2dQxKZdCRJwyI5XxqZdFRh0FujarZRgQacVFq4NDzpbdO12KhyURhwtkw0Dv/BAZhkKMyyh4gIA26VeW8woj3cAAAAASUVORK5CYII=";
 	const loginTabs = reactive([  
 	    { name: '公众端' },  
 	    { name: '绣娘端', badge: { isDot: false } }
@@ -123,7 +123,14 @@ const handleWechatLogin = () => {
 				  loading.value = false;
 				  Object.assign(userStore.userInfoXn, {token: 'Xn777888'});
 				  uni.setStorageSync('tokenXn', 'Xn777888');
-				  uni.navigateBack();
+				  // 清除另一个角色的 token，确保单角色登录（根据需求“隐藏另外一个标签”）
+				  uni.removeStorageSync('tokenGz');
+				  userStore.userInfoGz.token = '';
+				  userStore.setRole('xn');
+
+				  uni.reLaunch({
+					  url: '/pages/index/index'
+				  });
 				  uni.showToast({
 					title: '绣娘登录成功',
 					icon: 'success'
@@ -148,7 +155,14 @@ const handleWechatLogin = () => {
 				  loading.value = false;
 				  Object.assign(userStore.userInfoGz, {token: 'Gz777888'});
 				  uni.setStorageSync('tokenGz', 'Gz777888');
-				  uni.navigateBack();
+				  // 清除另一个角色的 token
+				  uni.removeStorageSync('tokenXn');
+				  userStore.userInfoXn.token = '';
+				  userStore.setRole('gz');
+
+				  uni.reLaunch({
+					  url: '/pages/index/index'
+				  });
 				  uni.showToast({
 					title: '公众登录成功',
 					icon: 'success'
@@ -159,63 +173,70 @@ const handleWechatLogin = () => {
 onLoad((query) => {
   const pages = getCurrentPages();
   const prevPage = pages[pages.length - 2];
-  tabActiveIndex.value=query.role=='xn'?1:0;
-  if(query.role=='xn'){	  
-	  mentStatusXn.value = JSON.parse(query.consentStatus);
+  // 如果传递了 role 参数，根据 role 设置 tabActiveIndex
+  // role: 'xn' -> 1, 'gz' -> 0
+  if (query.role) {
+	  tabActiveIndex.value = query.role === 'xn' ? 1 : 0;
+  } else {
+	  // 如果没有传 role，默认逻辑或保持不变
+	  tabActiveIndex.value = 0;
+  }
+  
+  if(query.role=='xn'){
+	  mentStatusXn.value = JSON.parse(query.consentStatus || false);
   }else{
-   mentStatusGz.value = JSON.parse(query.consentStatus);
+	 mentStatusGz.value = JSON.parse(query.consentStatus || false);
   };
 })
 </script>
 
 <style lang="scss" scoped>
-	.page-wrap{
-		background: url("@/static/images/user/login-bg.png") no-repeat center/cover;
-		grid-template-rows: 80rpx 1fr 0rpx;
-	}
-	.logo {
-		height: 200rpx;
-		width: 200rpx;
-		margin: 100rpx auto;
-		margin-bottom: 20rpx;
+.page-wrap{
+	background: url("@/static/images/user/login-bg.png") no-repeat center/cover;
+	grid-template-rows: 80rpx 1fr 0rpx;
+}
+.logo {
+	height: 200rpx;
+	width: 200rpx;
+	margin: 100rpx auto;
+	margin-bottom: 20rpx;
+	display: block;
+	text-align: center;
+}
+.login-box{
+	position: relative;
+	margin: 0 auto;
+	uni-image{
 		display: block;
-		text-align: center;
-	}
-	.login-box{
-		position: relative;
+		width: 98%;
+		height: auto;
+		aspect-ratio: 7 / 5;
 		margin: 0 auto;
-		uni-image{
-			display: block;
-			width: 98%;
-			height: auto;
-			aspect-ratio: 7 / 5;
-			margin: 0 auto;
-		}
 	}
-	.login-content{
-		position: absolute;
-		inset:40rpx 80rpx;
-	}
-	.text-area {
-		display: flex;
-		justify-content: center;
-	}
+}
+.login-content{
+	position: absolute;
+	inset:40rpx 80rpx;
+}
+.text-area {
+	display: flex;
+	justify-content: center;
+}
 
-	.title {
-		font-size: 36rpx;
-		color: #fff;
-	}
-	.login-btn-wrap{
-		width: 90%;
-		margin: 0 auto;
-		margin-top: 80rpx;
-	}
-	.regist-tost{
-		color: #fff;
-		text-align: center;
-		margin-top: 24rpx;
-		
-	}
+.title {
+	font-size: 36rpx;
+	color: #fff;
+}
+.login-btn-wrap{
+	width: 90%;
+	margin: 0 auto;
+	margin-top: 80rpx;
+}
+.regist-tost{
+	color: #fff;
+	text-align: center;
+	margin-top: 24rpx;
+}
 .immediately-regist{
 			text-decoration: underline;
 		}

@@ -19,9 +19,33 @@
 		</template>
 	 </CxScrollView>
  </view>
+ <view class="collection-content">
+   <CxScrollView
+ 	class="list"
+ 	ref="cxScrollViewRef"
+ 	:list="collectionList"
+ 	:config="{
+ 	  direction: 'x',
+ 	  visibleCount: 2,
+ 	  gap:'10rpx'
+ 	}"
+ 	@click="collectionItemClick"
+   > 
+ 	 <template #item="{item}">
+ 		 <view class="manage-shortcut-entrance">
+ 			   <image class="shortcut-entrance-img" mode="widthFix" :src="item.src"></image>
+ 			   <view class="manage-shortcut-content">
+ 				   <view class="manage-shortcut-title">
+ 					   {{item.title}}
+ 				   </view>
+ 			   </view>
+ 		 </view>
+ 	</template>
+   </CxScrollView>
+ </view>
 <view class="recommend-product">
 	   <CommonTitleList
-		 title="推荐商品"
+		 title="推荐藏品"
 		 moreUrl="/pages/my/login"
 	   >
 		 <view class="recommend-content">
@@ -65,7 +89,17 @@ const nftList = [
 	{ src: '/static/images/index/swiper-3.png', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
 	{ src: '/static/images/index/swiper-1.png', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
 ];
+const collectionList = [
+		{ src: '/static/images/index/community.png',title:'社区',funtionText: '管理',path:'/pages/orders/index' },
+		{ src: '/static/images/index/activities.png',title:'活动',funtionText: '管理',path:'/pages/my/work-management' },
+		{ src: '/static/images/index/community.png',title:'订单管理',funtionText: '管理',path:'/pages/orders/index' },
+		{ src: '/static/images/index/activities.png',title:'作品管理',funtionText: '管理',path:'/pages/my/work-management' }
+	];
 const emit = defineEmits(['itemClick']);
+
+const collectionItemClick = ({index,item})=>{
+	console.log("活动 社区",index, item);
+};
 const announcementDetail = (item)=>{
 	proxy.$u.toast(`${item.text}`)
 	uni.navigateTo({
@@ -140,6 +174,29 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+.shortcut-entrance-img{
+	width: 100%;
+	display: inline-block;
+}
+.manage-shortcut-entrance{
+	position: relative;
+}
+.manage-shortcut-title{
+	color: #fff;
+	font-size: 30rpx;
+	font-weight: bold;
+	margin-bottom: 20rpx;
+	text-indent: 12rpx;
+}
+.manage-shortcut-content{
+	position: absolute;
+	inset: 30rpx;
+}
+	
+	
+	
+	
+	
 .recommend-product{
 	margin-top: 24rpx;
 }

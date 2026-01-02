@@ -53,7 +53,7 @@ onShow(() => {
 
 function go(path) {
   if (path === current.value) return;
-  uni.navigateTo({ url: path });
+  uni.switchTab({ url: path });
 }
 </script>
 
