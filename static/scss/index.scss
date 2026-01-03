@@ -3,8 +3,15 @@ $app-active-text:#F5EAC9;
 $app-border-color:#FFE185;
 $app-main-dark:#13161F;
 
-::v-deep .uni-input-input {
-  font-size: 24rpx;
+
+
+::v-deep {
+	.uni-tabbar{
+			display: none;
+	}
+	.uni-input-input {
+	  font-size: 24rpx;
+	}
 }
 body{
 	font-size: 24rpx;

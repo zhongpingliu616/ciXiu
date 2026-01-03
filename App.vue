@@ -1,31 +1,22 @@
 <script setup>
 import { useLoginStore } from './stores/userLogin'
 	onLaunch(() => {
+		// uni.clearStorageSync();
 		const {proxy} = getCurrentInstance()
 		const userStore = useLoginStore()
 	
 		const whiteList = [
-			// '/pages/my/index',
-			'/pages/my/login',
-			'/pages/my/regist-xn',
-			'/pages/my/reset-psd-xn',
-			'/pages/orders/detail'
+			// '/pages/index',
+			'/pages/login',
+			'/pages/xn/my/regist-xn',
+			'/pages/xn/my/reset-psd-xn',
+			'/pages/xn/orders/detail',
+			'/pages/xn/my/user-agreement' // 添加用户协议到白名单
 		]
 	
 		const needLogin = (url) => {
 			return !whiteList.some(item => url.startsWith(item))
 		}
-		// const isLogin = () => !!uni.getStorageSync('tokenXn') || !!uni.getStorageSync('tokenGz')
-		// const originalNavigateTo = uni.navigateTo
-		// uni.navigateTo = function (options) {
-		//   if (!isLogin()) {
-		// 	  proxy.$u.toast('请登录系统')
-		// 	return originalNavigateTo({
-		// 	  url: '/pages/my/login' //未登录 → 强制跳转 登录
-		// 	});
-		//   }
-		//   return originalNavigateTo(options);
-		// }
 		;['navigateTo', 'redirectTo', 'reLaunch', 'switchTab'].forEach(method => {
 			uni.addInterceptor(method, {
 				invoke(args) {					
@@ -42,7 +33,7 @@ import { useLoginStore } from './stores/userLogin'
 						// proxy.$u.toast('请登录系统')
 						setTimeout(() => {
 							uni.reLaunch({
-								url: '/pages/my/login'
+								url: '/pages/login'
 							})
 						}, 100)
 						return false
@@ -58,7 +49,7 @@ import { useLoginStore } from './stores/userLogin'
 	})
 	
 	onHide(() => {
-		console.log('App Hide')
+		
 	})
 	</script>
 

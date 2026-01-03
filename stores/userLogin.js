@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { reactive, ref } from 'vue';
 
 export const useLoginStore = defineStore('loginInfo',() => {
-	let currentRole = ref(''); // 'xn' or 'gz'
+	let currentRole = ref(''); // 'XN' or 'GZ'
 	let userInfoXn = reactive({
 			count:0,
 			user: "admin" , 			

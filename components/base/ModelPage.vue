@@ -4,7 +4,7 @@
 		<view class="page-content">
 			<image class="logo" src="/static/logo.png"></image>
 		</view>
-	 <LayoutBottom></LayoutBottom> />
+	 <XnTabBar></XnTabBar> />
 	</view>
 </template>
 

@@ -6,6 +6,9 @@ export default defineConfig({
 	  server: {
 	    hmr: true
 	  },
+	  optimizeDeps: {
+		  include: ['echarts']
+	  },
 	  plugins: [
 		uni(),
 		AutoImport({

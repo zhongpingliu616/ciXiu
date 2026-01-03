@@ -19,25 +19,25 @@
 <script setup>
 const tabs = [
   {
-    path: '/pages/xn/index/index',
+    path: '/pages/index',
     text: '首页',
     icon: '/static/images/index_gray_icon.png',
     activeIcon: '/static/images/index_active_icon.png'
   },
   {
-    path: '/pages/xn/orders/index',
-    text: '订单',
+    path: '/pages/gz/collectibles/index',
+    text: '藏品',
     icon: '/static/images/order_gray_icon.png',
     activeIcon: '/static/images/order_active_icon.png'
   },
   {
-    path: '/pages/xn/income/index',
-    text: '收益',
+    path: '/pages/gz/income/index',
+    text: '资产',
     icon: '/static/images/income_gray_icon.png',
     activeIcon: '/static/images/income_active_icon.png'
   },
   {
-    path: '/pages/xn/my/index',
+    path: '/pages/gz/my/index',
     text: '我的',
     icon: '/static/images/my_gray_icon.png',
     activeIcon: '/static/images/my_active_icon.png'
@@ -53,12 +53,12 @@ onShow(() => {
 
 function go(path) {
   if (path === current.value) return;
-  console.log("custom-tab-bar跳转",path);
-  uni.navigateTo({ url: path });
+  uni.switchTab({ url: path });
 }
 </script>
 
 <style lang="scss" scoped>
+
 .tab-bar {
   position: fixed;
   left: 0;

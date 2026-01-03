@@ -1,160 +1,166 @@
 {
 	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
 		{
-			"path": "pages/index/index",
+			"path": "pages/index",
 			"style": {
 				"navigationBarTitleText": "首页"
 			}
 		},
 		{
-			"path": "pages/orders/index",
+			"path": "pages/xn/orders/index",
 			"style": {
 				"navigationBarTitleText": "订单",
 				"keepAlive": true
 			}
 		},
 		{
-			"path": "pages/orders/order-management",
+			"path": "pages/xn/orders/order-management",
 			"style": {
 				"navigationBarTitleText": "订单管理"
 			}
 		},
 		{
-			"path": "pages/orders/detail",
+			"path": "pages/xn/orders/detail",
 			"style": {
 				"navigationBarTitleText": "订单详情"
 			}
 		},
 		{
-			"path": "pages/orders/edit-address",
+			"path": "pages/xn/orders/edit-address",
 			"style": {
 				"navigationBarTitleText": "编辑收货地址"
 			}
 		},
 		{
-			"path": "pages/income/index",
+			"path": "pages/xn/income/index",
 			"style": {
 				"navigationBarTitleText": "收益"
 			}
 		},
 		{
-			"path": "pages/my/index",
+			"path": "pages/xn/my/index",
 			"style": {
 				"navigationBarTitleText": "我的"
 			}
 		},
 		{
-			"path": "pages/my/regist-xn",
+			"path": "pages/xn/my/regist-xn",
 			"style": {
 				"navigationBarTitleText": "注册绣娘"
 			}
 		},
 		{
-			"path": "pages/my/identity-authentication",
+			"path": "pages/xn/my/identity-authentication",
 			"style": {
 				"navigationBarTitleText": "身份认证"
 			}
 		},
 		{
-			"path": "pages/my/work-management",
+			"path": "pages/xn/my/work-management",
 			"style": {
 				"navigationBarTitleText": "作品管理"
 			}
 		},
 		{
-			"path": "pages/my/user-agreement",
+			"path": "pages/xn/my/user-agreement",
 			"style": {
 				"navigationBarTitleText": "用户协议"
 			}
 		},
 		{
-			"path": "pages/my/shopping-cart",
-			"style": {
-				"navigationBarTitleText": "购物车"
-			}
-		},
-		{
-			"path": "pages/my/login",
+			"path": "pages/login",
 			"style": {
 				"navigationBarTitleText": "登录"
 			}
 		},
 		{
-			"path": "pages/my/system-notification",
+			"path": "pages/xn/my/system-notification",
 			"style": {
 				"navigationBarTitleText": "系统通知"
 			}
 		},
 		{
-			"path": "pages/my/system-notification-detail",
+			"path": "pages/xn/my/system-notification-detail",
 			"style": {
 				"navigationBarTitleText": "系统通知详情"
 			}
 		},
 		{
-			"path": "pages/grab-order/index",
-			"style": {
-				"navigationBarTitleText": "一键抢单"
-			}
-		},
-		{
-			"path": "pages/level/index",
-			"style": {
-				"navigationBarTitleText": "等级选择"
-			}
-		},
-		{
-			"path": "pages/level/pay-deposit",
-			"style": {
-				"navigationBarTitleText": "保证金"
-			}
-		},
-		{
-			"path": "pages/level/electronic-contract",
-			"style": {
-				"navigationBarTitleText": "电子合同"
-			}
-		},
-		{
-			"path": "pages/collection-detail/index",
-			"style": {
-				"navigationBarTitleText": "藏品详情"
-			}
-		},
-		{
-			"path": "pages/rwa/index",
-			"style": {
-				"navigationBarTitleText": "RWA"
-			}
-		},
-		{
-			"path": "pages/my/deposit",
+			"path": "pages/xn/my/deposit",
 			"style": {
 				"navigationBarTitleText": "压金"
 			}
 		},
 		{
-			"path": "pages/my/profile-edit",
+			"path": "pages/xn/my/profile-edit",
 			"style": {
 				"navigationBarTitleText": "编辑资料"
 			}
 		},
 		{
-			"path": "pages/income/withdraw",
+			"path": "pages/xn/income/withdraw",
 			"style": {
 				"navigationBarTitleText": "提现"
 			}
 		},
 		{
-			"path": "pages/income/refund-detail",
+			"path": "pages/xn/income/refund-detail",
 			"style": {
 				"navigationBarTitleText": "押金退还"
 			}
 		},
 		{
-			"path": "pages/my/reset-psd-xn",
+			"path": "pages/xn/my/reset-psd-xn",
 			"style": {
 				"navigationBarTitleText": "重置密码"
+			}
+		},
+		{
+			"path": "pages/gz/my/shopping-cart",
+			"style": {
+				"navigationBarTitleText": "购物车"
+			}
+		},
+		{
+			"path": "pages/gz/grab-order/index",
+			"style": {
+				"navigationBarTitleText": "一键抢单"
+			}
+		},
+		{
+			"path": "pages/gz/level/index",
+			"style": {
+				"navigationBarTitleText": "等级选择"
+			}
+		},
+		{
+			"path": "pages/gz/level/pay-deposit",
+			"style": {
+				"navigationBarTitleText": "保证金"
+			}
+		},
+		{
+			"path": "pages/gz/level/electronic-contract",
+			"style": {
+				"navigationBarTitleText": "电子合同"
+			}
+		},
+		{
+			"path": "pages/gz/collection-detail/index",
+			"style": {
+				"navigationBarTitleText": "藏品详情"
+			}
+		},
+		{
+			"path": "pages/gz/rwa/index",
+			"style": {
+				"navigationBarTitleText": "RWA"
+			}
+		},
+		{
+			"path": "pages/gz/nft/index",
+			"style": {
+				"navigationBarTitleText": "NFT"
 			}
 		}
 	],
@@ -166,25 +172,25 @@
 		"backgroundColor": "#77171D",
 		"list": [
 			{
-			"pagePath": "pages/index/index",
+			"pagePath": "pages/index",
 			"iconPath": "static/images/index_gray_icon.png",
 			"selectedIconPath": "static/images/index_active_icon.png",
 			"text": "首页"
 			},
 			{
-				"pagePath": "pages/orders/index",
+				"pagePath": "pages/xn/orders/index",
 				"iconPath": "static/images/order_gray_icon.png",
 				"selectedIconPath": "static/images/order_active_icon.png",
 				"text": "订单"
 			}, 
 			{
-				"pagePath": "pages/income/index",
+				"pagePath": "pages/xn/income/index",
 				"iconPath": "static/images/income_gray_icon.png",
 				"selectedIconPath": "static/images/income_active_icon.png",
 				"text": "收益"
 			}, 
 			{
-				"pagePath": "pages/my/index",
+				"pagePath": "pages/xn/my/index",
 				"iconPath": "static/images/my_gray_icon.png",
 				"selectedIconPath": "static/images/my_active_icon.png",
 				"text": "我的"
@@ -197,15 +203,20 @@
 	},
 	"easycom": {
 		"autoscan": true,
-		"custom": {
+		"custom": {			
+			"^Cx(.*)": "@/components/Cx$1.vue",
 			"^Layout(.*)": "@/components/layout/$1.vue",
 			"^Base(.*)": "@/components/base/$1.vue",
 			"^Common(.*)": "@/components/common/$1.vue",
-			"^Income(.*)": "@/components/income/$1.vue",
-			"^Orders(.*)": "@/components/orders/$1.vue",
-			"^User(.*)": "@/components/user/$1.vue",
-			"^Index(.*)": "@/components/index/$1.vue",
-			"^Cx(.*)": "@/components/Cx$1.vue"
+			"^XnIncome(.*)": "@/components/xn/income/$1.vue",
+			"^XnOrders(.*)": "@/components/xn/orders/$1.vue",
+			"^XnUser(.*)": "@/components/xn/user/$1.vue",
+			"^XnIndex(.*)": "@/components/xn/index/$1.vue",
+			
+			"^GzIncome(.*)": "@/components/gz/income/$1.vue",
+			"^GzOrders(.*)": "@/components/gz/orders/$1.vue",
+			"^GzUser(.*)": "@/components/gz/user/$1.vue",
+			"^GzIndex(.*)": "@/components/gz/index/$1.vue"
 		}
 	},
 	"uniIdRouter": {}
