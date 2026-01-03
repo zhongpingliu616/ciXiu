@@ -22,11 +22,7 @@
     >
       <!-- 商品列表 -->
 	  <slot name="scrollContain">
-		  <!-- <CommonProductCol
-		  :colNum="colNum"
-		  :productList="productList"
-		  @click="handleItemClick"
-		  ></CommonProductCol> -->
+		  
 	  </slot>
       <!-- 加载状态提示 -->
       <u-loadmore

@@ -91,6 +91,19 @@
 
 
 <script setup name="Search">
+import { ref, onMounted, nextTick, watch } from 'vue';
+
+// 防抖函数
+function useDebounce(fn, delay = 500) {
+  let timer = null;
+  return function (...args) {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => {
+      fn.apply(this, args);
+    }, delay);
+  };
+}
+
 let searchKey = ref("");
 const emit = defineEmits(['close']);
 let searchInputRef = ref(null);
@@ -204,12 +217,6 @@ const handleGrab = (item) => {
   // 可在此处调用接口更新状态
 }
 
-
-
-
-
-
-
 const confirmClear = () => {
   historyList.value = []
   uni.removeStorageSync('SEARCH_HISTORY_LIST')
@@ -229,17 +236,34 @@ const onTagClick = (keyword) => {
   console.log('点击了搜索词：', keyword)
   searchKey.value = keyword;
   saveHistory(keyword)
-  
+  fetchData(true);
 };
 const onCancel = ()=>{
 	emit('close');
 };
+
 const onSearch = (value)=> {
 	const keyword = searchKey.value || value;
 	if (!keyword) return
 	console.log("搜索关键字",searchKey.value);
 	saveHistory(keyword)
+    fetchData(true);
 };
+
+// 防抖搜索
+const debouncedSearch = useDebounce(() => {
+    if (searchKey.value) {
+        onSearch(searchKey.value);
+    }
+}, 800);
+
+// 监听搜索词变化
+watch(searchKey, (newVal) => {
+    if (newVal) {
+        debouncedSearch();
+    }
+});
+
 const loadHistory = () => {
     const list = uni.getStorageSync('SEARCH_HISTORY_LIST')
     historyList.value = Array.isArray(list) ? list : []

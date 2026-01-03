@@ -1,7 +1,7 @@
 <template>
-  <view class="trends-card">
+  <view class="chart-card">
     <view class="header">
-      <text class="title">NFT</text>
+      <text class="title">趋势</text>
       <view class="tabs">
         <text 
           v-for="(tab, index) in tabs" 
@@ -15,17 +15,9 @@
       </view>
     </view>
     
-    <view class="price-section">
-      <text class="price">{{ currentPrice }}</text>
-      <text class="change" :class="{ up: priceChange >= 0, down: priceChange < 0 }">
-        {{ priceChange >= 0 ? '+' : '' }}{{ priceChange }}%
-      </text>
-    </view>
-    
     <view class="chart-container">
-      <!-- renderjs 视图层 -->
       <view 
-        id="chart" 
+        id="digital-chart" 
         class="chart-dom" 
         :prop="chartData" 
         :change:prop="echarts.updateChart"
@@ -35,42 +27,30 @@
 </template>
 
 <script>
+import { ref } from 'vue';
+
 export default {
   setup() {
     const tabs = ['日', '周', '月'];
     const currentTab = ref(0);
-    const currentPrice = ref('80.36');
-    const priceChange = ref(12.63);
     const chartData = ref({
       tabsIndex: 0,
-      data: {} // 初始数据为空，由 renderjs 生成或后端获取
+      timestamp: 0
     });
 
     const handleTabChange = (index) => {
       currentTab.value = index;
-      // 更新 prop 触发 renderjs
       chartData.value = {
         tabsIndex: index,
-        timestamp: Date.now() // 强制更新
+        timestamp: Date.now()
       };
     };
-
-    // 监听 renderjs 发回的数据更新（可选，如果需要在逻辑层显示价格）
-    const updatePriceInfo = (data) => {
-      if(data) {
-        currentPrice.value = data.price;
-        priceChange.value = data.change;
-      }
-    }
 
     return {
       tabs,
       currentTab,
-      currentPrice,
-      priceChange,
       chartData,
-      handleTabChange,
-      updatePriceInfo
+      handleTabChange
     };
   }
 }
@@ -87,13 +67,12 @@ export default {
   },
   methods: {
     initChart() {
-      const chartDom = document.getElementById('chart');
+      const chartDom = document.getElementById('digital-chart');
       if (!chartDom) return;
       myChart = echarts.init(chartDom);
-      this.updateChart({ tabsIndex: 0 }); // 初始化显示
+      this.updateChart({ tabsIndex: 0 });
     },
     
-    // 生成模拟数据
     generateData(count) {
       let data = [];
       let baseValue = Math.random() * 100;
@@ -142,21 +121,7 @@ export default {
       const index = newValue ? newValue.tabsIndex : 0;
       const count = index === 0 ? 30 : (index === 1 ? 60 : 90);
       const data = this.generateData(count);
-      
-      // 发送最新价格回逻辑层
-      const lastData = data.boxVals[data.boxVals.length - 1];
-      if (lastData && ownerInstance) {
-          const prevClose = data.boxVals[data.boxVals.length - 2] ? data.boxVals[data.boxVals.length - 2][1] : lastData[0];
-          const change = ((lastData[1] - prevClose) / prevClose * 100).toFixed(2);
-          
-          // 调用逻辑层方法更新价格
-          ownerInstance.callMethod('updatePriceInfo', {
-            price: lastData[1].toFixed(2),
-            change: change
-          });
-      }
-	  const {dates,boxVals,volumes} = data;
-	  console.log("图表数据：",data);
+	
       const option = {
         backgroundColor: '#fff',
         animation: false,
@@ -181,7 +146,7 @@ export default {
         xAxis: [
             {
                 type: 'category',
-                data: dates,
+                data: data.dates,
                 boundaryGap: false,
                 axisLine: { onZero: false },
                 splitLine: { show: false },
@@ -213,7 +178,7 @@ export default {
             {
                 name: '日K',
                 type: 'candlestick',
-                data: boxVals,
+                data: data.boxVals,
                 itemStyle: {
                     color: '#00C853',
                     color0: '#FF4141',
@@ -229,7 +194,7 @@ export default {
                 type: 'bar',
                 xAxisIndex: 1,
                 yAxisIndex: 1,
-                data: volumes,
+                data: data.volumes,
                 itemStyle: {
                     color: (params) => {
                         return data.boxVals[params.dataIndex][1] > data.boxVals[params.dataIndex][0] 
@@ -248,7 +213,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.trends-card {
+.chart-card {
   background: #fff;
   border-radius: 20rpx;
   padding: 30rpx;
@@ -258,7 +223,7 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20rpx;
+    margin-bottom: 30rpx;
     
     .title {
       font-size: 32rpx;
@@ -283,27 +248,6 @@ export default {
           color: #fff;
         }
       }
-    }
-  }
-  
-  .price-section {
-    display: flex;
-    align-items: baseline;
-    margin-bottom: 30rpx;
-    
-    .price {
-      font-size: 48rpx;
-      font-weight: bold;
-      color: #333;
-      margin-right: 16rpx;
-    }
-    
-    .change {
-      font-size: 28rpx;
-      color: #00C853;
-      
-      &.up { color: #00C853; }
-      &.down { color: #FF4141; }
     }
   }
   

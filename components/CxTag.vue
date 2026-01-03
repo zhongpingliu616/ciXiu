@@ -43,9 +43,13 @@ const props = defineProps({
   icon: { type: String, default: '' },
   iconType: { type: String, default: 'image' },
   iconColor: { type: String, default: '' },
+  customStyle: {
+	  type: Object,
+	  default: ()=>({})
+  },
   bgGradient: {
     type: Array,
-    default: () => ['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']
+    default: () => ['RGBA(243, 216, 158, 1)', 'RGBA(245, 234, 201, 1)']
   },
   textStyle: {
 	  type: Object, 
@@ -66,22 +70,28 @@ const handleClick = () => {
 }
 const tagStyle = computed(() => {
   // 纯色优先
-  if (props.bgColor) {
+  if (props.bgColor || props.customStyle.backgroundColor) {
     return {
       background: props.bgColor,
-      border: 'none'
+      border: 'none',
+	  borderRadius: '10rpx',
+	  padding: '0',	  
+	  ...props.customStyle
     }
   }
 
   // 渐变兜底
-  if (props.bgGradient?.length >= 2) {
+  if (props.bgGradient?.length >= 2 || props.customStyle.backgroundGradient) {
     return {
       background: `linear-gradient(
         135deg,
         ${props.bgGradient[0]},
         ${props.bgGradient[1]}
       )`,
-      border: 'none'
+      border: 'none',
+	  borderRadius: '10rpx',
+	  padding: '0',	  
+	 ...props.customStyle
     }
   }
 

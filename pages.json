@@ -162,6 +162,36 @@
 			"style": {
 				"navigationBarTitleText": "NFT"
 			}
+		},
+		{
+			"path": "pages/gz/nft/digital-products",
+			"style": {
+				"navigationBarTitleText": "NFT数字产品"
+			}
+		},
+		{
+			"path": "pages/gz/nft/nft-collections",
+			"style": {
+				"navigationBarTitleText": "NFT藏品"
+			}
+		},
+		{
+			"path": "pages/gz/my/sign-contract",
+			"style": {
+				"navigationBarTitleText": "签约绣娘"
+			}
+		},
+		{
+			"path": "pages/gz/community/index",
+			"style": {
+				"navigationBarTitleText": "社区"
+			}
+		},
+		{
+			"path": "pages/gz/community/released",
+			"style": {
+				"navigationBarTitleText": "发布动态"
+			}
 		}
 	],
 	"tabBar": {

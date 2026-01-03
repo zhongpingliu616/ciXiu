@@ -2,7 +2,7 @@
 	
 </template>
 
-<script setup name="block">
+<script setup name="DynamicCard">
 </script>
 
 <style lang="scss" scoped>

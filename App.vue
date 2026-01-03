@@ -11,7 +11,7 @@ import { useLoginStore } from './stores/userLogin'
 			'/pages/xn/my/regist-xn',
 			'/pages/xn/my/reset-psd-xn',
 			'/pages/xn/orders/detail',
-			'/pages/xn/my/user-agreement' // 添加用户协议到白名单
+			'/pages/xn/my/user-agreement'
 		]
 	
 		const needLogin = (url) => {
@@ -46,6 +46,43 @@ import { useLoginStore } from './stores/userLogin'
 	
 	onShow(() => {
 		console.log('App onShow')
+		const userStore = useLoginStore()
+		const token =
+			userStore.userInfoXn?.token ||
+			userStore.userInfoGz?.token ||
+			uni.getStorageSync('tokenXn') ||
+			uni.getStorageSync('tokenGz');
+
+		// 白名单
+		const whiteList = [
+			'/pages/login',
+			'/pages/xn/my/regist-xn',
+			'/pages/xn/my/reset-psd-xn',
+			'/pages/xn/orders/detail',
+			'/pages/xn/my/user-agreement'
+		]
+
+		// 获取当前页面路径
+		let currentPath = ''
+		// #ifdef H5
+		currentPath = window.location.hash.replace('#', '').split('?')[0]
+		// #endif
+		
+		// #ifndef H5
+		const pages = getCurrentPages()
+		if (pages.length > 0) {
+			currentPath = '/' + pages[pages.length - 1].route
+		}
+		// #endif
+
+		// 简单的白名单检查
+		const isWhiteList = whiteList.some(item => currentPath.startsWith(item))
+
+		if (!token && !isWhiteList && currentPath && currentPath !== '/') {
+			uni.reLaunch({
+				url: '/pages/login'
+			})
+		}
 	})
 	
 	onHide(() => {

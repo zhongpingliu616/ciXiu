@@ -188,9 +188,6 @@ onLoad(({workId,workType})=>{
 }	
 
 
-
-
-	
 	
 .creative-process {
   margin-top: 20rpx;
