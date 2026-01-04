@@ -17,19 +17,10 @@
 				  </up-col>
 				  <up-col :span="showRoleTabs ? 5 : 10">
 					  <view class="search-bar">
-						  <up-search
-							  placeholder="输入搜索内容"
-							  bgColor="#fff"
-							  placeholderColor="#AC9394"
-							  searchIconColor="#672227"
-							  borderColor="#FFE185"
-							  :show-action="false" 
-							  height="46rpx"
-							  clearabled
-							  @focus="showSearch"
-							  >
-						  
-						  </up-search>
+						  <CxSearch
+							 placeholder="输入搜索内容"
+							@focus="showSearch"
+						  />
 					  </view>
 				  </up-col>
 				  <up-col span="2">

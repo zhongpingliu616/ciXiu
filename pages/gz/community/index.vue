@@ -2,17 +2,8 @@
 	<view class="page-wrap community">
 		<LayoutNavigation :title="title" />
 		<view class="search-bar">
-			<up-search
+			<CxSearch
 			  v-model="searchKey"
-			  placeholder="搜索"
-			  bgColor="#fff"
-			  placeholderColor="#AC9394"
-			  searchIconColor="#672227"
-			  borderColor="#fff"
-			  height="64rpx"
-			  :show-action="false"
-			  shape="round"
-			  :disabled="false"
 			/>
 		</view>
 		
@@ -56,7 +47,6 @@
 								visibleCount: 1.8, // 调整可见数量以适应卡片宽度
 								gap: '20rpx'
 							}"
-							@click="handleGroupClick"
 						>
 							<template #item="{item}">
 								<MotherGroup :item="item" @click="handleGroupClick" />
@@ -82,9 +72,11 @@
 		</view>
 		
 		<!-- 悬浮发布按钮 -->
-		<view class="float-btn" @tap="handlePublish">
-			<u-icon name="plus" color="#fff" size="32"></u-icon>
-			<text class="btn-text">发布</text>
+		<view class="float-btn">
+			<navigator url="/pages/gz/community/released">
+				<u-icon name="plus" color="#fff" bold size="32rpx"></u-icon>
+				<text class="btn-text">发布</text>
+			</navigator>
 		</view>
 	</view>
 </template>
@@ -215,7 +207,7 @@ const fetchData = async (isRefresh = false) => {
 	loadStatus.value = 'loading';
 	
 	try {
-		await new Promise(resolve => setTimeout(resolve, 800));
+		await new Promise(resolve => setTimeout(resolve, 1800));
 		const newData = generateMockData(page, pageSize);
 		
 		if (newData.length < pageSize) {
@@ -318,6 +310,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+	:deep(.u-search__content__input--placeholder) {
+	  font-size: 24rpx;
+	}
 .page-wrap {
 	background: url("/static/images/index/bg.png") no-repeat center/cover;
 	grid-template-rows: 80rpx 1fr 0rpx;

@@ -4,28 +4,14 @@
 			<up-row customStyle="margin-bottom: 10px">
 				  <up-col span="10">
 					  <view class="search-bar">
-						  <up-search
-							 ref="searchInputRef"
-							  v-model="searchKey"
-							  placeholder="输入想要的内容"
-							  bgColor="#fff" 
-							  placeholderColor="#AC9394" 
-							  searchIconColor="#672227"
-							  borderColor="#fff"
-							  @search="onSearch"
-							  @custom="onSearch"
-							  @action="onSearch"
-							  :focus="autoFocus"
-							  height="46rpx"
-							  showAction
-							  clearable
-							  action-text="搜索"
-							  :action-style="{
-								  backgroundColor: '#FF6B00', 
-								  color: '#fff', 
-								  borderRadius: '30rpx', 
-								  padding: '10rpx 20rpx' }" 
-							/>
+						  <CxSearch
+						    v-model="searchKey"
+							 placeholder="输入搜索内容"
+							showAction
+							action-text="搜索"							
+							@search="onSearch"
+							@custom="onSearch"
+						  />
 					  </view>
 				  </up-col>
 				  <up-col span="2">
@@ -255,12 +241,13 @@ const debouncedSearch = useDebounce(() => {
     if (searchKey.value) {
         onSearch(searchKey.value);
     }
-}, 800);
+}, 1200);
 
 // 监听搜索词变化
 watch(searchKey, (newVal) => {
     if (newVal) {
-        debouncedSearch();
+		console.log("搜索",newVal)
+       //  debouncedSearch();
     }
 });
 
@@ -344,12 +331,7 @@ onMounted(() => {
 	
 	
 	
-.u-search{
-		background: #fff;
-		padding: 0 10rpx;
-		border-radius: 40rpx;
-		border: 2rpx solid #FFE185; 
-	}
+
 .search-bar{
 	
 }

@@ -81,16 +81,16 @@ const pageSize = 10
 let hasMore = true
 let isLoading = false // 防止重复触发
 const nftList = [
-	{ src: '/static/images/index/swiper-1.png', text: '我的藏品' },
-	{ src: '/static/images/index/swiper-2.png', text: 'NFT' },
-	{ src: '/static/images/index/swiper-3.png', text: 'RWA' },
-	{ src: '/static/images/index/swiper-2.png', text: '社区' },
+	{ src: '/static/images/index/swiper-1.png', text: '我的藏品',path:'/pages/gz/nft/nft-collections' },
+	{ src: '/static/images/index/swiper-2.png', text: 'NFT',path:'/pages/gz/nft/index' },
+	{ src: '/static/images/index/swiper-3.png', text: 'RWA',path:'/pages/gz/rwa/index' },
+	{ src: '/static/images/index/swiper-2.png', text: '社区',path:'/pages/gz/community/index' },
 	{ src: '/static/images/index/swiper-1.png', text: '您的第二期收益已到账”“NFT藏品XXX价格上涨10%2' },
 	{ src: '/static/images/index/swiper-3.png', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
 	{ src: '/static/images/index/swiper-1.png', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
 ];
 const collectionList = [
-		{ src: '/static/images/index/community.png',title:'社区',funtionText: '管理',path:'/pages/orders/index' },
+		{ src: '/static/images/index/community.png',title:'社区',funtionText: '管理',path:'/pages/gz/community/index' },
 		{ src: '/static/images/index/activities.png',title:'活动',funtionText: '管理',path:'/pages/my/work-management' },
 		{ src: '/static/images/index/community.png',title:'订单管理',funtionText: '管理',path:'/pages/orders/index' },
 		{ src: '/static/images/index/activities.png',title:'作品管理',funtionText: '管理',path:'/pages/my/work-management' }
@@ -99,11 +99,14 @@ const emit = defineEmits(['itemClick']);
 
 const collectionItemClick = ({index,item})=>{
 	console.log("活动 社区",index, item);
+	uni.navigateTo({
+		url:item.path
+	})
 };
 const announcementDetail = (item)=>{
 	proxy.$u.toast(`${item.text}`)
 	uni.navigateTo({
-		url:`/pages/my/login?announcementIndex=${item.text}&name=uniapp`
+		url:item.path
 	})
 };
 // 初始化数据
