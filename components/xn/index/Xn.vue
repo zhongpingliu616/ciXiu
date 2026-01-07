@@ -63,12 +63,12 @@
 		  :loadStatus="loadStatus"
 		  :iconType="iconType"
 		  :enableRefresh="false"
-		  :enableLoadMore="false"
+		  :enableLoadMore="true"
 		  >
 		  	<template #scrollContain>
 		  		<!-- 商品列表 -->
 		  		<template v-for="(item, index) in listData">
-		  				<XnOrdersOrderCard :item="item" @grabOrderClick="handleGrab"></XnOrdersOrderCard>
+		  				<XnOrdersOrderCard :item="item" @grabOrderClick="handleGrab" @handleItemClick="jumDetail"></XnOrdersOrderCard>
 		  		</template>
 		  	</template>
 		  </BaseProductList>
@@ -77,7 +77,8 @@
 </view>
 </template>
 
-<script setup name="IndexXn">
+<script setup name="IndexXn">	
+import { taskLists } from '@/api/index.js'
 let cxScrollViewRef = ref();
 const collectionList = [
 		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理',path:'/pages/xn/orders/order-management' },
@@ -101,59 +102,55 @@ const loadStatus = ref('loadmore') // 'loadmore', 'loading', 'nomore'
 const iconType = ref('flower')
 let hasMore = true
 let isLoading = false // 防止重复触发
-// 模拟数据生成函数
-const generateMockData = (pageNum, count) => {
-  const data = []
-  for (let i = 0; i < count; i++) {
-    const id = (pageNum - 1) * count + i + 1
-    data.push({
-      id,
-      image: 'https://cdn.uviewui.com/uview/album/1.jpg', // 可替换为你自己的图片
-      title: '古韵民族丝绸非遗刺绣',
-      quota: 60,
-      riseRate: 80,
-      canGrab: userLevel.value >= 2, // 模拟逻辑：等级>=2才能抢单
-    })
-  }
-  return data
-}
 
 // 获取数据
 const fetchData = async (isRefresh = false) => {
+  // 如果正在加载更多且不是刷新，则直接返回
+  if (loading.value && !isRefresh) return
+  // 如果正在刷新且不是刷新操作（比如重复触发），则返回
+  if (refreshing.value && !isRefresh) return
+  // 如果没有更多数据且不是刷新，则返回
+  if (noMore.value && !isRefresh) return
+
   if (isRefresh) {
     page.value = 1
     noMore.value = false
 	refreshing.value = true
-    listData.value = []
+    // listData.value = [] // 刷新时不立即清空，防止闪烁
+	loadStatus.value = 'loading'
+  } else {
+	  loading.value = true
+	  loadStatus.value = 'loading'
   }
 
-  if (noMore.value && !isRefresh) return
-
-  loading.value = true
-  loadStatus.value = 'loading'
   try {
-    // 模拟网络请求延迟
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    const newData = generateMockData(page.value, pageSize.value)
+    const res = await taskLists({
+		page_no: page.value,
+		page_size: pageSize.value
+	});
+	
+	const newData = res.code === 200 ? (res.data.lists || []) : [];
 
     if (newData.length < pageSize.value) {
       noMore.value = true
 	  loadStatus.value = 'nomore'
-    }
+    } else {
+		// 还有更多数据
+		loadStatus.value = 'loadmore'
+	}
 
     if (isRefresh) {
       listData.value = newData
-	  if(!isRefresh)loadStatus.value = 'loadmore'
+	  uni.stopPullDownRefresh(); // 停止系统下拉刷新（如果有）
     } else {
       listData.value = [...listData.value, ...newData]
-	  loadStatus.value = noMore.value ? 'loadmore' : 'nomore'
     }
 
     page.value++
   } catch (err) {
-	  if(!isRefresh)loadStatus.value = 'loadmore'
+	loadStatus.value = 'loadmore'
     console.error('数据加载失败:', err)
+	uni.showToast({ title: '加载失败', icon: 'none' })
   } finally {
     loading.value = false
     refreshing.value = false
@@ -162,7 +159,7 @@ const fetchData = async (isRefresh = false) => {
 
 // 下拉刷新
 const onRefresh = () => {
-  refreshing.value = true
+  if (refreshing.value) return // 防止重复刷新
   fetchData(true)
 }
 
@@ -173,24 +170,29 @@ const onScrollToLower = () => {
   }
 }
 
+// 订单详情跳转
+const jumDetail = (item) => {
+	uni.navigateTo({
+		url: `/pages/xn/collection-detail/index?id=${item.id}`
+	})
+}
 // 抢单按钮点击事件
 const handleGrab = (item) => {
 	console.log(item)
-  if (!item.canGrab) {
+  if (!item.canGrab && false) { // 暂时注释掉等级判断，等待接口字段确认
     uni.showToast({ title: '等级不足，无法抢单', icon: 'none' })
     return
   };
   uni.navigateTo({
   	url: `/pages/xn/my/deposit?id=${item.id}`
   })
-  // uni.showToast({ title: '抢单成功！', icon: 'success' })
-  // 可在此处调用接口更新状态
 }
 
 // 页面加载时初始化数据
 onMounted(() => {
   fetchData()
 })
+	
 	
 	
 	

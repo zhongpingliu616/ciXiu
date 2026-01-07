@@ -2,10 +2,10 @@
 	<view class="page-wrap index">
 	<LayoutNavigation :title="title">
 		<template #right>
-			<view class="level-select" @tap="levelSelect">等级选择</view>
+			<!-- <view class="level-select" @tap="levelSelect">等级选择</view> -->
 		</template>
 	</LayoutNavigation>
-		<view class="page-content">
+		<view class="page-content" v-if="isAuthen">
 			<view class="container">
 			    <!-- 背景花纹 -->
 			    <view class="background-pattern">			
@@ -55,15 +55,32 @@
 					<CxComfirmBtn text="开始上传" :loading="loading" @click="handleSubmit"></CxComfirmBtn>
 				</view>
 			  </view>
-		</view>
+		</view>    
+    <view class="page-content" v-else>
+      <view class="container">
+          <view style="display: flex; justify-content: center; align-items: center;">
+            <u-icon name="checkmark-circle" color="#4CAF50" size="50"></u-icon>
+            <view style="font-size: 32rpx; color: #fff;"> &nbsp; 您已提交身份认证申请</view>            
+          </view>
+          <view style="font-size: 28rpx; color: #666; margin-top: 10rpx; text-align: center;">请耐心等待审核结果</view>        
+      </view>
+    </view>
 	 <view></view>
 	</view>
 </template>
 
 
 <script setup name="identityAuthentication">
+import { addAuthen, uploadImage,authenStatus } from '@/api/index'
+import { useLoginStore } from '@/stores/userLogin'
+
+const userStore = useLoginStore()
 let title = ref("身份认证");	
 let loading = ref(false);
+let isAuthen=ref(false);
+const {proxy} = getCurrentInstance();
+const eventChannel = proxy.getOpenerEventChannel();
+  // 你可以在这里使用接收到的数据
 let idCardImages = reactive({
         front: '', // 正面图片临时路径
         back: ''   // 反面图片临时路径
@@ -94,50 +111,72 @@ const handleSubmit = async ()=>{
     });
     return;
   }
-const frontBase64 = await fileToBase64(idCardImages.front);
-const backBase64 = await fileToBase64(idCardImages.back);
-  // uni.request({
-  //   url: 'https://your-api.com/upload-idcard',
-  //   method: 'POST',
-  //   data: {
-  //     front: frontBase64,
-  //     back: backBase64,
-  //     userId: '123456'
-  //   }
-  // });
+  
+  loading.value = true;
+  try {
+	  // 2. 先上传图片获取服务器路径
+	  // 这里假设 uploadImage 返回的是图片 URL 字符串
+	  // 如果返回的是对象，请根据实际接口调整
+	  const frontUrl = await uploadImage(idCardImages.front);
+	  const backUrl = await uploadImage(idCardImages.back);
+	  
+	  console.log('Front URL:', frontUrl);
+	  console.log('Back URL:', backUrl);
+
+	  // 3. 提交认证信息
+	  const res = await addAuthen({
+		front_image: frontUrl.url,
+		back_image: backUrl.url
+	  });
+	  
+	  const { code=9999, data,msg } = res;
+	  if (code === 200) {
+		uni.showToast({
+		  title: '上传成功，等待审核',
+		  icon: 'success'
+		});
+		
+		// 更新用户信息中的实名状态
+		userStore.updateUserInfo('XN', { real_name_check: 1 }); // 假设 1 表示审核中或已提交
+		
+		// 延迟跳转
+		setTimeout(() => {
+			uni.reLaunch({ url: '/pages/index' });
+		}, 1500);
+	  } else {
+		uni.showToast({
+		  title: msg || '上传失败，请重试',
+		  icon: 'none'
+		});
+	  }
+  } catch (error) {
+  	console.error('认证失败', error);
+	uni.showToast({
+	  title: typeof error === 'string' ? error : (error.msg || '上传请求异常'),
+	  icon: 'none'
+	});
+  } finally {
+	  loading.value = false;
+  }
 }
 const levelSelect = ()=>{
 	uni.navigateTo({
-		url:'/pages/gz/level/index'
+		url:'/pages/xn/level/index'
 	})
 }
 
-const fileToBase64 = (filePath) => {
-  return new Promise((resolve, reject) => {
-    // 1. 用 fetch 获取 blob
-    fetch(filePath)
-      .then(response => {
-        if (!response.ok) throw new Error('网络请求失败');
-        return response.blob();
-      })
-      .then(blob => {
-        // 2. 用 FileReader 转 Base64
-        const reader = new FileReader();
-        reader.onload = () => {
-          // reader.result 格式: "data:image/jpeg;base64,/9j/4AAQ..."
-          // 我们通常只需要 base64 部分（去掉前缀）
-          const base64 = reader.result.split(',')[1];
-          resolve(base64);
-        };
-        reader.onerror = () => reject(new Error('读取文件失败'));
-        reader.readAsDataURL(blob);
-      })
-      .catch(err => {
-        console.error('H5 Base64 转换失败:', err);
-        reject(err);
-      });
+// 移除不再需要的 fileToBase64 函数
+onMounted(async () => {
+  eventChannel.on('acceptLevelData', (data) => {
+    console.log('接收到的数据：', data)
+    // data.amount
+    // data.cardInfo
   });
-};
+  const {code,data} = await authenStatus();
+  if(code === 200){
+    isAuthen.value = data.status === 0; // 0无待审核 1有待审核
+  }
+})
 </script>
 
 <style lang="scss" scoped>

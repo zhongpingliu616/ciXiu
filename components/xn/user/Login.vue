@@ -6,13 +6,13 @@
 	      label-position="top"
 	    >
 	  <!-- 手机号 -->
-	  <up-form-item prop="mobile">
+	  <up-form-item prop="accoutName">
 			<up-input
 			  ref="mobileRef"
-			  v-model="form.mobile"
-			  placeholder="请输入手机号"
+			  v-model="form.accoutName"
+			  placeholder="请输入账号"
 			  clearable
-			  type="number"
+			  type="text"
 			  class="login-item"			  
 			  placeholderStyle="color: #999999; font-size: 20rpx;"
 			>
@@ -20,7 +20,7 @@
 			<template #prefix>&nbsp;&nbsp;&nbsp;&nbsp;
 			  <image
 				class="input-icon"
-				src="/static/images/user/shouji.png"
+				src="/static/images/user/zhanghao.png"
 				mode="aspectFit"
 			  />
 			</template>
@@ -93,8 +93,8 @@ const passwordRef = ref(null)
 const loading = ref(false)
 const showPwd = ref(false)
 const form = ref({
-  mobile: '',
-  password: ''
+  accoutName: 'lzp616',
+  password: 'lzp@123456'
 })
 const props = defineProps({
   modelValue: {
@@ -116,7 +116,7 @@ const changeAgree = () => {
 	emit('update:modelValue', greetment);
 };
 const rules = {
-  mobile: [
+  phone: [
 	{ required: true, message: '请输入手机号', trigger: 'blur' },
 	{
 	  // pattern: /^1[3-9]\d{9}$/,
@@ -131,25 +131,25 @@ const rules = {
   ]
 }
 const userAgreement = () => {
-	uni.navigateTo({ url: '/pages/xn/my/user-agreement?role=xn' });
+	uni.navigateTo({ url: '/pages/xn/my/user-agreement?role=XN' });
 };
 const goToPhoneRegister = () => {
   uni.navigateTo({
-    url: '/pages/xn/my/regist-xn?role=xn'
+    url: '/pages/xn/my/regist?role=XN'
   });
 };
 
 const goToForgotPassword = () => {
   uni.navigateTo({
-    url: '/pages/xn/my/reset-psd-xn'
+    url: '/pages/xn/my/reset-psd'
   });
 };
 const validateLoginForm = async (cb) => {
   try {
 	const valid = await formRef.value.validate()
-	cb && cb(valid)
+	cb && cb(valid, form.value)
   } catch (err) {
-	cb && cb(false)
+	cb && cb(false, null)
   }
 }
 defineExpose({
@@ -159,8 +159,6 @@ defineExpose({
 </script>
 
 <style scoped lang="scss">
-
-
 .agreement-wrap{
 	display: flex;
 	justify-content: center;

@@ -9,11 +9,11 @@
 	</LayoutNavigation>
 		<view class="page-content">
 			<view class="current-works">
-				<up-image class="works-image" width="680rpx" height="700rpx" src="https://cdn.uviewui.com/uview/album/1.jpg"></up-image>
+				<up-image class="works-image" width="680rpx" height="700rpx" :src="collectionImage"></up-image>
 			</view>
 			<view class="xiuniang-information">
 				<keep-alive>
-				  <component :is="currentDetail" />
+				  <component :is="currentDetail"  v-bind="{id:detailId}" v-model:collectionImage="collectionImage"/>
 				</keep-alive>
 			</view>
 		</view>
@@ -22,13 +22,13 @@
 </template>
 
 <script setup name="detail-index">
-import CollectionDetail from '@/components/gz/workDetail/CollectionDetail.vue'
-import NftDetail from '@/components/gz/workDetail/NftDetail.vue'
+import NftDetail from '@/components/xn/workDetail/NftDetail.vue'
 let title =ref("作品详情");
-let avatarUrl=ref('');
+let collectionImage=ref('');
 let workType = ref("NftDetail");
+let detailId = ref(null);
 const componentMap = {
-  CollectionDetail,
+  // CollectionDetail,
   NftDetail
 };
 const currentDetail = computed(()=>{
@@ -38,13 +38,16 @@ const currentDetail = computed(()=>{
 const onShare = ()=>{
       console.log('分享按钮被点击');
     }
-onLoad(({workId,workType})=>{
-	 console.log('接收到的参数:', workId,workType);
+onLoad(({id,workType})=>{
+	detailId.value = id;
+	// workType.value=workType;
 });
 </script>
 
 <style lang="scss" scoped>
-
+.page-content{
+	padding: 0;
+}
 .works-image{
 	border: 4rpx solid $app-border-color; 
 	border-radius: 48rpx;

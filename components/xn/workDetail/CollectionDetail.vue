@@ -127,7 +127,7 @@
 
 <script setup name="CollectionDetail">
 let title =ref("作品详情");
-let avatarUrl=ref('https://via.placeholder.com/80');
+let avatarUrl=ref('');
 const onShare = ()=>{
       console.log('分享按钮被点击');
     }

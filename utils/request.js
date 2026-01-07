@@ -18,20 +18,19 @@ function request(options) {
   const userStore = useLoginStore()
   
   // 根据 currentRole 动态获取 token
-  // 如果 currentRole 是 'xn'，取 userInfoXn.token
-  // 如果 currentRole 是 'gz'，取 userInfoGz.token
+  // 如果 currentRole 是 'XN'，取 userInfoXn.token
+  // 如果 currentRole 是 'GZ'，取 userInfoGz.token
   // 也可以根据业务需求，如果没有 role，默认取某个或都不取
   let token = ''
-  if (userStore.currentRole === 'xn') {
-	  token = userStore.userInfoXn.token
-  } else if (userStore.currentRole === 'gz') {
-	  token = userStore.userInfoGz.token
+  if (userStore.currentRole === 'XN') {
+	  token = userStore.userInfoXn.token || uni.getStorageSync('tokenXn');
+  } else if (userStore.currentRole === 'GZ') {
+	  token = userStore.userInfoGz.token || uni.getStorageSync('tokenGz');
   } else {
 	  // 如果没有明确角色，尝试获取任意一个存在的 token，或者不传
 	  token = userStore.userInfoXn.token || userStore.userInfoGz.token || ''
   }
-
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, reject) => {    
     uni.request({
       url: BASE_URL + url,
       data,
@@ -45,8 +44,7 @@ function request(options) {
 
       success(res) {
         showLoading && uni.hideLoading()
-        const { statusCode, data } = res
-
+        const { statusCode, data } = res;
         /** HTTP 层错误 */
         if (statusCode !== 200 && statusCode !== 304) {
           uni.showToast({
@@ -72,15 +70,17 @@ function request(options) {
         // 注意：有些接口成功时 code 也是 200，或者其他约定。请根据后端实际情况调整。
         // 这里假设 data.code === 0 为成功。
         // 增加对 code 200 的兼容，防止部分接口返回 200 但非 0 被误判
+        
         if (data.code !== 0 && data.code !== 200) {
-          if (data.code === 401) {
-             // ... 401 逻辑 ...
+          // 如果是 401，且不是登录接口，则视为 token 过期
+          // 登录接口的 401 通常是账号密码错误或参数校验失败，不应跳转登录页
+          if (data.code === -1 && !url.includes('/login')) {
              // 登录失效
              // 根据当前角色清除对应 token
-             if (userStore.currentRole === 'xn') {
+             if (userStore.currentRole === 'XN') {
                  userStore.userInfoXn.token = ''
                  uni.removeStorageSync('tokenXn')
-             } else if (userStore.currentRole === 'gz') {
+             } else if (userStore.currentRole === 'GZ') {
                  userStore.userInfoGz.token = ''
                  uni.removeStorageSync('tokenGz')
              } else {
@@ -104,22 +104,23 @@ function request(options) {
                })
              }, 500)
     
-             reject({ code: 401, message: '登录已过期' })
+             reject({ code: -1, message: '登录已过期' })
              return
           };
 		  
           uni.showToast({
-            title: data.message || '请求失败',
+            title: data.msg || data.message || '请求失败',
             icon: 'none'
           })
-          reject(data)
+          resolve(data)
           return
         }
 
         // 优先返回 data.data，如果不存在则返回整个 data
         // 这样可以兼容某些直接返回结果的接口，或者 304 无 body 的情况
         if (data && Object.prototype.hasOwnProperty.call(data, 'data')) {
-            resolve(data.data)
+           // resolve(data.data)
+            resolve(data)
         } else {
             resolve(data)
         }

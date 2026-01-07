@@ -6,10 +6,10 @@
 	      label-position="top"
 	    >
 	  <!-- 手机号 -->
-	  <up-form-item prop="mobile">
+	  <up-form-item prop="accoutName">
 			<up-input
 			  ref="mobileRef"
-			  v-model="form.mobile"
+			  v-model="form.accoutName"
 			  placeholder="请输入手机号"
 			  clearable
 			  type="number"
@@ -20,7 +20,7 @@
 			<template #prefix>&nbsp;&nbsp;&nbsp;&nbsp;
 			  <image
 				class="input-icon"
-				src="/static/images/user/shouji.png"
+				src="/static/images/user/zhanghao.png"
 				mode="aspectFit"
 			  />
 			</template>
@@ -93,7 +93,7 @@ const passwordRef = ref(null)
 const loading = ref(false)
 const showPwd = ref(false)
 const form = ref({
-  mobile: '',
+  accoutName: '',
   password: ''
 })
 const props = defineProps({
@@ -131,11 +131,11 @@ const rules = {
   ]
 }
 const userAgreement = () => {
-	uni.navigateTo({ url: '/pages/xn/my/user-agreement?role=gz' });
+	uni.navigateTo({ url: '/pages/xn/my/user-agreement?role=GZ' });
 };
 const goToPhoneRegister = () => {
   uni.navigateTo({
-    url: '/pages/xn/my/regist-xn'
+    url: '/pages/xn/my/regist'
   });
 };
 

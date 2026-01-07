@@ -76,7 +76,7 @@
 			 <!-- <IndexXn></IndexXn>
 			 <IndexGz></IndexGz> -->
 		</view>
-	 <LayoutCustomBarXn v-if="userStore.currentRole=='xn'" />
+	 <LayoutCustomBarXn v-if="userStore.currentRole=='XN'" />
 	 <LayoutCustomBarGz v-else> </LayoutCustomBarGz>
 	</view>
   <keep-alive>
@@ -90,22 +90,13 @@
 import { useLoginStore } from '@/stores/userLogin'
 import IndexXn from '@/components/xn/index/Xn.vue'
 import IndexGz from '@/components/gz/index/Gz.vue'
-import { getTaskCode } from '@/api/index.js'
-
+import { getBannerList } from '@/api/index.js'
+const { proxy } = getCurrentInstance();
 const componentMap = {
   IndexXn,
   IndexGz
 };
-const swiperList = [
-		'/static/images/index/swiper-1.png',
-		'/static/images/index/swiper-2.png',
-		'/static/images/index/swiper-3.png'
-	];
-const swiperListUni = [
-		{type: 'image',src:'/static/images/index/swiper-1.png'},
-		{type: 'image',src:'/static/images/index/swiper-2.png'},
-		{type: 'image',src:'/static/images/index/swiper-3.png'}
-	];
+const swiperListUni = ref([]);
 const announcementList = [
   { type: 'text', text: '您的第一期收益已到账”“NFT藏品XXX价格上涨10%' },
   { type: 'text', text: '您的第二期收益已到账”“NFT藏品XXX价格上涨10%2' },
@@ -171,13 +162,30 @@ const onSwiperChange = ({ index, item }) => {
 	swiperUniIndex.value = index || 0;
 	swiperUniItem.value = item || {};
 };
-onMounted(async () => {
-  console.log('is index page');
+const getBannerListFunction = async () => {
+  try {
+  	const res = await getBannerList();
+	if(res.code === 200 && res.data.lists) {
+		swiperListUni.value = res?.data?.lists?.map(item => ({
+			...item,
+			type: 'image',
+			src: item.image, // 假设接口返回的是 image 字段，如果不是请调整
+			name: item.name || '',
+			id: item.id
+		}));
+	}
+  } catch (e) {
+  	console.error('获取Banner失败', e);
+  }
+};
+onMounted(() => {
+  getBannerListFunction();
 });
 
-onShow(() => {  
-	tokenXn = userStore.userInfoXn?.token || uni.getStorageSync('tokenXn');
-	tokenGz = userStore.userInfoGz?.token || uni.getStorageSync('tokenGz');
+
+onShow(() => {
+	tokenXn = proxy.$globalUserInfoXn?.token || uni.getStorageSync('tokenXn');
+	tokenGz = proxy.$globalUserInfoGz?.token || uni.getStorageSync('tokenGz');
 	const currentRole = userStore.currentRole || uni.getStorageSync('currentRole');
 
 	if (!tokenGz && !tokenXn) {
@@ -188,7 +196,7 @@ onShow(() => {
 	}
 
 	// 根据角色设置显示的 Tab
-	if (currentRole === 'xn') {
+	if (currentRole === 'XN') {
 		// 绣娘端，对应 index 1
 		tabIndex.value = 1;
 		showRoleTabs.value = false; // 隐藏切换

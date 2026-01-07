@@ -2,36 +2,40 @@
 <view
 	 :key="item.id+Math.random()"
 	 class="order-card-item"
-   >
+	 @click.stop="handleItem(item)"
+   >	
 	   <view class="card-header">
 		 <image :src="item.image" class="card-image" mode="aspectFill" />
 		 <view class="card-content">
-		   <view class="card-title">{{ item.title }}</view>
+		   <view class="card-title">{{ item.name }}</view>
 		   <view class="tags">
 			 <CxTag
-			   text="工期360天"
+			   :text="item.difficulty"
 			   :bgGradient="['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']"
 			 />&nbsp;
 			 <CxTag
-			   text="难度低"
+			   :text="item.tags"
 			   :bgGradient="['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']"
 			 />
 		   </view>
 		   <view class="bottom-row">
 			 <view class="quota">
 			   <view class="quota-progress">
-				   <text>剩余抢单名额</text>
+				   <text>剩余名额</text>
 				   <view class="lightning-icon">⚡</view>
-			   </view>&nbsp;{{ item.quota }}
+			   </view>&nbsp;{{ item.total }}
 			   
 			 </view>
-			 <view class="can-grab" :class="{'not-grab':!item.canGrab}">
-				 <CxComfirmBtn @click="handleGrab(item)" :text="item.canGrab ? '一键抢单' : '等级不符'"></CxComfirmBtn>
+			 <view class="can-grab" :class="{'authen-gray':item.rush_status==2}">
+				 <CxComfirmBtn :btnStyle="{
+					width: '168rpx',
+					height: '60rpx',
+				 }" @click.stop="handleGrab(item)" :text="item.rush_status==1 ? '一键抢单' : '等级不符'"></CxComfirmBtn>
 			 </view>
 		   </view>
 		 </view>
 		 <view class="rise-rate" v-if="item.riseRate">
-			 <text>溢价{{item.riseRate}}%</text>
+			 <text>溢价{{(item.money/item.new_money).tofixed(1)}}%</text>
 		 </view>
 	   </view>
    </view>
@@ -39,7 +43,7 @@
 
 
 <script setup name="order-card">
-const emit = defineEmits(['grabOrderClick'])
+const emit = defineEmits(['grabOrderClick','handleItemClick']);
 const defaultTextStyle = {
 	  fontSize: "16rpx",
 	  color:"#D1A156",
@@ -54,6 +58,10 @@ const props = defineProps({
 // 抢单按钮点击事件
 const handleGrab = (item) => {
   emit('grabOrderClick',item)
+}
+// 整个卡片点击事件
+const handleItem = (item) => {
+  emit('handleItemClick',item)
 }
 
 </script>
@@ -155,7 +163,7 @@ const handleGrab = (item) => {
 .quota {
   display: flex;
   flex: .9;
-  font-size: 28rpx;
+  font-size: 20rpx;
   background: #FEE8E8;
   border-radius: 10rpx;
   color: #F82B1D;

@@ -47,15 +47,14 @@
 )
 	const bgStyle = computed(() => ({
 	  background: `
-			url(/static/images/common/level-item-bg-${props.cardIndex==props.selectIndex?'active':'none'}.png) no-repeat center / contain,
-			url(/static/images/common/level-item-bg-${props.cardIndex}.png) no-repeat center / contain
+			url(static/images/common/level-item-bg-${props.cardIndex==props.selectIndex?'active':'none'}.png) no-repeat center / contain,
+			url(static/images/common/level-item-bg-${props.cardIndex}.png) no-repeat center / contain
 		  `
 	}));
 </script>
 
 <style lang="scss" scoped>
 .card-container {
-  padding:8rpx 20rpx;
 }
 .card-content {
   background-image: url(@/static/images/common/level-item-bg-1.png);
@@ -92,7 +91,7 @@
   height: 2rpx;
   background: linear-gradient(to right, transparent, #D6D6D6 50%, transparent);
   background-size: 8rpx 2rpx;
-  margin: 20rpx 0;
+  // margin: 20rpx 0;
 }
 
 .content-text {
@@ -102,6 +101,11 @@
 
 .work-item {
   color: #333;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  
 }
 
 </style>

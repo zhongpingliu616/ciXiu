@@ -1,16 +1,23 @@
 <script setup>
 import { useLoginStore } from './stores/userLogin'
+import { useConfigStore } from '@/stores/configStore'
+
 	onLaunch(() => {
 		// uni.clearStorageSync();
 		const {proxy} = getCurrentInstance()
 		const userStore = useLoginStore()
-	
+		const configStore = useConfigStore()
+		
+		// 初始化获取全局配置
+		configStore.fetchConfig();
+		userStore.fetchUserInfo();
 		const whiteList = [
 			// '/pages/index',
 			'/pages/login',
-			'/pages/xn/my/regist-xn',
-			'/pages/xn/my/reset-psd-xn',
+			'/pages/xn/my/regist',
+			'/pages/xn/my/reset-psd',
 			'/pages/xn/orders/detail',
+			'/pages/xn/level/index',
 			'/pages/xn/my/user-agreement'
 		]
 	
@@ -45,7 +52,6 @@ import { useLoginStore } from './stores/userLogin'
 	})
 	
 	onShow(() => {
-		console.log('App onShow')
 		const userStore = useLoginStore()
 		const token =
 			userStore.userInfoXn?.token ||
@@ -56,9 +62,10 @@ import { useLoginStore } from './stores/userLogin'
 		// 白名单
 		const whiteList = [
 			'/pages/login',
-			'/pages/xn/my/regist-xn',
-			'/pages/xn/my/reset-psd-xn',
+			'/pages/xn/my/regist',
+			'/pages/xn/my/reset-psd',
 			'/pages/xn/orders/detail',
+			'/pages/xn/level/index',
 			'/pages/xn/my/user-agreement'
 		]
 

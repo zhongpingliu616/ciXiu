@@ -22,29 +22,31 @@
 			</up-row>
 		</view>
 		<view class="history-search-container" v-if="historyList.length">
-		<!-- 标题栏 -->
-		<view class="header">
-		  <text class="title">历史搜索</text>
-		  <u-icon name="trash" size="20" color="rgba(225, 210, 211, 1)" @tap="clearHistory"></u-icon>
-		</view>
-	
-		<!-- 搜索词标签容器 -->
-		<view class="tags-container">
-		  <u-tag
-		    v-for="(item, index) in historyList"
-		    :key="index"
-		    :text="item"
-		    shape="circle"
-			borderColor="rgba(245, 234, 201, .6)"
-			color="#F5EAC9"
-		    plain
-		    :style="{
-		      margin: '8rpx',
-		      padding: '1rpx 4rpx'
-		    }"
-		    @click="onTagClick(item)"
-		  />
-		</view>
+    <template v-if="!searchKey">
+      <!-- 标题栏 -->
+      <view class="header">
+        <text class="title">历史搜索</text>
+        <u-icon name="trash" size="20" color="rgba(225, 210, 211, 1)" @tap="clearHistory"></u-icon>
+      </view>
+    
+      <!-- 搜索词标签容器 -->
+      <view class="tags-container">
+        <u-tag
+          v-for="(item, index) in historyList"
+          :key="index"
+          :text="item"
+          shape="circle"
+          borderColor="rgba(245, 234, 201, .6)"
+          color="#F5EAC9"
+          plain
+          :style="{
+            margin: '8rpx',
+            padding: '1rpx 4rpx'
+          }"
+          @click="onTagClick(item)"
+        />
+      </view>
+    </template>
 	  </view>
 	  <view class="search-result">
 		  <text class="search-result-text">共个{{listData.length}}搜索结果</text>
@@ -54,13 +56,13 @@
 		  :isRefreshing="refreshing"
 		  :loadStatus="loadStatus"
 		  :iconType="iconType"
-		  :enableRefresh="false"
-		  :enableLoadMore="false"
+		  :enableRefresh="true"
+		  :enableLoadMore="true"
 		  >
 			<template #scrollContain>
 				<!-- 商品列表 -->
 				<template v-for="(item, index) in listData">
-						<XnOrdersOrderCard :item="item" @grabOrderClick="handleGrab"></XnOrdersOrderCard>
+						<XnOrdersOrderCard :item="item" @grabOrderClick="handleGrab" @handleItemClick="jumpWorkDetail"></XnOrdersOrderCard>
 				</template>
 			</template>
 		  </BaseProductList>
@@ -77,7 +79,7 @@
 
 
 <script setup name="Search">
-import { ref, onMounted, nextTick, watch } from 'vue';
+import { taskLists, getSearchHistory, deleteSearchHistory } from '@/api/index.js'
 
 // 防抖函数
 function useDebounce(fn, delay = 500) {
@@ -94,16 +96,9 @@ let searchKey = ref("");
 const emit = defineEmits(['close']);
 let searchInputRef = ref(null);
 let autoFocus = ref(false);
-let HISTORY_KEY = 'SEARCH_HISTORY_LIST';
 const maxHistory = ref(10);
 let showClearModal = ref(false);
-const historyList = ref([
-  '非遗刺绣',
-  '非遗刺绣',
-  '非遗刺绣非遗刺绣',
-  '非遗刺绣',
-  '非遗刺绣非遗刺绣'
-]);
+const historyList = ref([]);
 
 
 // 模拟用户等级（用于判断是否可抢单）
@@ -120,59 +115,52 @@ const loadStatus = ref('loadmore') // 'loadmore', 'loading', 'nomore'
 const iconType = ref('flower')
 let hasMore = true
 let isLoading = false // 防止重复触发
-// 模拟数据生成函数
-const generateMockData = (pageNum, count) => {
-  const data = []
-  for (let i = 0; i < count; i++) {
-    const id = (pageNum - 1) * count + i + 1
-    data.push({
-      id,
-      image: 'https://cdn.uviewui.com/uview/album/1.jpg', // 可替换为你自己的图片
-      title: '古韵民族丝绸非遗刺绣',
-      quota: 60,
-      riseRate: 80,
-      canGrab: userLevel.value >= 2, // 模拟逻辑：等级>=2才能抢单
-    })
-  }
-  return data
-}
 
 // 获取数据
 const fetchData = async (isRefresh = false) => {
+  if (loading.value && !isRefresh) return
+  if (refreshing.value && !isRefresh) return
+  if (noMore.value && !isRefresh) return
+
   if (isRefresh) {
     page.value = 1
     noMore.value = false
 	refreshing.value = true
-    listData.value = []
+    // listData.value = []
+	loadStatus.value = 'loading'
+  } else {
+	  loading.value = true
+	  loadStatus.value = 'loading'
   }
 
-  if (noMore.value && !isRefresh) return
-
-  loading.value = true
-  loadStatus.value = 'loading'
   try {
-    // 模拟网络请求延迟
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    const newData = generateMockData(page.value, pageSize.value)
+    const res = await taskLists({
+		page_no: page.value,
+		page_size: pageSize.value,
+		keyword: searchKey.value
+	});
+	
+	const newData = res.code === 200 ? (res.data.lists || []) : [];
 
     if (newData.length < pageSize.value) {
       noMore.value = true
 	  loadStatus.value = 'nomore'
-    }
+    } else {
+		loadStatus.value = 'loadmore'
+	}
 
     if (isRefresh) {
       listData.value = newData
-	  if(!isRefresh)loadStatus.value = 'loadmore'
+	  uni.stopPullDownRefresh()
     } else {
       listData.value = [...listData.value, ...newData]
-	  loadStatus.value = noMore.value ? 'loadmore' : 'nomore'
     }
 
     page.value++
   } catch (err) {
-	  if(!isRefresh)loadStatus.value = 'loadmore'
+	loadStatus.value = 'loadmore'
     console.error('数据加载失败:', err)
+	uni.showToast({ title: '加载失败', icon: 'none' })
   } finally {
     loading.value = false
     refreshing.value = false
@@ -181,7 +169,7 @@ const fetchData = async (isRefresh = false) => {
 
 // 下拉刷新
 const onRefresh = () => {
-  refreshing.value = true
+  if (refreshing.value) return
   fetchData(true)
 }
 
@@ -190,28 +178,40 @@ const onScrollToLower = () => {
   if (!loading.value && !noMore.value) {
     fetchData()
   }
-}
-
+};
+const jumpWorkDetail = (item)=>{
+  uni.navigateTo({
+    url: `/pages/xn/collection-detail/index?id=${item.id}`
+  })
+};
 // 抢单按钮点击事件
 const handleGrab = (item) => {
-	console.log(item)
-  if (!item.canGrab) {
+  if (item.rush_status !=1) {
     uni.showToast({ title: '等级不足，无法抢单', icon: 'none' })
     return
   }
-  uni.showToast({ title: '抢单成功！', icon: 'success' })
-  // 可在此处调用接口更新状态
+   uni.navigateTo({
+   	url: `/pages/xn/my/deposit?id=${item.id}`
+   })
 }
 
-const confirmClear = () => {
-  historyList.value = []
-  uni.removeStorageSync('SEARCH_HISTORY_LIST')
-  showClearModal.value = false
-
-  uni.showToast({
-    title: '已清空',
-    icon: 'success'
-  })
+const confirmClear = async () => {
+  try {
+      const res = await deleteSearchHistory({type:2}); // type:2表示清空所有历史
+      if (res.code === 200) {
+          historyList.value = [];
+          showClearModal.value = false;
+          uni.showToast({
+            title: '搜索历史已清空',
+            icon: 'success'
+          });
+      } else {
+          uni.showToast({ title: res.msg || '清空失败', icon: 'none' });
+      }
+  } catch (error) {
+      console.error('清空历史失败', error);
+      uni.showToast({ title: '请求异常', icon: 'none' });
+  }
 };
 const clearHistory = () => {
 	showClearModal.value = true;
@@ -219,9 +219,9 @@ const clearHistory = () => {
 
 // 点击标签
 const onTagClick = (keyword) => {
-  console.log('点击了搜索词：', keyword)
+  // console.log('点击了搜索词：', keyword)
   searchKey.value = keyword;
-  saveHistory(keyword)
+  // 点击标签搜索不需要手动保存历史，由后端记录
   fetchData(true);
 };
 const onCancel = ()=>{
@@ -230,10 +230,16 @@ const onCancel = ()=>{
 
 const onSearch = (value)=> {
 	const keyword = searchKey.value || value;
-	if (!keyword) return
-	console.log("搜索关键字",searchKey.value);
-	saveHistory(keyword)
-    fetchData(true);
+	if (!keyword) {
+		uni.showToast({ title: '请输入搜索内容', icon: 'none' })
+		return
+	}
+	// console.log("搜索关键字",searchKey.value);
+	// 搜索时由后端自动记录历史，前端只需刷新历史列表（可选）
+    fetchData(true).then(() => {
+        // 搜索成功后重新加载历史记录，以显示最新的
+        loadHistory();
+    });
 };
 
 // 防抖搜索
@@ -251,32 +257,22 @@ watch(searchKey, (newVal) => {
     }
 });
 
-const loadHistory = () => {
-    const list = uni.getStorageSync('SEARCH_HISTORY_LIST')
-    historyList.value = Array.isArray(list) ? list : []
+const loadHistory = async () => {
+    try {
+        const res = await getSearchHistory();
+        if (res.code === 200) {
+             // 假设后端返回的数据结构是 { data: ['keyword1', 'keyword2'] } 或 { data: { lists: [] } }
+             // 根据实际情况调整，这里假设直接返回字符串数组或对象包含数组
+             // 如果接口返回的是对象列表 { id, keyword }，需提取 keyword
+             const list = res.data || []; 
+             historyList.value = Array.isArray(list) ? list : (list.lists || []);
+        }
+    } catch (error) {
+        console.error('获取搜索历史失败', error);
+    }
   };
-const saveHistory = (keyword) => {
-  if (!keyword) return
-
-  let list = uni.getStorageSync('SEARCH_HISTORY_LIST') || []
-
-  // 去重
-  list = list.filter(item => item !== keyword)
-
-  // 放到最前
-  list.unshift(keyword)
-
-  // 限制数量
-  if (list.length > maxHistory.value) {
-    list = list.slice(0, maxHistory.value)
-  }
-
-  // 存入本地
-  uni.setStorageSync('SEARCH_HISTORY_LIST', list)
-
-  // 更新页面
-  historyList.value = list
-};
+// 移除 saveHistory，因为交由后端处理
+// const saveHistory = (keyword) => { ... }
 
 onMounted(() => {
  loadHistory();
@@ -310,11 +306,10 @@ onMounted(() => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30rpx;
 	font-size: 30rpx;
   }
 .title {
-      font-size: 36rpx;
+      font-size: 30rpx;
       color: #fff;
       font-weight: bold;
     }
@@ -324,6 +319,8 @@ onMounted(() => {
 	  align-items: center;
 	  overflow-wrap: break-word;
   }
+  :deep(.u-tag__text--medium){
+    font-size: 18rpx;}
 }
 	
 	

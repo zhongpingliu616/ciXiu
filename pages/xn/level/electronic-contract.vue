@@ -76,6 +76,8 @@
 <script setup name="electronic-contract">
 const title = ref("电子合同");
 let loading = ref(false);
+const scrollTop = ref(0);
+
 const handleEnter = () => {
 		loading.value = true;
 		setTimeout(() => {
@@ -86,6 +88,18 @@ const handleEnter = () => {
 		  });
 		}, 3000);
 	};	
+	
+const upper = (e) => {
+  //console.log(e)
+}
+
+const lower = (e) => {
+  //console.log(e)
+}
+
+const scroll = (e) => {
+  //console.log(e)
+}
 </script>
 
 <style lang="scss" scoped>

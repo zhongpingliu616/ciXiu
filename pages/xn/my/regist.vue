@@ -130,6 +130,8 @@
 
 
 <script setup name="registXn">
+import { register, sendSms } from '@/api/index'
+
 let title = ref("注册用户");	
 let loading = ref(false);
 const form = reactive({
@@ -160,11 +162,11 @@ const validateForm = () => {
   if (!name) {
     errors.accoutName = '用户名不能为空'
     isValid = false;
-  } else if (name.length < 2) {
-    errors.accoutName = '用户名至少2个字符'
+  } else if (name.length < 6 || name.length > 20) {
+    errors.accoutName = '账户名字母开头6-20位';
     isValid = false;
-  } else if (!/^[a-zA-Z]\w{5,19}$/.test(name)) { // /^[\u4e00-\u9fa5a-zA-Z0-9]{2,20}$/ 用户名只能包含中文、英文或数字
-    errors.accoutName = '字母开头6-20非中文字符';
+  } else if (!/^[a-zA-Z][a-zA-Z0-9]*$/.test(name)) { // 字母开头，只包含字母数字
+    errors.accoutName = '字母开头且仅包含字母数字';
     isValid = false;
   }
   // 手机号校验
@@ -180,8 +182,8 @@ const validateForm = () => {
   if (!form.code) {
     errors.code = '验证码不能为空';
     isValid = false;
-  } else if (form.code.length !== 6) {
-    errors.code = '验证码应为6位';
+  } else if (form.code.length !== 6) { // 假设验证码是6位
+    errors.code = '验证码格式不正确'; 
     isValid = false;
   }
 
@@ -193,10 +195,14 @@ const validateForm = () => {
   } else if (pwd.length < 6 || pwd.length > 20) {
     errors.password = '密码长度6-20位';
     isValid = false;
-  } else if (!/^[A-Za-z](?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?])[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?]{5,19}$/.test(pwd)) { // /^(?=.*[0-9])(?=.*[a-zA-Z])/
-    errors.password = '密码必须字母开头,必须包含特殊字符';
-    isValid = false;
+  } else if (!/^[A-Za-z]/.test(pwd)) {
+      errors.password = '密码必须字母开头';
+      isValid = false;
   }
+  // else if (!/(?=.*[!@#$%^&*()_+\-=\[\]{};\':"\\|,.<>\/?])/.test(pwd)) {
+  //   errors.password = '密码必须包含特殊字符';
+  //   isValid = false;
+  // }
 
   // 确认密码
   if (!form.confirmPassword) {
@@ -210,11 +216,34 @@ const validateForm = () => {
 };
 
 // 注册提交
-const handleRegister = () => {
-	loading.value = true;
+const handleRegister = async () => {
   if (validateForm()) {
-    uni.showToast({ title: '注册成功！', icon: 'success' })
-	loading.value = false;
+	loading.value = true;
+    try {
+        const res = await register({
+            username: form.accoutName,
+            password: form.password,
+            phone: form.phone,
+            sms_code: form.code,
+			      confirm_password: form.confirmPassword
+        });
+        if (res.code === 200) {
+            uni.showToast({ title: '注册成功！', icon: 'success' });
+            setTimeout(() => {
+              uni.reLaunch({
+                 url: `/pages/login?role=XN`
+               })
+               //  uni.navigateBack();
+            }, 1500);
+        } else {
+            uni.showToast({ title: res.msg || '注册失败', icon: 'none' });
+        }
+    } catch (error) {
+        console.error('注册失败', error);
+        uni.showToast({ title: error.msg || '注册失败', icon: 'none' });
+    } finally {
+        loading.value = false;
+    }
   };
  } 
 // 密码显示开关
@@ -225,25 +254,40 @@ const showConfirmPassword = ref(false);
 const isCounting = ref(false);
 const countdown = ref(60);
 
-const getVerifyCode = () => {
+const getVerifyCode = async () => {
   if (isCounting.value) return;
-  if (!form.phone || form.phone.length !== 11) {
-    uni.showToast({ title: '请输入正确的手机号', icon: 'none' })
+  if (!form.phone) {
+      errors.phone = '请输入手机号';
+      return;
+  }
+  if (!/^1[3-9]\d{9}$/.test(form.phone)) {
+    errors.phone = '请输入正确的手机号';
     return;
   };
-
-  // 模拟发送验证码
-  uni.showToast({ title: '验证码已发送', icon: 'success' })
-
-  isCounting.value = true;
-  const timer = setInterval(() => {
-    countdown.value--
-    if (countdown.value <= 0) {
-      clearInterval(timer);
-      isCounting.value = false;
-      countdown.value = 60;
-    };
-  }, 1000)
+  
+  try {
+      const res = await sendSms({
+          phone: form.phone,
+          type: 1 // type字段 短信类1注册，2找回密码
+      });
+      if (res.code === 200) {
+          uni.showToast({ title: '验证码已发送', icon: 'success' });
+          isCounting.value = true;
+          const timer = setInterval(() => {
+            countdown.value--
+            if (countdown.value <= 0) {
+              clearInterval(timer);
+              isCounting.value = false;
+              countdown.value = 60;
+            };
+          }, 1000);
+      } else {
+          uni.showToast({ title: res.msg || '发送失败', icon: 'none' });
+      };
+  } catch (error) {
+      console.error('发送验证码失败', error);
+      uni.showToast({ title: error.msg || '发送失败', icon: 'none' });
+  };
 };
 
 const togglePassword = () => {

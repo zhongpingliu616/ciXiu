@@ -3,33 +3,37 @@
 	<LayoutNavigation :title="title" />
 		<view class="page-content">
 			<view class="agreement-card">
-			    <u-card
+				<image 
+						v-if="configStore.config.lists.user_agreement" 
+						:src="configStore.config.lists.user_agreement" 
+						mode="widthFix" 
+						style="width: 100%; display: block;"
+					/>
+			    <!-- <u-card
 			      :border="false"
 			      :head-style="{ padding: '16rpx 32rpx', backgroundColor: '#fff' }"
 			      :body-style="{ padding: '24rpx 32rpx', backgroundColor: '#fff' }"
 			      :foot-style="{ display: 'none' }"
 			    >
-			      <!-- 标题 -->
+			   
 			      <template #head>
 			        <view class="card-title">
 			          欢迎使用绣数坊
 			        </view>
 			      </template>
 			
-			      <!-- 正文内容 -->
+			      正文内容
 			      <template #body>
 			        <view class="card-content">
-			          <p class="content-title">感谢您对于绣数坊的信赖，在使用前请您务必阅读并同意绣数坊《服务条款》和《隐私权政策》，我们将按照政策和协议内容为您提供服务。我们会收集您的位置等信息，为您提供有关的服务协议，您可以在系统设置中关闭授权，但会影响部分功能的使用。特向您说明如下:</p>
-			
-			          <view class="list-container">
-			            <view v-for="(item, index) in 4" :key="index" class="list-item">
-			              <text class="item-number">{{ index + 1 }}.</text>
-			              <text class="item-text">说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档说明文档</text>
-			            </view>
-			          </view>
+						<image
+							src="/static/images/user/login-bg.png" 
+							mode="widthFix" 
+							style="width: 100%; display: block;"
+						/>
+						
 			        </view>
 			      </template>
-			    </u-card>
+			    </u-card> -->
 				<br />
 				<view class="confirm-btn">
 					<CxComfirmBtn
@@ -60,17 +64,20 @@
 
 
 <script setup name="model">
+import { useConfigStore } from '@/stores/configStore'
+
 let title = ref("用户协议");	
+const configStore = useConfigStore();
 const pages = getCurrentPages()
 const currentPage = pages[pages.length - 1]
 
 const consentAgree = () => {
 	currentPage.$routeData = { consentStatus: true };
-	uni.navigateTo({ url: '/pages/login?role=xn&consentStatus=true' });
+	uni.navigateTo({ url: '/pages/login?role=XN&consentStatus=true' });
 };	
 const notAgree = () => {
 	currentPage.$routeData = { consentStatus: false }
-	uni.navigateTo({ url: '/pages/login?role=xn&consentStatus=false' });
+	uni.navigateTo({ url: '/pages/login?role=XN&consentStatus=false' });
 };	
 </script>
 

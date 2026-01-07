@@ -14,12 +14,19 @@ app.$mount()
 import { createSSRApp } from 'vue'
 import * as Pinia from 'pinia';
 import uviewPlus from '@/uni_modules/uview-plus'
+import { useLoginStore } from '@/stores/userLogin'
 
 export function createApp() {
   const app = createSSRApp(App);
   const pinia = Pinia.createPinia();
   app.use(pinia);
   app.use(uviewPlus)
+  
+  // 挂载全局用户信息
+  const userStore = useLoginStore();
+  app.config.globalProperties.$globalUserInfoXn = userStore.userInfoXn;
+  app.config.globalProperties.$globalUserInfoGz = userStore.userInfoGz;
+  
   return {
     app,
 	Pinia, // 这里保持原样导出 Pinia 类库

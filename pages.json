@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [
 		{
 			"path": "pages/index",
 			"style": {
@@ -17,6 +17,12 @@
 			"path": "pages/xn/orders/order-management",
 			"style": {
 				"navigationBarTitleText": "订单管理"
+			}
+		},
+		{
+			"path": "pages/xn/collection-detail/index",
+			"style": {
+				"navigationBarTitleText": "藏品详情"
 			}
 		},
 		{
@@ -44,7 +50,7 @@
 			}
 		},
 		{
-			"path": "pages/xn/my/regist-xn",
+			"path": "pages/xn/my/regist",
 			"style": {
 				"navigationBarTitleText": "注册绣娘"
 			}
@@ -53,6 +59,18 @@
 			"path": "pages/xn/my/identity-authentication",
 			"style": {
 				"navigationBarTitleText": "身份认证"
+			}
+		},
+		{
+			"path": "pages/xn/level/index",
+			"style": {
+				"navigationBarTitleText": "等级选择"
+			}
+		},
+		{
+			"path": "pages/xn/level/electronic-contract",
+			"style": {
+				"navigationBarTitleText": "电子合同"
 			}
 		},
 		{
@@ -110,7 +128,7 @@
 			}
 		},
 		{
-			"path": "pages/xn/my/reset-psd-xn",
+			"path": "pages/xn/my/reset-psd",
 			"style": {
 				"navigationBarTitleText": "重置密码"
 			}

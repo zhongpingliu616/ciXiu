@@ -115,27 +115,82 @@ const handleWechatLogin = () => {
 				 });
 				 return ;
 		};
-		 xiuliangFormRef.value.validateLoginForm(valid => {
+		 xiuliangFormRef.value.validateLoginForm(async (valid, formData={}) => {
 		   if (!valid) return;
 				loading.value = true;
-				// const loginResult = await login()
-				setTimeout(() => {
-				  loading.value = false;
-				  Object.assign(userStore.userInfoXn, {token: 'Xn777888'});
-				  uni.setStorageSync('tokenXn', 'Xn777888');
-				  // 清除另一个角色的 token，确保单角色登录（根据需求“隐藏另外一个标签”）
-				  uni.removeStorageSync('tokenGz');
-				  userStore.userInfoGz.token = '';
-				  userStore.setRole('xn');
+				try {
+					const { accoutName, password } = formData;
+					const res = await login({
+						username: accoutName,
+						password: password
+					});
+					
+					if (res.code === 200) {
+						const { token, info } = res.data;
+						console.log('登录成功，用户信息：', info);
+						// 更新用户信息 (store + storage)
+						userStore.updateUserInfo('XN', {
+							token: token,
+							user: info.username,
+							id: info.id || '', 
+							phone: info.phone,
+							avatar: info.avatar,
+							nick_name: info.nick_name,
+							real_name_check: info.real_name_check,
+							level: info.level,
+							is_buy: info.is_buy
+						});
+						
+						// 清除另一个角色的 token
+						uni.removeStorageSync('tokenGz');
+						userStore.userInfoGz.token = '';
+						userStore.setRole('XN');
 
-				  uni.reLaunch({
-					  url: '/pages/index'
-				  });
-				  uni.showToast({
-					title: '绣娘登录成功',
-					icon: 'success'
-				  })
-				}, 3000);
+						// 登录成功后的逻辑判断
+						// 1. 检查是否有等级 (level == 0 表示无等级)
+						if (info.level === 0) {
+							uni.reLaunch({
+								url: '/pages/xn/level/index'
+							});
+							uni.showToast({
+								title: '请先选择等级',
+								icon: 'none'
+							});
+						} 
+						// 2. 检查是否实名认证 (real_name_check == 2 表示未实名)
+						else if (info.real_name_check === 2) {
+							uni.reLaunch({
+								url: '/pages/xn/my/identity-authentication'
+							});
+							uni.showToast({
+								title: '请先完成实名认证',
+								icon: 'none'
+							});
+						} 
+						// 3. 一切正常，进入首页
+						else {
+							uni.reLaunch({
+								url: '/pages/index'
+							});
+							uni.showToast({
+								title: '绣娘登录成功',
+								icon: 'success'
+							});
+						}
+					} else {
+						uni.showToast({
+							title: res.msg || '登录失败',
+							icon: 'none'
+						});
+					}
+				} catch (error) {
+					uni.showToast({
+						title: error.msg || '登录请求失败',
+						icon: 'none'
+					});
+				} finally {
+					loading.value = false;
+				}
 		 })
 	};
 	const gongzhongLogin = () => {
@@ -153,8 +208,12 @@ const handleWechatLogin = () => {
 				// const loginResult = await login()			
 				setTimeout(() => {
 				  loading.value = false;
-				  Object.assign(userStore.userInfoGz, {token: 'Gz777888'});
-				  uni.setStorageSync('tokenGz', 'Gz777888');
+				  
+				  // 更新用户信息 (store + storage)
+				  userStore.updateUserInfo('GZ', { 
+					  token: 'Gz777888' 
+				  });
+				  
 				  // 清除另一个角色的 token
 				  uni.removeStorageSync('tokenXn');
 				  userStore.userInfoXn.token = '';
@@ -174,15 +233,15 @@ onLoad((query) => {
   const pages = getCurrentPages();
   const prevPage = pages[pages.length - 2];
   // 如果传递了 role 参数，根据 role 设置 tabActiveIndex
-  // role: 'xn' -> 1, 'gz' -> 0
+  // role: 'XN' -> 1, 'GZ' -> 0
   if (query.role) {
-	  tabActiveIndex.value = query.role === 'xn' ? 1 : 0;
+	  tabActiveIndex.value = query.role === 'XN' ? 1 : 0;
   } else {
 	  // 如果没有传 role，默认逻辑或保持不变
 	  tabActiveIndex.value = 0;
   }
   
-  if(query.role=='xn'){
+  if(query.role=='XN'){
 	  mentStatusXn.value = JSON.parse(query.consentStatus || false);
   }else{
 	 mentStatusGz.value = JSON.parse(query.consentStatus || false);

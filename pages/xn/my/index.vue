@@ -9,16 +9,18 @@
 			<view class="user-info-wrap" @click="handleProfileClick">
 				<view class="user-info">
 					<view class="avatar-wrap">
-						<image class="avatar" src="https://cdn.uviewui.com/uview/album/1.jpg" mode="aspectFill"></image>
+						<image class="avatar" :src="$globalUserInfoXn.avatar" mode="aspectFill"></image>
 					</view>
 					<view class="info-content">
-						<text class="nickname">李柳柳</text>
+						<text class="nickname">{{$globalUserInfoXn.nick_name}}</text>
 						<view class="phone-tag">
-							<text>145***6589</text>
+							<text>{{maskPhone($globalUserInfoXn.phone)}}</text>
 						</view>
 					</view>
 					<u-icon name="arrow-right" color="#fff" size="28rpx" class="arrow-icon"></u-icon>
 				</view>
+				
+				<view class="modifying-signature">{{$globalUserInfoXn.signature}}</view>
 			</view>
 			<!-- 我的订单 -->
 			<view class="section-card order-section">
@@ -156,7 +158,10 @@ const worksList = ref([
 	// { src: 'https://cdn.uviewui.com/uview/album/4.jpg', id: 4 },
 	// { src: 'https://cdn.uviewui.com/uview/album/5.jpg', id: 5 },
 ]);
-
+function maskPhone(phone) {
+  if (!phone) return ''
+  return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
+}
 // 订单点击
 const handleOrderClick = (type) => {
 	console.log('Order click:', type);
@@ -207,7 +212,7 @@ const workItemClick = ({item, index}) => {
 // 跳转电子合同
 const navigateToContract = () => {
 	uni.navigateTo({
-		url: '/pages/gz/level/electronic-contract'
+		url: '/pages/xn/level/electronic-contract'
 	});
 };
 const confirmClear = ()=>{
@@ -290,12 +295,18 @@ onMounted(() => {
 	margin-left: 20rpx;
 	opacity: 0.8;
 }
+.modifying-signature {
+	margin-top: 12rpx;
+	font-size: 24rpx;
+	color: #ccc;
+}
 .user-info {
 	display: flex;
 	align-items: center;
+}
+.user-info-wrap {	
 	padding: 40rpx 32rpx;
 }
-
 .page-content {
 	padding: 0 24rpx;
 	// margin-top: -60rpx; // 既然背景是统一的，可能不需要负 margin 了，或者保留用于层叠效果
