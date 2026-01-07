@@ -75,42 +75,19 @@
 		</view>
 		
 		<!-- 地区选择器 -->
-		<up-picker
+		<CxAreaPicker
 			:show="showRegionPicker"
-			:columns="regionColumns"
-			keyName="text"
+			@update:show="showRegionPicker = $event"
 			@confirm="handleRegionConfirm"
-			@cancel="showRegionPicker = false"
-			@change="handleRegionChange"
-		></up-picker>
+		/>
 	</view>
 </template>
 
 <script setup name="editAddress">
-import { ref, reactive } from 'vue';
+import { ref, reactive, getCurrentInstance } from 'vue';
 import { onLoad } from '@dcloudio/uni-app';
-import regionData from '@/utils/regionData.js';
-
 const title = ref("编辑收货地址");
 const showRegionPicker = ref(false);
-const regionColumns = ref([]);
-
-// 初始化列数据
-const initColumns = () => {
-	// 确保数据存在，避免初始化错误
-	if (regionData && regionData.length > 0) {
-		const province = regionData;
-		const city = province[0].children;
-		const area = city[0].children;
-		// 必须是响应式的数组结构
-		regionColumns.value = [province, city, area];
-	} else {
-		console.warn('regionData is empty or invalid');
-		regionColumns.value = [[], [], []];
-	}
-};
-
-initColumns();
 
 const form = reactive({
 	name: '',
@@ -132,10 +109,7 @@ onLoad(() => {
 			const { name, phone, address } = data.data;
 			form.name = name;
 			form.phone = phone;
-			// 这里简单拆分一下地址演示，实际应该有更完善的地址结构
-			// 假设 address 是完整地址，这里简单赋给 detail，region 留空或解析
 			form.detail = address; 
-			// 实际项目中可能需要解析 region
 			form.region = ''; 
 		}
 	});
@@ -145,50 +119,38 @@ const handleSelectRegion = () => {
 	showRegionPicker.value = true;
 };
 
-const handleRegionChange = (e) => {
-	const { columnIndex, value, indexs } = e;
-	
-	// 安全获取省份索引
-	const provinceIndex = indexs[0] || 0;
-	
-	if (columnIndex === 0) {
-		// 省变动，更新市和区
-		const cityList = regionData[provinceIndex]?.children || [];
-		const areaList = cityList[0]?.children || [];
-		
-		// 必须重新赋值整个数组以触发响应式更新（部分框架要求）
-		// 但 Vue3 Ref 内部属性修改通常可以。为了保险，保持现有方式或使用 set
-		regionColumns.value[1] = cityList;
-		regionColumns.value[2] = areaList;
-	} else if (columnIndex === 1) {
-		// 市变动，更新区
-		const cityIndex = indexs[1] || 0;
-		// 确保 cityIndex 不越界
-		const currentProvince = regionData[provinceIndex];
-		if (currentProvince && currentProvince.children && currentProvince.children[cityIndex]) {
-			const areaList = currentProvince.children[cityIndex].children || [];
-			regionColumns.value[2] = areaList;
-		} else {
-			regionColumns.value[2] = [];
-		}
-	}
-};
-
 const handleRegionConfirm = (e) => {
 	const { value } = e;
 	if (!value || !Array.isArray(value)) {
 		console.warn('Picker value is invalid:', value);
 		return;
 	}
-	// value 是选中的对象数组 [省对象, 市对象, 区对象]
-	// 增加空值检查，防止 text 读取错误
+	
+	// value 是选中的对象数组 [省, 市, 区, 镇]
 	const regionText = value
-		.map(item => (item && item.text) ? item.text : '')
+		.map(item => (item && item.name) ? item.name : '')
 		.join('');
 		
 	if (regionText) {
 		form.region = regionText;
 	}
+	
+	// 打印 PID 组合
+	// 格式：省ID - 市PID - 区PID - 镇PID
+	// 注意：市PID通常等于省ID，区PID等于市ID，镇PID等于区ID
+	if (value.length === 4) {
+		const prov = value[0] || {};
+		const city = value[1] || {};
+		const county = value[2] || {};
+		const town = value[3] || {};
+		
+		// 按照用户要求的格式打印: '27466-27466-28589-28590'
+		// 对应: prov.id - city.pid - county.pid - town.pid
+		const pidString = `${prov.id || 0}-${city.pid || 0}-${county.pid || 0}-${town.pid || 0}`;
+		console.log('选中区域的组合:', value);
+		console.log(pidString);
+	}
+	
 	showRegionPicker.value = false;
 };
 

@@ -74,6 +74,7 @@
 	  <u-image
 			 src="/static/images/collection-detail/production-details.png"
 			 width="30rpx"
+			 height="30rpx"
 			 mode="widthFix"
 			 radius="50%"
 		   /> &nbsp;&nbsp;制作详情
