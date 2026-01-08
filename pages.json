@@ -38,6 +38,12 @@
 			}
 		},
 		{
+			"path": "pages/xn/orders/address-management",
+			"style": {
+				"navigationBarTitleText": "收货地址"
+			}
+		},
+		{
 			"path": "pages/xn/income/index",
 			"style": {
 				"navigationBarTitleText": "收益"

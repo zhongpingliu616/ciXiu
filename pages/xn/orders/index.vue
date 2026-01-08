@@ -18,7 +18,7 @@
 								    placeholderColor="#AC9394"
 								    searchIconColor="#672227"
 								    borderColor="#FFE185"
-								    height="46rpx"
+								    height="66rpx"
 									  @search="onSearch"
 								    :show-action="false"
 								    clearabled

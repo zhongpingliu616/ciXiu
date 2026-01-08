@@ -89,10 +89,25 @@
 			<view class="menu-list">
 				<u-cell-group :border="false">
 					<u-cell
-						title="我的动态"
+						title="收货地址"
 						:isLink="true"
 						:border="false"
 						customStyle="padding: 30rpx 30rpx; background-color: #fff; border-radius: 16rpx 16rpx 0 0; font-size: 28rpx"
+						class="cell-item"
+						@click="navigateToAddress"
+					>
+						<template #title>
+						    <text class="cell-title">收货地址</text>
+						  </template>
+						<template #icon>
+							<u-icon name="map" size="32rpx" color="#333" style="margin-right: 20rpx;"></u-icon>
+						</template>
+					</u-cell>
+					<u-cell
+						title="我的动态"
+						:isLink="true"
+						:border="false"
+						customStyle="padding: 30rpx 30rpx; background-color: #fff; font-size: 28rpx"
 						class="cell-item"
 					>
 						<template #title>
@@ -162,6 +177,11 @@ function maskPhone(phone) {
   if (!phone) return ''
   return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
 }
+const navigateToAddress = () => {
+	uni.navigateTo({
+		url: '/pages/xn/orders/address-management'
+	});
+};
 // 订单点击
 const handleOrderClick = (type) => {
 	console.log('Order click:', type);

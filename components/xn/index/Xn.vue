@@ -86,7 +86,7 @@ const collectionList = [
 		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理' },
 		{ src: '/static/images/index/work-management.png',title:'作品管理',funtionText: '管理' }
 	];
-
+const emit = defineEmits(['showSearch']);
 
 // 模拟用户等级（用于判断是否可抢单）
 const userLevel = ref(3) // 假设用户等级为3
@@ -200,9 +200,10 @@ onMounted(() => {
 	
 	
 const naviToOrder= () =>{
-	uni.navigateTo({
-		url:'/pages/orders/index'
-	})
+	emit('showSearch');
+	// uni.navigateTo({
+	// 	url:'/pages/orders/index'
+	// })
 };
 const handleManage = (item)=>{
 	console.warn("跳转地址",item.path);

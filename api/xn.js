@@ -61,6 +61,10 @@ export const getLevelLists = () => get('/embroid/user/levelLists')
 export const updateLevel = (data) => post('/embroid/user/updateLevel', data)
 export const authenStatus = () => get('/embroid/user/authenStatus')
 export const tasklLists = () => get('/embroid/task/lists')
+export const memberAddress = () => get('/embroid/address/lists')
+export const addAddress = (data) => post('/embroid/address/add', data)
+export const editAddress = (data) => post('/embroid/address/edit', data)
+export const deleteAddress = (data) => post('/embroid/address/del', data)
 
 // 使用示例
 // import { getBanner } from '@/api/index'

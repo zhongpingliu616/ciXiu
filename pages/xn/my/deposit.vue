@@ -8,7 +8,7 @@
 					<u-cell v-for="(item, index) in marginResultData" :key="index" 
 					:border="false"
 					class="form-item"
-					:title="item.label"
+					:title="`￥ ${item.label}`"
 					:value="item.value"
 					:title-style="{ fontSize: '32rpx', fontWeight: 'bold', color: '#333' }"
 					:value-style="{ fontSize: '30rpx', color: '#666' }"
@@ -32,7 +32,7 @@
 				</view>
 			  </view>
 			<view class="confirm-btn-wrap">
-				<CxComfirmBtn text="立即缴纳" @click="handleConfirm" />				
+				<CxComfirmBtn text="立即缴纳" :disabled="!disabledConfirm" @click="handleConfirm" />				
 			</view>
 			
 		</view>
@@ -56,46 +56,65 @@
 </template>
 
 <script setup name="pay-deposit">
-	let title = ref("压金");
-	let show = ref(false);
-	let loading = ref(false);
-	let guarantees = ref([
-        '压金单独支付，包含违约保证金和退货压金两个部分；',
-        '压金以5000元为固定额度；',
-        '压金以5000元起步，每季度根据上季度月平均商家好店整体营业额调整，只升不降；',
-        '压金额度不满时，需在10个自然日内补齐'
-      ])
-	const marginResultData = reactive([
-	  { label: '￥ 6000', value: '(1000 - 6000)￥' }
-	]);
-	const handlePayment = ()=>{
-		//   const paymentRes = await paymentDeposit(data)
-		loading.value = true;
+import { getLevelLists } from '@/api/index'
+const { proxy } = getCurrentInstance();
+let title = ref("压金");
+let show = ref(false);
+let loading = ref(false);
+let guarantees = ref([
+	'压金单独支付，包含违约保证金和退货压金两个部分；',
+	'压金以5000元为固定额度；',
+	'压金以5000元起步，每季度根据上季度月平均商家好店整体营业额调整，只升不降；',
+	'压金额度不满时，需在10个自然日内补齐'
+	])
+const marginResultData = reactive([
+	{ label: 0, value: '(1000 - 6000)￥' }
+]);
+const disabledConfirm = computed(()=>(marginResultData[0]?.label>0));
+const handlePayment = ()=>{
+	//   const paymentRes = await paymentDeposit(data)
+	loading.value = true;
+	setTimeout(() => {
+		show.value = false;
+		loading.value = false;
+		uni.showToast({
+		title: '缴纳压金成功',
+		icon: 'success'
+		});
+		// 可以在这里跳转回上一页或订单列表
 		setTimeout(() => {
-		  show.value = false;
-		  loading.value = false;
-		  uni.showToast({
-			title: '缴纳压金成功',
-			icon: 'success'
-		  });
-          // 可以在这里跳转回上一页或订单列表
-          setTimeout(() => {
-            uni.navigateBack()
-          }, 1500)
-		}, 2000);
-	};
-	const handleConfirm = ()=>{
-		show.value = true;
+		uni.navigateBack()
+		}, 1500)
+	}, 2000);
+};
+const handleConfirm = ()=>{
+	show.value = true;
+}
+const setLevelDatas = (res={})=>{
+	const { code=9999, data,msg } = res;
+	if (code === 200) {
+		 if(data?.lists.length>0){
+			data.lists.forEach(element => {
+				element.level == proxy.$globalUserInfoXn.level && (marginResultData[0].label = element.deposit)
+			});
+		 };		 
+	} else {
+		uni.showToast({
+			title: msg || '数据加载失败',
+			icon: 'none'
+		});
 	}
-	onMounted(() => {
-	    
-	})
-	// onLoad((options) => {
-	// 	if (options.amount) {
-    //         marginResultData[0].label = `￥ ${options.amount}`
-    //     }
-	//     console.log("缴纳金额",options.amount);
-	// })
+};
+onMounted(async () => {
+	const res = await getLevelLists();
+	setLevelDatas(res);
+})
+// onLoad((options) => {
+// 	if (options.amount) {
+//         marginResultData[0].label = `￥ ${options.amount}`
+//     }
+//     console.log("缴纳金额",options.amount);
+// })
 </script>
 
 <style lang="scss" scoped>

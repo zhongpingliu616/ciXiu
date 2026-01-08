@@ -70,7 +70,7 @@
 				   @click="handleAction('cancel')" text="取消订单"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 			   <view class="function-btn">
-				   <CxComfirmBtn @click="handleAction('pay')" text="去支付"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('pay')" text="去支付"></CxComfirmBtn>
 			   </view>
 		   </template>
 		   
@@ -100,7 +100,7 @@
 				   @click="handleAction('logistics')" text="查看物流"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 			   <view class="function-btn">
-				   <CxComfirmBtn @click="handleAction('confirm')" text="确认收货"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('confirm')" text="确认收货"></CxComfirmBtn>
 			   </view>
 		   </template>
 
@@ -119,6 +119,7 @@
 
 
 <script setup name="order-card">
+
 const emit = defineEmits(['action'])
 const props = defineProps({
   item: { type: Object, 
@@ -131,6 +132,7 @@ const cancelBtnStyle = {
    color:'#8F8F8F',
    borderColor: '#8F8F8F',
    background: 'transparent',
+   padding: '10rpx 34rpx',
 }
 
 // 状态映射
@@ -170,7 +172,6 @@ const handleCardClick = () => {
 }
 .function-btn{
 	display: inline-block;
-	width: 228rpx;
 }
 .status-function-bts{
 	display: flex;

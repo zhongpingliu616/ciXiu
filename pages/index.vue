@@ -71,7 +71,7 @@
 				</up-row>				  
 			  </view>
 			 <keep-alive>
-			   <component :is="currentRole" />
+			   <component :is="currentRole" @showSearch="showSearch" />
 			 </keep-alive>
 			 <!-- <IndexXn></IndexXn>
 			 <IndexGz></IndexGz> -->

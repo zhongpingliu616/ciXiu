@@ -3,7 +3,7 @@
 	:plain="mergedBtnStyle.plain"
 	:text="text"
 	:loading="loading"
-	:disabled="loading"
+	:disabled="(disabled || loading)"
 	color="linear-gradient(to right, #F82B1C, RGBA(252, 124, 89, 1))"
 	:customStyle="mergedBtnStyle"
 	>
@@ -17,6 +17,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false
+  },
+  disabled: {
+	type: Boolean,
+	default: false
   },
   btnStyle: {
 	  type: Object, 

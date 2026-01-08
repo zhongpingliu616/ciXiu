@@ -34,9 +34,6 @@
 </template>
 
 <script setup name="OrderListComponent">
-import { ref } from 'vue'
-
-
 const props = defineProps({
   // 订单状态，如果为 null/undefined 则显示全部。可以是数字或数字数组
   status: {
@@ -110,7 +107,7 @@ const fetchData = async (isRefresh = false) => {
   if (isRefresh) {
     page.value = 1
     noMore.value = false
-	refreshing.value = true
+	  refreshing.value = true
     listData.value = []
   }
 
