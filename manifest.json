@@ -71,8 +71,8 @@
     "vueVersion" : "3",
     "h5" : {
         "router" : {
-            "base" : "/cixiu-h5/",
-            "mode" : "hash"
+            "base" : "/",
+            "mode" : "history"
         },
         "devServer" : {
             "port" : ""

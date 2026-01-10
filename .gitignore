@@ -3,11 +3,10 @@ node_modules
 uni_modules
 package-lock.json
 .vscode/*
-
+unpackage/*
 # 打包新加的
 code.iconset
 code.icns
 code.png
 resource
-build
 

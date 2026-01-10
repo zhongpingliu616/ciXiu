@@ -3,6 +3,7 @@ import uni from '@dcloudio/vite-plugin-uni'
 import AutoImport from 'unplugin-auto-import/vite'
 
 export default defineConfig({
+	 // base: '/ciXiu/unpackage/dist/build/web/',
 	  server: {
 	    hmr: true
 	  },
