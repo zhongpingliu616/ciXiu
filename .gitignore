@@ -1,8 +1,6 @@
 bash.exe.stackdump
 node_modules
-dist
 uni_modules
-unpackage
 package-lock.json
 .vscode/*
 
