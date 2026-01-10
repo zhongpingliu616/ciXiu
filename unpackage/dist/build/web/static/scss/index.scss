@@ -1,0 +1,45 @@
+
+@font-face {
+  font-family: "CustomFont";
+  src: url("@/static/fonts/iconfont.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+$app-active-text:#F5EAC9;
+$app-border-color:#FFE185;
+$app-main-dark:#13161F;
+$main-btn-gradient: linear-gradient(to right, #F82B1C, RGBA(252, 124, 89, 1));
+$main-btn-color: #F82B1C;
+$deputy-btn-color:RGBA(252, 124, 89, 1);
+
+
+::v-deep {
+	.uni-tabbar{
+			display: none;
+	}
+	.uni-input-input {
+	  font-size: 24rpx;
+	}
+	.u-input__content__field-wrapper__field{
+		height: 38rpx;
+	}
+}
+body{
+	font-size: 24rpx;
+}
+.page-wrap{
+	 height: 100vh;
+	 background:
+	 url("/static/images/index/bg.png") no-repeat center/cover;
+	  display: grid;
+	  grid-template-rows: 80rpx 1fr 120rpx;
+}
+.page-content{
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+  padding: 20rpx;
+}
+.authen-gray{
+	filter: grayscale(100%);
+}
