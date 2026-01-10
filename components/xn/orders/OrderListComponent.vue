@@ -23,9 +23,28 @@
 />
 <CxModal
   v-model:show="showConfirmOrder"
-  content="确认收到货了吗？"
+  content="确认收材料了吗？"
   @confirm="confirmOrder"
 />
+<CxModal
+  v-model:show="showProduced"
+  content="确认完成了吗？"
+  @confirm="confirmProduced"
+>
+    <view class="input-wrap">
+      <view style="font-size:28rpx; color:#333; margin-bottom:10rpx;">请输入物流单号,切勿填错</view>
+      <u-input
+        v-model="logisticsNumber"
+        placeholder="请输入你的物流单号"
+        border="surround"
+        clearable
+        :customStyle="{
+          height: '52rpx',
+          borderRadius: '10rpx'
+        }"
+      ></u-input>
+    </view>
+</CxModal>
 <CxModal
   v-model:show="showDeleOrder"
   content="确定要删除订单吗？"
@@ -34,6 +53,7 @@
 </template>
 
 <script setup name="OrderListComponent">
+import { orderLists,editOrderSatus } from '@/api/index.js'
 const props = defineProps({
   // 订单状态，如果为 null/undefined 则显示全部。可以是数字或数字数组
   status: {
@@ -44,13 +64,15 @@ const props = defineProps({
 
 // 状态定义
 const ORDER_STATUS = {
-  WAIT_PAY: 10, // '待支付'
-  WAIT_SHIP: 20, // '待发货'
-  SHIPPED: 30,  // '已交付'
-  WAIT_ACCEPT: 40, // '待验收'
-  ACCEPT_SUCCESS: 50, // '验收成功'
-  ACCEPT_FAIL: 51, // '验收失败'
-  CANCELLED: 60 // '已取消'
+  WAIT_PAY: 10, // 待支付
+  WAIT_SHIP: 20, // 待发货
+  WAIT_RECEIVE_MATERIAL: 30, // 待接收材料
+  WAIT_SHIP_PRODUCT: 40, // 待发成品
+  DELIVERED: 50, // 待接收成品
+  WAIT_ACCEPT: 60, // 待验收
+  ACCEPT_SUCCESS: 70, // 验收成功
+  ACCEPT_FAIL: 80, // 验收失败
+  CANCELLED: 90 // 取消订单
 }
 
 // 数据状态
@@ -62,52 +84,19 @@ const pageSize = ref(10)
 const noMore = ref(false)
 const loadStatus = ref('loadmore')
 const iconType = ref('flower')
+let logisticsNumber = ref('');
 let showCancelModal = ref(false);
+let showProduced = ref(false);
 let showConfirmOrder = ref(false);
 let showDeleOrder = ref(false);
-// 模拟数据生成函数
-const generateMockData = (pageNum, count, targetStatus) => {
-	console.log("数据状态",pageNum, count, targetStatus);
-  const data = []
-  const statuses = Object.values(ORDER_STATUS)
-  const difficulties = ['难度低', '难度中', '难度高']
-  const periods = ['工期30天', '工期60天', '工期90天', '工期360天']
-  
-  for (let i = 0; i < count; i++) {
-    const id = (pageNum - 1) * count + i + 1
-    // 如果指定了状态，就用指定状态；否则随机状态
-    let status
-    if (targetStatus !== null && targetStatus !== undefined) {
-      if (Array.isArray(targetStatus)) {
-        status = targetStatus[Math.floor(Math.random() * targetStatus.length)]
-      } else {
-        status = targetStatus
-      }
-    } else {
-      status = statuses[Math.floor(Math.random() * statuses.length)]
-    }
-
-    data.push({
-      id: `154654651${id}`, // 模拟长订单号
-      status: status,
-      image: 'https://cdn.uviewui.com/uview/album/1.jpg', 
-      title: '古韵民族丝绸非遗刺绣',
-      quota: 60,
-      price: '60.09',
-      riseRate: status === ORDER_STATUS.WAIT_PAY ? 0 : 80, // 只有部分状态有溢价显示? 暂时随机
-      difficulty: difficulties[Math.floor(Math.random() * difficulties.length)],
-      period: periods[Math.floor(Math.random() * periods.length)],
-    })
-  }
-  return data
-}
+let currentItem ={};
 
 // 获取数据
 const fetchData = async (isRefresh = false) => {
   if (isRefresh) {
     page.value = 1
     noMore.value = false
-	  refreshing.value = true
+    refreshing.value = true
     listData.value = []
   }
 
@@ -116,27 +105,42 @@ const fetchData = async (isRefresh = false) => {
   loading.value = true
   loadStatus.value = 'loading'
   try {
-    // 模拟网络请求延迟
-    await new Promise((resolve) => setTimeout(resolve, 1800))
-
-    const newData = generateMockData(page.value, pageSize.value, props.status)
-
-    if (newData.length < pageSize.value) {
-      noMore.value = true
-	  loadStatus.value = 'nomore'
+    const params = {
+      page_no: page.value,
+      page_size: pageSize.value
+    };
+    
+    // 如果 status 存在且不是 'null'/'undefined' (代表全部)，则添加到参数中
+    // 根据 order-management.vue，"全部"对应的 status 是 null
+    if (props.status !== null && props.status !== undefined) {      
+      params.status = props.status;
     }
 
-    if (isRefresh) {
-      listData.value = newData
-	  if(!isRefresh)loadStatus.value = 'loadmore'
+    const res = await orderLists(params);
+    
+    if (res.code === 200 || res.code === 0) {
+      const newData = res.data.lists || []; // 假设返回结构是 data.lists
+      
+      if (newData.length < pageSize.value) {
+        noMore.value = true
+        loadStatus.value = 'nomore'
+      }
+
+      if (isRefresh) {
+        listData.value = newData
+        if(!isRefresh) loadStatus.value = 'loadmore'
+      } else {
+        listData.value = [...listData.value, ...newData]
+        loadStatus.value = noMore.value ? 'loadmore' : 'nomore'
+      }
+
+      page.value++
     } else {
-      listData.value = [...listData.value, ...newData]
-	  loadStatus.value = noMore.value ? 'loadmore' : 'nomore'
+      console.error('获取订单列表失败:', res.msg);
+      // uni.showToast({ title: res.msg || '获取失败', icon: 'none' });
     }
-
-    page.value++
   } catch (err) {
-	  if(!isRefresh)loadStatus.value = 'loadmore'
+    if(!isRefresh) loadStatus.value = 'loadmore'
     console.error('数据加载失败:', err)
   } finally {
     loading.value = false
@@ -156,15 +160,53 @@ const onScrollToLower = () => {
     fetchData()
   }
 }
-const confirmCancelOrder = ()=>{
-	uni.showToast({ title: '订单已取消', icon: 'none' })
-	// 实际开发中这里应该调用 API，然后刷新列表
-	// 这里简单模拟刷新
-	onRefresh()
+const confirmCancelOrder = async ()=>{ // 状态改为 90
+	const {msg,data,code} = await editOrderSatus({
+    id:currentItem.id,
+    order_id:currentItem.order_id,
+    status:90
+  });
+  if(code===200){
+    uni.showToast({ title: '订单已取消', icon: 'none' });
+    onRefresh();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
 };
-// 确认收货
-const confirmOrder = ()=>{
-	
+// 确认收到材料
+const confirmOrder = async ()=>{
+	const {msg,data,code} = await editOrderSatus({
+    id:currentItem.id,
+    order_id:currentItem.order_id,
+    status:40
+  });
+  if(code===200){
+    uni.showToast({ title: '已确认收到材料', icon: 'none' });
+    onRefresh();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
+};
+// 确认完成作品
+const confirmProduced = async ()=>{
+  if(!logisticsNumber.value){
+    uni.showToast({ title: '请输入物流单号', icon: 'none' });
+    return;
+  };
+  const {msg,data,code}  = await editOrderSatus({
+    id:currentItem.id,
+    order_id:currentItem.order_id,
+    status:50,
+    finish_order_number:logisticsNumber.value
+  });
+  
+  if(code===200){
+    uni.showToast({ title: '订单已完成', icon: 'none' });
+    logisticsNumber.value = '';
+    onRefresh();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
 };
 // 删除订单
 const confirmDeleOrder = ()=>{
@@ -172,32 +214,50 @@ const confirmDeleOrder = ()=>{
 };
 // 处理操作事件
 const handleAction = ({ type, item }) => {
-  console.log('Action:', type, item)
+  currentItem = item;
   switch (type) {
-    case 'cancel':
-	 showCancelModal.value = true;
+    case 'cancel': // 取消订单
+	    showCancelModal.value = true;
      break
-    case 'pay':
+    case 'pay': // 去支付
+      uni.navigateTo({
+        url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`
+      })
       uni.showToast({ title: '跳转支付页面', icon: 'none' })
       break
     case 'remind':
       uni.showToast({ title: '已提醒商家发货', icon: 'success' })
+      window.location.href = 'https://www.baidu.com/s?wd=773394725450239'
+
       break
     case 'logistics':
+      uni.navigateTo({
+        url: 'https://www.baidu.com/s?wd=773394725450239',
+        success: (res) => {
+          res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
+        }
+      })
       uni.showToast({ title: '查看物流详情', icon: 'none' })
       break
-    case 'confirm':
-	showConfirmOrder.value = true;
+    case 'receivingMaterials':
+	    showConfirmOrder.value = true;
       break
     case 'delete':
-	showDeleOrder.value = true;
+	    showDeleOrder.value = true;
       break
-	case 'detail':
-	  uni.navigateTo({
-		  url: `/pages/xn/orders/detail?id=${item.id}`
-	  })
-	  break
-  }
+    case 'produced':
+	    showProduced.value = true;
+      break
+    case 'detail':
+      uni.navigateTo({
+        url: `/pages/xn/orders/detail`,
+        success: (res) => {
+          res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
+        }
+
+      })
+      break
+    }
 }
 
 // 监听 status 变化 (虽然目前是作为组件复用，通常不会动态变 status，但加上是个好习惯)

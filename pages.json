@@ -128,6 +128,30 @@
 			}
 		},
 		{
+			"path": "pages/xn/income/withdraw-cash",
+			"style": {
+				"navigationBarTitleText": "余额提现"
+			}
+		},
+		{
+			"path": "pages/xn/income/withdrawal-record",
+			"style": {
+				"navigationBarTitleText": "提现记录"
+			}
+		},
+		{
+			"path": "pages/xn/income/recharge",
+			"style": {
+				"navigationBarTitleText": "余额充值"
+			}
+		},
+		{
+			"path": "pages/xn/income/recharge-record",
+			"style": {
+				"navigationBarTitleText": "充值记录"
+			}
+		},
+		{
 			"path": "pages/xn/income/refund-detail",
 			"style": {
 				"navigationBarTitleText": "押金退还"

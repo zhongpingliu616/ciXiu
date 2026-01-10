@@ -2,14 +2,24 @@
 	<view class="page-wrap withdraw-page">
 		<LayoutNavigation title="提现" />
 		<view class="page-content">
-			<view class="section-title">到账银行卡</view>
-			<view class="bank-card-select">
+			<view class="section-title">提现方式</view>
+			<view class="bank-card-select" @click="handleShowWithdrawMethod">
 				<view class="bank-info">
-					<u-icon name="rmb-circle-fill" color="#E60012" size="50rpx" customStyle="margin-right: 20rpx"></u-icon>
-					<text class="bank-name">中国银行</text>
+					<template v-if="selectedMethod">
+						<template v-if="selectedMethod.id === 'alipay' || selectedMethod.id === 'wechat'">
+							<u-icon :name="selectedMethod.icon" :color="selectedMethod.color" size="50rpx" customStyle="margin-right: 20rpx"></u-icon>
+						</template>
+						<template v-else>
+							<image :src="selectedMethod.icon" mode="aspectFit" style="width: 50rpx; height: 50rpx; margin-right: 20rpx;"></image>
+						</template>
+						<text class="bank-name">{{ selectedMethod.name }}</text>
+					</template>
+					<template v-else>
+						<text class="bank-name">请选择提现方式</text>
+					</template>
 				</view>
 				<view class="arrival-time">
-					<text>1-3个工作日到账</text>
+					<text v-if="selectedMethod">1-3个工作日到账</text>
 					<u-icon name="arrow-right" color="#999" size="28rpx"></u-icon>
 				</view>
 			</view>
@@ -59,10 +69,58 @@
 			</view>
 		</view>
 	</view>
+	<CxModal
+		v-model:show="showMethodModal"
+		title="选择提现方式"
+	>
+		<view class="method-list">
+			<view 
+				class="method-item" 
+				v-for="(item, index) in withdrawMethods" 
+				:key="index"
+				@click="handleSelectMethod(item)"
+			>
+				<view class="method-info">
+					<u-icon :name="item.icon" :color="item.color" :size="item.size || '50rpx'" customStyle="margin-right: 20rpx"></u-icon>
+					<text class="method-name">{{ item.name }}</text>
+				</view>
+				<view class="method-check" v-if="selectedMethod && selectedMethod.id === item.id">
+					<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="40rpx"></u-icon>
+				</view>
+			</view>
+		</view>
+	</CxModal>
 </template>
 
-<script setup>
-const amount = ref('6666');
+<script setup neme="withdrawXn">
+import zhongguoIcon from '@/static/images/bankLogo/zhongguo.svg';
+import jiansheIcon from '@/static/images/bankLogo/jianshe.svg';
+import gongshangcon from '@/static/images/bankLogo/gongshang.svg';
+import zhaoshangIcon from '@/static/images/bankLogo/zhaoshang.svg';
+import nongyeIcon from '@/static/images/bankLogo/nongye.svg';
+const amount = ref('600.00');
+const showMethodModal = ref(false);
+
+const withdrawMethods = ref([
+	{ id: 'alipay', name: '支付宝', icon: 'zhifubao-circle-fill', color: '#1296db' },
+	{ id: 'wechat', name: '微信', icon: 'weixin-fill', color: '#07c160' },
+	{ id: 'zhongguo', name: '中国银行', icon: zhongguoIcon, color: '#07c160', size: '40rpx' },
+	{ id: 'jianshe', name: '建设银行', icon: jiansheIcon, color: '#07c160', size: '40rpx' },
+	{ id: 'gongshang', name: '工商银行', icon: gongshangcon, color: '#07c160', size: '30rpx' },
+	{ id: 'zhaoshang', name: '招商银行', icon: zhaoshangIcon, color: '#07c160', size: '30rpx' },
+	{ id: 'nongye', name: '农业银行', icon: nongyeIcon, color: '#07c160', size: '40rpx' }
+]);
+
+const selectedMethod = ref(withdrawMethods.value[0]); // 默认选中第一个
+
+const handleShowWithdrawMethod = () => {
+	showMethodModal.value = true;
+};
+
+const handleSelectMethod = (item) => {
+	selectedMethod.value = item;
+	showMethodModal.value = false;
+};
 
 const handleWithdrawAll = () => {
 	amount.value = '3000.00';
@@ -95,7 +153,25 @@ const handleSubmit = () => {
 </script>
 
 <style lang="scss" scoped>
+:deep(.modal-btn){
+	display: none;
+}
+.method-list{
+	max-height: 500rpx;
+	overflow-y: auto;
+}
+.method-info{
+	display: flex;
+	align-items: center;
+}
+.method-item{
+	display: flex;
+    justify-content: space-between;
+    align-items: center;
+	margin-bottom: 20rpx;
+}
 .withdraw-page {
+
 }
 .amount-tips-right{
 	white-space: nowrap;

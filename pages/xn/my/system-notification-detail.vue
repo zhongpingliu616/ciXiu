@@ -8,6 +8,7 @@
 			      :show-head="false"
 			      :show-foot="false"
 			      :padding="24"
+				  margin="0"
 			      :border-radius="16"
 			      :shadow="true"
 			      class="notice-card"
@@ -15,45 +16,17 @@
 			      <template #body>
 			        <!-- 标题 -->
 			        <view class="title">
-			          这里是系统通知标题
+			          {{noticeDetailContent.title}}
 			        </view>
 			    
 			        <!-- 日期 -->
 			        <view class="date">
-			          2025-11-27
+			          {{ noticeDetailContent.create_time }}
 			        </view>
 			    
 			        <!-- 内容主体 -->
-			        <view class="content">
-			          <!-- 1. 新增功能 -->
-			          <view class="section">
-			            <text class="section-title">1. 新增功能</text>
-			            <view class="item">
-			              <text class="label">核心价值：</text>直接说明用户收益
-			            </view>
-			            <view class="item">
-			              <text class="label">使用场景：</text>明确适用场景
-			            </view>
-			            <view class="item">
-			              <text class="label">操作入口：</text>标注具体路径
-			            </view>
-			          </view>
-			    
-			          <!-- 2. 优化提升 -->
-			          <view class="section">
-			            <text class="section-title">2. 优化提升</text>
-			            <view class="item">
-			              <text class="label">优化亮点：</text>量化提升效果
-			            </view>
-			            <view class="item">
-			              <text class="label">优化前痛点：</text>呼应用户既往困扰
-			            </view>
-			          </view>
-			    
-			          <!-- 总结 -->
-			          <view class="summary">
-			            本次升级聚焦‘效率提升 + 安全加固’，新增3项实用功能，优化操作流程，修复已知问题，让使用更顺畅、更安心。
-			          </view>
+			        <view class="content" v-html="noticeDetailContent.content">
+									          
 			        </view>
 			      </template>
 			    </u-card>
@@ -65,10 +38,20 @@
 
 
 <script setup name="model">
-let title = ref("系统通知详情");	
-
-onLoad((options)=>{
-	console.log("页面参数",options)
+import { messageDetails } from '@/api/index.js'
+let title = ref("系统通知详情");
+let noticeDetailContent = ref({});
+onLoad( async (options)=>{
+	messageDetails({ id: options.id }).then(res=>{
+		if(res.code === 200){
+			noticeDetailContent.value = res?.data?.list || {};
+		} else {
+			uni.showToast({
+				title: res.msg || '数据加载失败',
+				icon: 'none'
+			});
+		}
+	})
 });
 </script>
 

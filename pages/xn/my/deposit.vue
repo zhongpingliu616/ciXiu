@@ -56,11 +56,12 @@
 </template>
 
 <script setup name="pay-deposit">
-import { getLevelLists } from '@/api/index'
+import { getLevelLists,addOrder } from '@/api/index'
 const { proxy } = getCurrentInstance();
 let title = ref("压金");
 let show = ref(false);
 let loading = ref(false);
+let id = null;
 let guarantees = ref([
 	'压金单独支付，包含违约保证金和退货压金两个部分；',
 	'压金以5000元为固定额度；',
@@ -78,12 +79,15 @@ const handlePayment = ()=>{
 		show.value = false;
 		loading.value = false;
 		uni.showToast({
-		title: '缴纳压金成功',
-		icon: 'success'
+			title: '缴纳压金成功',
+			icon: 'success'
 		});
+		addOrder({id}).then(res=>{
+			console.log("新增订单返回结果",res.data.lists);
+		})
 		// 可以在这里跳转回上一页或订单列表
 		setTimeout(() => {
-		uni.navigateBack()
+			uni.navigateBack()
 		}, 1500)
 	}, 2000);
 };
@@ -109,12 +113,12 @@ onMounted(async () => {
 	const res = await getLevelLists();
 	setLevelDatas(res);
 })
-// onLoad((options) => {
-// 	if (options.amount) {
-//         marginResultData[0].label = `￥ ${options.amount}`
-//     }
-//     console.log("缴纳金额",options.amount);
-// })
+onLoad((options) => {
+	if (options.id) {
+       id = options.id;
+    }
+    console.log("缴纳金额",options.amount);
+})
 </script>
 
 <style lang="scss" scoped>

@@ -107,6 +107,7 @@ onLoad((options) => {
 	eventChannel.value = instance.getOpenerEventChannel();
 	if (options && options.title) {
 		title.value = options.title;
+		form.value.is_default_address = options.addressLength == 0;
 	};
 	eventChannel.value.on('acceptDataFromOpenerPage', function(data) {
 		// console.log('接收到上一页数据:', data);
@@ -147,8 +148,8 @@ const handleRegionConfirm = (e) => {
 		const town = value[3] || {};
 		
 		// 按照用户要求的格式打印: '27466-27466-28589-28590'
-		// 对应: prov.id / city.pid / county.pid / town.pid
-		const pidString = `${prov.id || 0}/${city.pid || 0}/${county.pid || 0}/${town.pid || 0}`;
+		// 对应: prov.id / city.id / county.id / town.pid
+		const pidString = `${prov.id || 0}/${city.id || 0}/${county.id || 0}${town.id?'/'+town.id:''}`;
 		form.value.address = pidString;
 		console.log(pidString);
 	};	

@@ -13,40 +13,40 @@
 					<view class="content-box">
 					  <!-- 正面上传 -->
 					  <view class="upload-item">
-						<text class="label">身份证正面</text>
-						 <view class="upload-area" @click="handleUpload('front')">
-						    <!-- 已上传：显示图片 -->
-						    <image
-						      v-if="idCardImages.front"
-						      :src="idCardImages.front"
-						      class="preview-img"
-						      mode="widthFix"
-						     @click.stop="previewImage(idCardImages.front)"
-						    />
-						    <!-- 未上传：显示加号 -->
-						    <template v-else>
-						      <u-icon name="plus" color="#FF4D4D" size="60"></u-icon>
-						      <text class="tip">点击上传</text>
-						    </template>
-						  </view>
+              <text class="label">身份证正面</text>
+              <view class="upload-area" @click="handleUpload('front')">
+                  <!-- 已上传：显示图片 -->
+                  <image
+                    v-if="idCardImages.front"
+                    :src="idCardImages.front"
+                    class="preview-img"
+                    mode="widthFix"
+                  @click.stop="previewImage(idCardImages.front)"
+                  />
+                  <!-- 未上传：显示加号 -->
+                  <template v-else>
+                    <u-icon name="plus" color="#FF4D4D" size="60"></u-icon>
+                    <text class="tip">点击上传</text>
+                  </template>
+                </view>
 					  </view>
 				
 					  <!-- 反面上传 -->
 					  <view class="upload-item">
-						<text class="label">身份证反面</text>
-						<view class="upload-area" @click="handleUpload('back')">
-						    <image
-						      v-if="idCardImages.back"
-						      :src="idCardImages.back"
-						      class="preview-img"
-						      mode="widthFix"
-						     @click.stop="previewImage(idCardImages.back)"
-						    />
-						    <template v-else>
-						      <u-icon name="plus" color="#FF4D4D" size="60"></u-icon>
-						      <text class="tip">点击上传</text>
-						    </template>
-						  </view>
+              <text class="label">身份证反面</text>
+              <view class="upload-area" @click="handleUpload('back')">
+                  <image
+                    v-if="idCardImages.back"
+                    :src="idCardImages.back"
+                    class="preview-img"
+                    mode="widthFix"
+                  @click.stop="previewImage(idCardImages.back)"
+                  />
+                  <template v-else>
+                    <u-icon name="plus" color="#FF4D4D" size="60"></u-icon>
+                    <text class="tip">点击上传</text>
+                  </template>
+                </view>
 					  </view>
 					</view>
 				</view>
@@ -77,7 +77,7 @@ import { useLoginStore } from '@/stores/userLogin'
 const userStore = useLoginStore()
 let title = ref("身份认证");	
 let loading = ref(false);
-let isAuthen=ref(false);
+let isAuthen=ref(true);
 const {proxy} = getCurrentInstance();
 const eventChannel = proxy.getOpenerEventChannel();
   // 你可以在这里使用接收到的数据
@@ -174,7 +174,7 @@ onMounted(async () => {
   });
   const {code,data} = await authenStatus();
   if(code === 200){
-    isAuthen.value = data.status === 0; // 0无待审核 1有待审核
+    // isAuthen.value = data.status === 0; // 0无待审核 1有待审核
   }
 })
 </script>

@@ -2,7 +2,11 @@
 	<view class="page-wrap my-page">
 		<!-- 头部区域 -->
 		<view class="header-section">
-			<LayoutNavigation title="我的" :isBack="false" />
+			<LayoutNavigation title="我的" :isBack="false" >
+				<template #left>
+					<view></view>
+				</template>
+			</LayoutNavigation>
 		</view>
 		
 		<view class="page-content">
@@ -51,7 +55,7 @@
 					</view>
 					<view class="grid-item" @click="handleOrderClick('delivered')">
 						<u-icon name="rmb-circle" size="50rpx" color="#333"></u-icon>
-						<text class="grid-text">已交付</text>
+						<text class="grid-text">待接收成品</text>
 					</view>
 				</view>
 			</view>
@@ -204,7 +208,7 @@ const handleOrderClick = (type) => {
 		case 'progress': // 进行中 -> 待发货 (制作中)
 			tabIndex = 2;
 			break;
-		case 'delivered': // 已交付 -> 已交付
+		case 'delivered': // 待接收成品 -> 已交付
 			tabIndex = 3;
 			break;
 		default:

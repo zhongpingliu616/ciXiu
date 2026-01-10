@@ -1,12 +1,12 @@
 <template>
-	<u-picker
+	<up-picker
 		:show="show"
 		:columns="regionColumns"
 		keyName="name"
 		@confirm="handleConfirm"
 		@cancel="handleCancel"
 		@change="handleChange"
-	></u-picker>
+	></up-picker>
 </template>
 
 <script setup name="CxPicker">
@@ -24,7 +24,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:show', 'confirm']);
 
-const regionColumns = reactive([]);
+const regionColumns = reactive([[], [], [], []]);
 
 // 存储所有的地区数据
 const allData = reactive({
@@ -59,61 +59,74 @@ const initColumns = () => {
 	}
 };
 
+const lastIndexs = reactive([0, 0, 0, 0]);
+
 const handleChange = (e) => {
-	const { columnIndex, index, indexs, value } = e;
+	const { indexs } = e;
+	console.log('Picker Change:', indexs);
 	
-	// 根据变动的列进行级联更新
-	if (columnIndex === 0) {
-		// 省变动 -> 更新市、区、镇
-		const selectedProv = regionColumns[0][index];
-		if (selectedProv) {
-			const cityList = allData.cities.filter(item => item.pid === selectedProv.id);
-			regionColumns[1] = cityList;
+	// 省变动
+	if (indexs[0] !== lastIndexs[0]) {
+		const prov = regionColumns[0][indexs[0]];
+		if (prov) {
+			const cities = allData.cities.filter(item => item.pid === prov.id);
+			regionColumns[1] = cities;
 			
-			const selectedCity = cityList[0];
-			if (selectedCity) {
-				const countyList = allData.counties.filter(item => item.pid === selectedCity.id);
-				regionColumns[2] = countyList;
-				
-				const selectedCounty = countyList[0];
-				if (selectedCounty) {
-					const townList = allData.towns.filter(item => item.pid === selectedCounty.id);
-					regionColumns[3] = townList;
-				} else {
-					regionColumns[3] = [];
-				}
-			} else {
-				regionColumns[2] = [];
-				regionColumns[3] = [];
-			}
+			// 默认选中第一个市
+			const city = cities[0] || {};
+			const counties = allData.counties.filter(item => item.pid === city.id);
+			regionColumns[2] = counties;
+			
+			// 默认选中第一个区
+			const county = counties[0] || {};
+			const towns = allData.towns.filter(item => item.pid === county.id);
+			regionColumns[3] = towns;
+		} else {
+			regionColumns[1] = [];
+			regionColumns[2] = [];
+			regionColumns[3] = [];
 		}
-	} else if (columnIndex === 1) {
-		// 市变动 -> 更新区、镇
-		const selectedCity = regionColumns[1][index];
-		if (selectedCity) {
-			const countyList = allData.counties.filter(item => item.pid === selectedCity.id);
-			regionColumns[2] = countyList;
+		// 重置后续索引记录
+		lastIndexs[0] = indexs[0];
+		lastIndexs[1] = 0;
+		lastIndexs[2] = 0;
+		lastIndexs[3] = 0;
+	} 
+	// 市变动
+	else if (indexs[1] !== lastIndexs[1]) {
+		// 注意：此时 regionColumns[1] 应该已经是当前省对应的市列表
+		const city = regionColumns[1][indexs[1]];
+		if (city) {
+			const counties = allData.counties.filter(item => item.pid === city.id);
+			regionColumns[2] = counties;
 			
-			const selectedCounty = countyList[0];
-			if (selectedCounty) {
-				const townList = allData.towns.filter(item => item.pid === selectedCounty.id);
-				regionColumns[3] = townList;
-			} else {
-				regionColumns[3] = [];
-			}
+			// 默认选中第一个区
+			const county = counties[0] || {};
+			const towns = allData.towns.filter(item => item.pid === county.id);
+			regionColumns[3] = towns;
 		} else {
 			regionColumns[2] = [];
 			regionColumns[3] = [];
 		}
-	} else if (columnIndex === 2) {
-		// 区变动 -> 更新镇
-		const selectedCounty = regionColumns[2][index];
-		if (selectedCounty) {
-			const townList = allData.towns.filter(item => item.pid === selectedCounty.id);
-			regionColumns[3] = townList;
+		lastIndexs[1] = indexs[1];
+		lastIndexs[2] = 0;
+		lastIndexs[3] = 0;
+	}
+	// 区变动
+	else if (indexs[2] !== lastIndexs[2]) {
+		const county = regionColumns[2][indexs[2]];
+		if (county) {
+			const towns = allData.towns.filter(item => item.pid === county.id);
+			regionColumns[3] = towns;
 		} else {
 			regionColumns[3] = [];
 		}
+		lastIndexs[2] = indexs[2];
+		lastIndexs[3] = 0;
+	}
+	// 镇变动
+	else if (indexs[3] !== lastIndexs[3]) {
+		lastIndexs[3] = indexs[3];
 	}
 };
 

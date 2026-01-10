@@ -9,7 +9,7 @@
 								  <text class="order-text">订单</text>
 							  </view>
 						  </up-col>
-						  <up-col span="8">
+						  <up-col span="9">
 							  <view class="search-bar">
 								  <up-search
 								    v-model="searchKey"
@@ -25,13 +25,13 @@
 								  />
 							  </view>
 						  </up-col>
-						  <up-col span="2">
-							  <view class="bell-pic">
+						  <up-col span="1">
+							  <!-- <view class="bell-pic">
 								  <u-icon
 								    name="/static/images/orders/filter.png"
 								    size="74rpx"
 								  />
-							  </view>
+							  </view> -->
 						  </up-col>
 					  </up-row>
 				</view>

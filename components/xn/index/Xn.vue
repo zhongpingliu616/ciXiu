@@ -1,4 +1,31 @@
 <template>
+<view class="announcement">
+	<!-- <div class="chevron-line"></div> 🔔-->
+	<up-row customStyle="margin-bottom: 10px">
+	<up-col span="1">
+		<up-image :show-loading="true" src="/static/images/index/volume.png" width="50rpx" height="50rpx" ></up-image>
+	</up-col>
+	<up-col span="10"> 
+		<CxSwiperUni
+			:list="announcementList"
+			swiperHeight="46rpx"
+			:config="{
+				indicatorDots:false,
+				autoplay:true,
+				vertical:true
+			}"
+			@change="onSwiperChange"
+		>
+		
+		</CxSwiperUni>
+	</up-col>
+	<up-col span="1">
+		<view class="arrow-icon">
+			<!-- <up-icon size="24rpx" name="arrow-right" color="#CCBCBC" @click="announcementDetail"></up-icon> -->
+		</view>
+	</up-col>
+</up-row>
+</view>
 <view class="collection-list">
 <view class="collection-content">
   <CxScrollView
@@ -78,7 +105,7 @@
 </template>
 
 <script setup name="IndexXn">	
-import { taskLists } from '@/api/index.js'
+import { taskLists,noticeLists } from '@/api/index.js'
 let cxScrollViewRef = ref();
 const collectionList = [
 		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理',path:'/pages/xn/orders/order-management' },
@@ -86,6 +113,12 @@ const collectionList = [
 		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理' },
 		{ src: '/static/images/index/work-management.png',title:'作品管理',funtionText: '管理' }
 	];
+const announcementList = ref([
+//   { type: 'text', text: '您的第一期收益已到账”“NFT藏品XXX价格上涨10%' },
+//   { type: 'text', text: '您的第二期收益已到账”“NFT藏品XXX价格上涨10%2' },
+//   { type: 'text', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
+//   { type: 'text', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
+]);
 const emit = defineEmits(['showSearch']);
 
 // 模拟用户等级（用于判断是否可抢单）
@@ -102,6 +135,8 @@ const loadStatus = ref('loadmore') // 'loadmore', 'loading', 'nomore'
 const iconType = ref('flower')
 let hasMore = true
 let isLoading = false // 防止重复触发
+let swiperUniIndex = ref(0);
+let swiperUniItem = ref({});
 
 // 获取数据
 const fetchData = async (isRefresh = false) => {
@@ -187,18 +222,34 @@ const handleGrab = (item) => {
   	url: `/pages/xn/my/deposit?id=${item.id}`
   })
 }
-
+// 获取公告列表
+const getNoticeList = async () => {
+  try {
+	const res = await noticeLists();
+	
+	const newData = res.code === 200 ? (res.data.lists || []) : [];
+	if(newData.length>0){
+		let newAnnouncementList = [];
+		newData.forEach((item)=>{
+			newAnnouncementList.push({
+				...item,
+				type:'text',
+				text:item.title
+			});
+		});
+		announcementList.value = newAnnouncementList;
+	}
+  } catch (err) {
+	console.error('公告数据加载失败:', err)
+  }
+}
 // 页面加载时初始化数据
 onMounted(() => {
   fetchData()
+  getNoticeList()
 })
-	
-	
-	
-	
-	
-	
-	
+
+
 const naviToOrder= () =>{
 	emit('showSearch');
 	// uni.navigateTo({
@@ -218,6 +269,17 @@ const handleManage = (item)=>{
 const collectionItemClick = ({index,item})=>{
 	console.log("藏品列表点击",index, item);
 };
+const onSwiperChange = ({ index, item }) => {
+	swiperUniIndex.value = index || 0;
+	swiperUniItem.value = item || {};
+};
+const announcementDetail = (e)=>{
+	uni.showToast({
+		title: `跳转到公告详情${swiperUniIndex.value}`,
+		duration: 1000
+	});
+	uni.navigateTo({ url: `/pages/my/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp` });
+};	
 </script>
 
 <style lang="scss" scoped>
@@ -300,5 +362,12 @@ const collectionItemClick = ({index,item})=>{
 	width: 100%;
 	display: inline-block;
 	
+}
+.arrow-icon{
+	display: flex;
+	justify-content: flex-end;
+}
+.announcement{
+	margin-top: 42rpx;
 }
 </style>

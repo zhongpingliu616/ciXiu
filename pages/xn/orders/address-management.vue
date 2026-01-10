@@ -3,30 +3,54 @@
 		<LayoutNavigation title="收货地址" />
 		<view class="page-content">
 			<view class="address-list">
-				<view class="address-item" v-for="(item, index) in addressList" :key="item.id">
+				<view class="address-item" v-for="(item, index) in addressList" :key="item.id" :class="{ 'checked': item.is_default_address }">
 					<view class="info-row">
-						<text class="name">收货人：{{ item.contact_person }}{{item.is_default_address}}</text>
-						<text class="phone">{{ item.phone }}</text>
+						<u-icon name="map" size="32rpx" color="#34332E" style="margin-right: 20rpx;"></u-icon>
+						<text class="name">{{ item.contact_person }}</text>&nbsp;&nbsp;
+						<text class="phone">{{ item.contact_phone }}</text>
 					</view>
 					<view class="address-detail">
 						{{ item.resolvedAddress }}{{ item.detail_address }}
 					</view>
 					<view class="action-row">
 						<view class="default-wrap" @click.stop="handleSetDefault(index)">
-							<view class="radio-icon" :class="{ 'checked': item.is_default_address }" v-if="item.is_default_address">
-								<u-icon name="checkmark" color="#FF4D4F" size="20rpx"></u-icon> &nbsp;
+							<view class="radio-icon">
+								<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="item.is_default_address"></u-icon>
+								<uni-icons type="circle" color="#ccc" size="40" v-else></uni-icons>
+								 &nbsp;
 							</view>
+
 							<text class="default-text">默认地址</text>
 						</view>
 						<view class="btn-group">
-							<view class="btn-item" @click.stop="handleEdit(item)">
-								<u-icon name="edit-pen" color="#666" size="28rpx"></u-icon>
-								<text>编辑</text>
+							<view class="btn-item">
+								<CxComfirmBtn 
+									text="删除" 
+									@click.stop='handleDelete(index)'
+									:btnStyle="{
+										height: '60rpx',
+										padding: '0rpx 50rpx',
+										background: 'none',
+										color: '#ccc',
+										borderColor: '#ccc',
+									}"/>
+							</view>
+							<view class="btn-item">
+								<!-- <u-icon name="edit-pen" color="#666" size="28rpx"></u-icon>
+								<text>编辑</text> -->
+								<CxComfirmBtn 
+									text="修改"
+									 @click.stop="handleEdit(item)" 
+									:btnStyle="{
+										height: '60rpx',
+										padding: '0rpx 50rpx',
+									}" />
 							</view>
 							<!-- <view class="btn-item" @click.stop="handleDelete(index)">
 								<u-icon name="trash" color="#666" size="28rpx"></u-icon>
 								<text>删除</text>
 							</view> -->
+							
 						</view>
 					</view>
 				</view>
@@ -52,48 +76,12 @@
 
 <script setup>
 import { memberAddress, editAddress, deleteAddress } from '@/api/xn.js';
-import provincial from '@/static/provincial.js';
-import municipal from '@/static/municipal.js';
-import county from '@/static/county.js';
-import town from '@/static/town.js';
+import { getRegionName } from '@/utils/public.js';
+import CxComfirmBtn from '../../../components/CxComfirmBtn.vue';
 
 let showDeleteModal = ref(false);
 let deleteIndex = null;
 let addressList = ref([]);
-
-// 解析区域名称的方法
-const getRegionName = (addressStr) => {
-	if (!addressStr) return '';
-	// 尝试解析 ID 组合
-	const ids = String(addressStr).split(/[\/,\s]+/).map(id => parseInt(id, 10));
-	
-	let regionName = '';
-	
-	// Level 1: Province
-	if (ids[0]) {
-		const prov = provincial.find(item => item.id === ids[0]);
-		if (prov) regionName += prov.name;
-	}
-	
-	// Level 2: City
-	if (ids[1]) {
-		const city = municipal.find(item => item.id === ids[1]);
-		if (city) regionName += city.name;
-	}
-	
-	// Level 3: County
-	if (ids[2]) {
-		const cnt = county.find(item => item.id === ids[2]);
-		if (cnt) regionName += cnt.name;
-	}
-	
-	// Level 4: Town
-	if (ids[3]) {
-		const twn = town.find(item => item.id === ids[3]);
-		if (twn) regionName += twn.name;
-	};
-	return regionName;
-};
 
 const fetchAddressList = async () => {
 	try {
@@ -185,6 +173,7 @@ const handleEdit = (item) => {
 };
 const confirmDelete = async () => {
 	const item = addressList.value[deleteIndex];
+	return ;
 	try {
 		const res = await deleteAddress({ id: item.id });
 		if (res.code === 200 || res.code === 0) {
@@ -199,18 +188,24 @@ const confirmDelete = async () => {
 	}
 };
 const handleDelete = (index) => {
+	alert(index);
 	showDeleteModal.value = true;
 	deleteIndex = index;
 };
 
 const handleAdd = () => {
 	uni.navigateTo({
-		url: '/pages/xn/orders/edit-address?title=新增收货地址',
+		url: `/pages/xn/orders/edit-address?title=新增收货地址&addressLength=${addressList.value.length}`,
 	});
 };
 </script>
 
 <style lang="scss" scoped>
+::v-deep {
+	uni-text{
+			white-space: nowrap;
+		}
+}
 .address-management {
 	display: flex;
 	flex-direction: column;
@@ -229,59 +224,71 @@ const handleAdd = () => {
 	display: flex;
 	align-items: center;
 }
+.info-row {
+	display: flex;
+	align-items: center;
+	margin-bottom: 20rpx;
+	
+	.name {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #333;
+	}
+	
+	.phone {
+		font-size: 32rpx;
+		font-weight: bold;
+		color: #333;
+	}
+}
+
+.address-detail {
+	font-size: 28rpx;
+	color: #666;
+	line-height: 1.5;
+	margin-bottom: 30rpx;
+	padding-bottom: 30rpx;
+	border-bottom: 1rpx solid #eee;
+}
+.btn-item {
+	display: flex;
+	align-items: center;
+	gap: 8rpx;
+	
+	text {
+		font-size: 26rpx;
+		color: #666;
+	}
+}
+.btn-group {
+		display: flex;
+		gap: 30rpx;
+	}
+.action-row {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
 .address-item {
 	background: #fff;
 	border-radius: 16rpx;
 	padding: 30rpx;
 	margin-bottom: 24rpx;
-	
-	.info-row {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 20rpx;
-		
-		.name {
-			font-size: 32rpx;
-			font-weight: bold;
-			color: #333;
-		}
-		
-		.phone {
-			font-size: 32rpx;
-			font-weight: bold;
-			color: #333;
-		}
-	}
-	
-	.address-detail {
-		font-size: 28rpx;
-		color: #666;
-		line-height: 1.5;
-		margin-bottom: 30rpx;
-		padding-bottom: 30rpx;
-		border-bottom: 1rpx solid #eee;
-	}
-	
-	.action-row {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		
-		.btn-group {
-			display: flex;
-			gap: 30rpx;
-			
-			.btn-item {
-				display: flex;
-				align-items: center;
-				gap: 8rpx;
-				
-				text {
-					font-size: 26rpx;
-					color: #666;
-				}
-			}
+	&.checked {
+		position: relative;
+		&::after {
+			content: ' 默认 ';
+			padding: 12rpx 30rpx;
+			position: absolute;
+			top: 10rpx;
+			right: 10rpx;
+			background: linear-gradient(135deg, #EDD7A1, #F0ECCF);
+			border-radius: 10rpx;
+			border-top-right-radius: 20rpx;
+			border-bottom-left-radius: 20rpx;
+			pointer-events: none;
+			color: #7A5632;
+			font-size: 18rpx;
 		}
 	}
 }

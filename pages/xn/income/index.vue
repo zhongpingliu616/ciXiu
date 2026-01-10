@@ -1,6 +1,9 @@
 <template>
 	<view class="page-wrap income-index">
 		<LayoutNavigation title="我的收益">
+			<template #left>
+				<view></view>
+			</template>
 			<template #right>
 				<u-icon name="more-dot-fill" color="#fff" size="38rpx"></u-icon>
 			</template>
@@ -11,7 +14,7 @@
 				<view class="card-top">
 					<view class="balance-info">
 						<text class="label">账户余额 (RWVA)</text>
-						<text class="amount">99,222.00</text>
+						<text class="amount">{{ $globalUserInfoXn.income }}</text>
 						<text class="note">仅每周三10:00-12:00提现</text>
 					</view>
 					<view class="action-btns">
@@ -40,13 +43,14 @@
 								borderRadius: '100rpx',
 								plain: true
 							}"
+							@click="() => { uni.navigateTo({ url: '/pages/xn/income/recharge' }) }"
 						></CxComfirmBtn>
 					</view>
 				</view>
 				<view class="card-bottom">
 					<view class="stat-item">
 						<text class="stat-label">已到账收益(元)</text>
-						<text class="stat-value">999,222.00</text>
+						<text class="stat-value">{{ $globalUserInfoXn.income }}</text>
 					</view>
 					<view class="stat-divider"></view>
 					<view class="stat-item">
@@ -57,16 +61,16 @@
 			</view>
 
 			<!-- 提现方式 -->
-			<view class="section-title">提现方式</view>
-			<view class="withdraw-method-card">
+			<view class="section-title">提现资料</view>
+			<view class="withdraw-method-card" @click="showWithdrawalMethod=true">
 				<view class="method-left">
 					<image src="/static/images/income/bank-card.png" class="bank-icon" mode="aspectFit" v-if="false"></image>
-					<!-- 暂用图标代替 -->
+					
 					<u-icon name="rmb-circle-fill" color="#E60012" size="50rpx" customStyle="margin-right: 20rpx"></u-icon>
-					<text class="method-name">银行卡</text>
+					<text class="method-name">提现信息</text>
 				</view>
 				<view class="method-right">
-					<text class="bank-name">建设银行</text>
+					<text class="bank-name">更新</text>
 					<u-icon name="arrow-right" color="#999" size="28rpx"></u-icon>
 				</view>
 			</view>
@@ -90,11 +94,15 @@
 		</view>
 		<LayoutCustomBarXn />
 	</view>
+<up-popup :show="showWithdrawalMethod" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+	  <KeepAlive>
+		<XnIncomeWithdrawalMethod @close="closeSearch"></XnIncomeWithdrawalMethod>
+	  </KeepAlive>
+</up-popup>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-
+let showWithdrawalMethod = ref(false);
 const incomeList = ref([
 	{ title: '国风非遗刺绣', amount: '500.00', desc: '绣娘50% 平台30% 绣娘公益基金20%' },
 	{ title: '国风非遗刺绣', amount: '500.00', desc: '绣娘50% 平台30% 绣娘公益基金20%' },
@@ -104,7 +112,7 @@ const incomeList = ref([
 
 const handleWithdraw = () => {
 	uni.navigateTo({
-		url: '/pages/xn/income/withdraw'
+		url: '/pages/xn/income/withdraw-cash'
 	});
 };
 
@@ -115,7 +123,9 @@ const handleItemClick = (item) => {
 		url: '/pages/xn/income/refund-detail'
 	});
 };
-
+const closeSearch = ()=>{
+	showWithdrawalMethod.value = false;
+};
 onMounted(() => {
 	console.log('收益页面加载');
 });
@@ -125,7 +135,6 @@ onMounted(() => {
 .income-index {
 	background: #77171D url("/static/images/index/bg.png") repeat center top/contain;
 	min-height: 100vh;
-	padding-bottom: 120rpx;
 }
 
 .page-content {

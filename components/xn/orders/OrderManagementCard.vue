@@ -9,13 +9,13 @@
 			justify="space-between"
 			customStyle="margin-bottom: 1rpx">
 				  <up-col 
-				  span="6">
+				  span="9">
 					  <view class="order-id">
-						  <text>订单号: {{ item.id }}</text>
+						  <text class="order-id-text">订单号: {{ item.order_id }}</text>
 					  </view>
 				  </up-col>
 				  <up-col
-				  span="6">
+				  span="3">
 					  <view class="right-wrap">
 					      <view class="status-btn">
 					        <up-button
@@ -27,7 +27,7 @@
 					        >
 					          <text
 					            :style="{
-					              fontSize: '28rpx',
+					              fontSize: '24rpx',
 					              color: statusColor
 					            }"
 					          >
@@ -43,7 +43,7 @@
 	   <view class="card-header">
 		 <image :src="item.image" class="card-image" mode="aspectFill" />
 		 <view class="card-content">
-		   <view class="card-title">{{ item.title }}</view>
+		   <view class="card-title">{{ item.name }}</view>
 		   <view class="tags">
 			 <CxTag
 			   :text="item.period || '工期360天'"
@@ -56,7 +56,7 @@
 		   </view>
 		   <view class="bottom-row">
 			 <text class="cur-order-price">
-				 ￥{{ item.price || '60.09' }}
+				 ￥{{ item.reward_amount || '' }}
 			 </text>
 		   </view>
 		 </view>
@@ -74,7 +74,7 @@
 			   </view>
 		   </template>
 		   
-		   <!-- 待发货: 提醒发货 -->
+		   <!-- 待发货: 提醒发材料 -->
 		   <template v-else-if="item.status === 20">
 			   <view class="function-btn">
 				   <CxComfirmBtn 
@@ -83,29 +83,46 @@
 			   </view>
 		   </template>
 
-		   <!-- 已交付(已发货): 查看物流 -->
+		   <!-- 待接材料: 查看物流 已收材料-->
 		   <template v-else-if="item.status === 30">
-			   <view class="function-btn">
-				   <CxComfirmBtn 
-				   :btnStyle="cancelBtnStyle"
-				   @click="handleAction('logistics')" text="查看物流"></CxComfirmBtn>
-			   </view>
-		   </template>
-
-		   <!-- 待验收: 查看物流, 确认收货 -->
-		   <template v-else-if="item.status === 40">
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
 				   @click="handleAction('logistics')" text="查看物流"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 			   <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('confirm')" text="确认收货"></CxComfirmBtn>
+				   <CxComfirmBtn 
+				   :btnStyle="cancelBtnStyle"
+				   @click="handleAction('receivingMaterials')" text="已收材料"></CxComfirmBtn>
+			   </view>&nbsp;&nbsp;
+		   </template>
+
+		   <!-- 待发成品:  制作完成 -->
+		   <template v-else-if="item.status === 40">
+			   <view class="function-btn">
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('produced')" text="制作完成"></CxComfirmBtn>
 			   </view>
 		   </template>
 
+		   <!-- 待接收成品:  已接收成品 -->
+		   <template v-else-if="item.status === 50">
+			   <!-- <view class="function-btn">
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('finishedProductReceived')" text="已接收成品"></CxComfirmBtn>
+			   </view> -->
+		   </template>
+
+		   <!-- 待验收:  验收成功  验收失败-->
+		   <template v-else-if="item.status === 60">
+			   <!-- <view class="function-btn">
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('acceptanceSuccessful')" text="验收成功"></CxComfirmBtn>
+			   </view>&nbsp;&nbsp;
+			   <view class="function-btn">
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('acceptanceFailure')" text="验收失败"></CxComfirmBtn>
+			   </view> -->
+		   </template>
+
 		   <!-- 验收成功/验收失败/已取消: 删除订单 -->
-		   <template v-else-if="[50, 51, 60].includes(item.status)">
+		   <template v-else-if="item.status === 90">
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
@@ -119,7 +136,6 @@
 
 
 <script setup name="order-card">
-
 const emit = defineEmits(['action'])
 const props = defineProps({
   item: { type: Object, 
@@ -129,39 +145,38 @@ const props = defineProps({
 
 // 样式配置
 const cancelBtnStyle = {
-   color:'#8F8F8F',
-   borderColor: '#8F8F8F',
-   background: 'transparent',
-   padding: '10rpx 34rpx',
-}
+   padding: '0rpx 34rpx',
+};
 
 // 状态映射
 const statusMap = {
-	10: { text: '待支付', color: '#F9402C' },
-	20: { text: '待发货', color: '#D1A156' },
-	30: { text: '已交付', color: '#8F8F8F' }, // 或者用其他颜色
-	40: { text: '待验收', color: '#F9402C' },
-	50: { text: '验收成功', color: '#00C853' }, // 绿色
-	51: { text: '验收失败', color: '#F9402C' },
-	60: { text: '已取消', color: '#8F8F8F' }
-}
+  10: { text: '待支付', color: '#FF4D4F' },   // 红｜强提醒
+  20: { text: '待发货', color: '#FA8C16' },   // 橙｜进行中
+  30: { text: '待接受材料', color: '#1890FF' }, // 蓝｜处理中
+  40: { text: '待发成品', color: '#FA541C' },   // 深橙｜关键节点
+  50: { text: '待接收成品', color: '#13C2C2' }, // 青｜物流流转
+  60: { text: '待验收', color: '#722ED1' },     // 紫｜待确认
+  70: { text: '验收成功', color: '#52C41A' },   // 绿｜成功
+  80: { text: '验收失败', color: '#A8071A' },   // 深红｜失败
+  90: { text: '取消订单', color: '#8C8C8C' }    // 灰｜终止
+};
 
 const statusText = computed(() => {
 	return statusMap[props.item.status]?.text || '未知状态'
-})
+});
 
 const statusColor = computed(() => {
 	return statusMap[props.item.status]?.color || '#333'
-})
+});
 
 // 按钮点击事件
 const handleAction = (type) => {
   emit('action', { type, item: props.item })
-}
+};
 
 const handleCardClick = () => {
 	emit('action', { type: 'detail', item: props.item })
-}
+};
 
 </script>
 
@@ -186,6 +201,13 @@ const handleCardClick = () => {
 .right-wrap {
   display: flex;
   justify-content: flex-end;
+}
+.order-id-text{
+	white-space: nowrap;
+}
+.order-id{
+	overflow: hidden;
+    text-overflow: ellipsis;
 }
 .order-card-item{
 	background: #fff;
