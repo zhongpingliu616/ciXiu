@@ -63,7 +63,9 @@
 </template>
 
 
-<script setup name="model">
+<script setup name="user-model">
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 import { useConfigStore } from '@/stores/configStore'
 
 let title = ref("用户协议");	
@@ -128,7 +130,7 @@ const notAgree = () => {
 .page-wrap{
 	background: 
 	url("/static/images/index/bg.png") no-repeat center/cover;
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }		
 	
 </style>

@@ -93,22 +93,17 @@
 </template>
 
 <script setup neme="withdrawXn">
-import zhongguoIcon from '@/static/images/bankLogo/zhongguo.svg';
-import jiansheIcon from '@/static/images/bankLogo/jianshe.svg';
-import gongshangcon from '@/static/images/bankLogo/gongshang.svg';
-import zhaoshangIcon from '@/static/images/bankLogo/zhaoshang.svg';
-import nongyeIcon from '@/static/images/bankLogo/nongye.svg';
 const amount = ref('600.00');
 const showMethodModal = ref(false);
 
 const withdrawMethods = ref([
 	{ id: 'alipay', name: '支付宝', icon: 'zhifubao-circle-fill', color: '#1296db' },
 	{ id: 'wechat', name: '微信', icon: 'weixin-fill', color: '#07c160' },
-	{ id: 'zhongguo', name: '中国银行', icon: zhongguoIcon, color: '#07c160', size: '40rpx' },
-	{ id: 'jianshe', name: '建设银行', icon: jiansheIcon, color: '#07c160', size: '40rpx' },
-	{ id: 'gongshang', name: '工商银行', icon: gongshangcon, color: '#07c160', size: '30rpx' },
-	{ id: 'zhaoshang', name: '招商银行', icon: zhaoshangIcon, color: '#07c160', size: '30rpx' },
-	{ id: 'nongye', name: '农业银行', icon: nongyeIcon, color: '#07c160', size: '40rpx' }
+	{ id: 'zhongguo', name: '中国银行', icon: 'zhongguoIcon', color: '#07c160', size: '40rpx' },
+	{ id: 'jianshe', name: '建设银行', icon: 'jiansheIcon', color: '#07c160', size: '40rpx' },
+	{ id: 'gongshang', name: '工商银行', icon: 'gongshangcon', color: '#07c160', size: '30rpx' },
+	{ id: 'zhaoshang', name: '招商银行', icon: 'zhaoshangIcon', color: '#07c160', size: '30rpx' },
+	{ id: 'nongye', name: '农业银行', icon: 'nongyeIcon', color: '#07c160', size: '40rpx' }
 ]);
 
 const selectedMethod = ref(withdrawMethods.value[0]); // 默认选中第一个

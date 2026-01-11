@@ -23,6 +23,8 @@
 
 <script setup name="detail-index">
 import NftDetail from '@/components/xn/workDetail/NftDetail.vue'
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 let title =ref("作品详情");
 let collectionImage=ref('');
 let workType = ref("NftDetail");
@@ -61,6 +63,6 @@ onLoad(({id,workType})=>{
 .page-wrap{
 	background:url("/static/images/collection-detail/collection-detail-top-bg.png") no-repeat center top/contain, 
 	url("/static/images/index/bg.png") no-repeat center/cover;
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }	
 </style>

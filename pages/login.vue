@@ -74,7 +74,8 @@
 <script setup>
 import { useLoginStore } from '@/stores/userLogin'
 import { login } from '@/api/index'
-
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 	const xiuliangFormRef = ref(null);
 	const gongzhongFormRef = ref(null);
 	let mentStatusXn = ref(false);
@@ -252,7 +253,7 @@ onLoad((query) => {
 <style lang="scss" scoped>
 .page-wrap{
 	background: url("@/static/images/user/login-bg.png") no-repeat center/cover;
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }
 .logo {
 	height: 200rpx;

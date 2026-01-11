@@ -71,6 +71,8 @@
 
 
 <script setup name="identityAuthentication">
+  const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 import { addAuthen, uploadImage,authenStatus } from '@/api/index'
 import { useLoginStore } from '@/stores/userLogin'
 
@@ -78,7 +80,6 @@ const userStore = useLoginStore()
 let title = ref("身份认证");	
 let loading = ref(false);
 let isAuthen=ref(true);
-const {proxy} = getCurrentInstance();
 const eventChannel = proxy.getOpenerEventChannel();
   // 你可以在这里使用接收到的数据
 let idCardImages = reactive({
@@ -247,6 +248,6 @@ onMounted(async () => {
 .page-wrap{
 	background: 
 	url("/static/images/index/bg.png") no-repeat center/cover;
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }
 </style>

@@ -40,6 +40,8 @@
 
 
 <script setup name="withdrawal-record">
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 let title = ref("提现记录");	
 // 模拟数据
 const withdrawalList = ref([
@@ -100,7 +102,7 @@ const getStatusType = (status) => {
   color: #999;
 }
 .page-wrap{
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }		
 	
 </style>

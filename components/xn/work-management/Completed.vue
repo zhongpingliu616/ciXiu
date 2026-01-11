@@ -20,14 +20,14 @@
 	   <view class="card-header">
 		 <image :src="item.image" class="card-image" mode="aspectFill" />
 		 <view class="card-content">
-		   <view class="card-title">{{ item.title }}</view>
+		   <view class="card-title">{{ item.name }}</view>
 		   <view class="tags">
 			 <CxTag
-			   text="工期360天"
+			   :text="item.period"
 			   :bgGradient="['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']"
 			 />&nbsp;
 			 <CxTag
-			   text="难度低"
+			   :text="item.difficulty"
 			   :bgGradient="['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']"
 			 />
 		   </view>
@@ -38,50 +38,51 @@
 			   color="#04427F" 
 			   size="36rpx" 
 			   /> &nbsp;<text>
-				   每周三 16:00
+				   {{ item.end_time }}
 				</text>
 			 </view>
 			 <view class="can-grab">
 				 <CxComfirmBtn :btnStyle="{
 					 height:'60rpx'
-				 }" @click="handleGrab(item)" :text="'提交成品'"></CxComfirmBtn>
+				 }" :text="'提交成品'"></CxComfirmBtn>
 			 </view>
 		   </view>
 		 </view>
 	   </view>
    </view>
 
-   <!-- 加载中提示 -->
-   <u-loading-icon
-	 v-if="loading && !refreshing"
-	 :size="30"
-	 :show-text="true"
-	 text="加载中..."
-	 style="margin: 30rpx auto;"
-   />
+      <!-- 加载中提示 -->
+      <u-loading-icon
+      v-if="loading && !refreshing"
+      icon-size="30rpx"
+      :show-text="true"
+      text="加载中..."
+      style="margin: 30rpx auto;"
+      />
 
-   <!-- 没有更多数据提示 -->
-   <u-empty
-	 v-if="listData.length > 0 && !loading && noMore"
-	 mode="data"
-	 text="没有更多数据了"
-	 :icon-size="80"
-	 style="margin-top: 50rpx;"
-   ></u-empty>
+      <!-- 没有更多数据提示 -->
+      <u-empty
+      v-if="listData.length > 0 && !loading && noMore"
+      mode="data"
+      text="没有更多数据了"
+      icon-size="30rpx"
+      style="margin-top: 50rpx;"
+      ></u-empty>
 
-   <!-- 初始空状态 -->
-   <u-empty
-	 v-if="listData.length === 0 && !loading && !refreshing"
-	 mode="data"
-	 text="暂无数据"
-	 :icon-size="80"
-	 style="margin-top: 100rpx;"
-   ></u-empty>
+      <!-- 初始空状态 -->
+      <u-empty
+      v-if="listData.length === 0 && !loading && !refreshing"
+      mode="data"
+      text="暂无数据"
+      icon-size="30rpx"
+      style="margin-top: 100rpx;"
+      ></u-empty>
  </scroll-view>
 </template>
 
 
 <script setup name="Unfinished">
+import { orderLists,editOrderSatus } from '@/api/index.js'
 // 模拟用户等级（用于判断是否可抢单）
 const userLevel = ref(3) // 假设用户等级为3
 
@@ -92,11 +93,32 @@ const refreshing = ref(false)
 const page = ref(1)
 const pageSize = ref(10)
 const noMore = ref(false)
+const loadStatus = ref('loadmore')
+const props = defineProps({
+  status: {
+    type: [Number, Array],
+    default: 70
+  }
+})
 // 模拟数据生成函数
 const generateMockData = (pageNum, count) => {
   const data = []
   for (let i = 0; i < count; i++) {
     const id = (pageNum - 1) * count + i + 1
+    const realDataItem = {
+                "id": 5,
+                "order_id": "em2026010706583531889",
+                "username": "a123455",
+                "status": 10,
+                "create_time": "2026-01-07 06:58:35",
+                "task_info": "",
+                "reward_amount": "1200.00",
+                "end_time": "2027-01-02 06:58:35",
+                "image": "http://www.study-code-tpdan.com/image/20260103/695920273a63e.jpg",
+                "name": "古韵,非遗刺绣",
+                "period": "360天",
+                "difficulty": "难度困难"
+            };
     data.push({
       id,
       image: 'https://cdn.uviewui.com/uview/album/1.jpg', // 可替换为你自己的图片
@@ -114,31 +136,52 @@ const fetchData = async (isRefresh = false) => {
   if (isRefresh) {
     page.value = 1
     noMore.value = false
+    refreshing.value = true
     listData.value = []
   }
 
   if (noMore.value && !isRefresh) return
 
   loading.value = true
-
+  loadStatus.value = 'loading'
   try {
-    // 模拟网络请求延迟
-    await new Promise((resolve) => setTimeout(resolve, 800))
-
-    const newData = generateMockData(page.value, pageSize.value)
-
-    if (newData.length < pageSize.value) {
-      noMore.value = true
+    const params = {
+      page_no: page.value,
+      page_size: pageSize.value
+    };
+    
+    // 如果 status 存在且不是 'null'/'undefined' (代表全部)，则添加到参数中
+    // 根据 order-management.vue，"全部"对应的 status 是 null
+    if (props.status !== null && props.status !== undefined) {      
+      params.status = props.status;
     }
 
-    if (isRefresh) {
-      listData.value = newData
+    const res = await orderLists(params);
+    
+    if (res.code === 200 || res.code === 0) {
+      const newData = res.data.lists || []; // 假设返回结构是 data.lists
+      
+      if (newData.length < pageSize.value) {
+        noMore.value = true
+        loadStatus.value = 'nomore'
+      }
+
+      if (isRefresh) {
+        listData.value = newData
+        if(!isRefresh) loadStatus.value = 'loadmore'
+      } else {
+        listData.value = [...listData.value, ...newData]
+        loadStatus.value = noMore.value ? 'loadmore' : 'nomore'
+      }
+
+      page.value++
+      console.log("列表数据",listData)
     } else {
-      listData.value = [...listData.value, ...newData]
+      console.error('获取订单列表失败:', res.msg);
+      // uni.showToast({ title: res.msg || '获取失败', icon: 'none' });
     }
-
-    page.value++
   } catch (err) {
+    if(!isRefresh) loadStatus.value = 'loadmore'
     console.error('数据加载失败:', err)
   } finally {
     loading.value = false
@@ -159,12 +202,7 @@ const onScrollToLower = () => {
   }
 }
 
-// 抢单按钮点击事件
-const handleGrab = (item) => {
-	
-  uni.showToast({ title: '提交成品！', icon: 'success' })
-  // 可在此处调用接口更新状态
-}
+
 
 // 页面加载时初始化数据
 onMounted(() => {
@@ -224,6 +262,7 @@ onMounted(() => {
 }
 .can-grab{
 	width: 188rpx;
+	filter: grayscale(1);
 }
 .card-content {
   flex: 1;

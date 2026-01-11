@@ -31,7 +31,8 @@
 <script setup name="orderManagement">
 let title = ref("订单管理");	
 let currentWorkIndex = ref(0);
-
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 const tabsConfig = [
 	{ name: '全部', status: null },
 	{ name: '待支付', status: 10 },
@@ -75,6 +76,6 @@ onLoad((options) => {
   box-sizing: border-box;
 }
 .page-wrap{
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }
 </style>

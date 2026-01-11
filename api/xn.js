@@ -41,6 +41,8 @@ export const addOrder = (data) => post('/embroid/order/add', data) // 新增订�
 export const editOrderSatus = (data) => post('/embroid/order/edit', data) // 修改订单状态
 export const orderDetails = (data) => get('/embroid/order/details', data) // 订单详情
 export const orderPay = (data) => post('/embroid/order/pay', data) // 订单支付
+export const updateUserInfo = (data) => post('/embroid/user/updateInfo', data) // 更新用户信息
+
 
 
 export const uploadImage = (filePath) => { // 上传图片

@@ -2,6 +2,9 @@
     "version" : "1.0",
     "configurations" : [
         {
+            "customPlaygroundType" : "device",
+            "localRepoPath" : "/Users/liuzp818/Desktop/project/myServerGit/ciXiu",
+            "packageName" : "cixiu-test",
             "playground" : "standard",
             "type" : "uni-app:app-android"
         }

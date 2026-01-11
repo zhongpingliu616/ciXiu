@@ -1,5 +1,5 @@
 <template>
-  <view class="nav" :style="{ top: statusBar*2 + 'px' }">
+  <view class="nav" :style="{ top: statusBar + 'rpx' }">
     <view class="bar">
       <slot name="left">
 		  <image

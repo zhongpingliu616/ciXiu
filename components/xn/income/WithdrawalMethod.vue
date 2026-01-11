@@ -115,6 +115,8 @@ let loading = ref(false);
 const statusBar = uni.getSystemInfoSync().statusBarHeight;
 const emit = defineEmits(['close']);
 let showDeleterModal = ref(false);
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 let currentQrCodeType = '';
 let uploadImages = reactive({
     wechatQrCode: '',  
@@ -253,7 +255,7 @@ const onCancel = ()=>{
   font-size: 24rpx;
 }
 .page-wrap{
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }		
 .nav {
 	position: sticky;

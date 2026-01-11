@@ -62,6 +62,9 @@
 </template>
 
 <script setup name="orders">
+
+const { proxy } = getCurrentInstance();
+const safeTopValue = proxy.$safeAreaInfo.top +'rpx'
 let title = ref("orders");
 let searchKey = ref("");
 const debounceSearch = useDebounce(() => {
@@ -256,6 +259,6 @@ function useDebounce(fn, delay = 1500) {
 }
 
 .page-wrap{
-	grid-template-rows: 0rpx 1fr 120rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 120rpx;
 }
 </style>

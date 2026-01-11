@@ -37,7 +37,9 @@
 </template>
 
 
-<script setup name="model">
+<script setup name="sys-model">
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 import { messageDetails } from '@/api/index.js'
 let title = ref("系统通知详情");
 let noticeDetailContent = ref({});
@@ -79,7 +81,7 @@ onLoad( async (options)=>{
 }
 .page-wrap{
 	 display: grid;
-	  grid-template-rows: 80rpx 1fr auto;
+	  grid-template-rows: v-bind(safeTopValue) 1fr 120rpx;
 }		
 	
 </style>

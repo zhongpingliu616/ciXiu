@@ -17,6 +17,7 @@
 </template>
 
 <script setup>
+	alert("自定义");
 const tabs = [
   {
     path: '/pages/xn/index/index',
@@ -30,18 +31,18 @@ const tabs = [
     icon: '/static/images/order_gray_icon.png',
     activeIcon: '/static/images/order_active_icon.png'
   },
-  {
-    path: '/pages/xn/income/index',
-    text: '收益',
-    icon: '/static/images/income_gray_icon.png',
-    activeIcon: '/static/images/income_active_icon.png'
-  },
-  {
-    path: '/pages/xn/my/index',
-    text: '我的',
-    icon: '/static/images/my_gray_icon.png',
-    activeIcon: '/static/images/my_active_icon.png'
-  }
+  // {
+  //   path: '/pages/xn/income/index',
+  //   text: '收益',
+  //   icon: '/static/images/income_gray_icon.png',
+  //   activeIcon: '/static/images/income_active_icon.png'
+  // },
+  // {
+  //   path: '/pages/xn/my/index',
+  //   text: '我的',
+  //   icon: '/static/images/my_gray_icon.png',
+  //   activeIcon: '/static/images/my_active_icon.png'
+  // }
 ];
 
 const current = ref("")
@@ -64,7 +65,7 @@ function go(path) {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 124rpx;
+  height: 12rpx;
   background: #77171d;
   border-top-left-radius: 60rpx;
   border-top-right-radius: 60rpx;

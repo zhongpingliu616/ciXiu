@@ -464,4 +464,7 @@ onMounted(() => {
 .logout-btn {
 	margin-bottom: 60rpx;
 }
+.page-wrap{
+	  grid-template-rows: 80rpx 1fr 140rpx;
+}
 </style>

@@ -74,6 +74,8 @@
 
 
 <script setup name="electronic-contract">
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 const title = ref("电子合同");
 let loading = ref(false);
 const scrollTop = ref(0);
@@ -106,7 +108,7 @@ const scroll = (e) => {
 .page-wrap{
 		background: url("/static/images/user/login-bg.png") no-repeat;
 		background-size: cover;
-		grid-template-rows: 80rpx 1fr 0rpx;
+		grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 	}
 .container{
 	padding: 24rpx;

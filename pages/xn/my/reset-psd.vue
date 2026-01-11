@@ -111,6 +111,8 @@
 
 
 <script setup name="registXn">
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 import { resetPassword, sendSms } from '@/api/index'
 
 let title = ref("重置密码");	
@@ -235,6 +237,7 @@ const getVerifyCode = async () => {
       if (res.code === 200) {
           uni.showToast({ title: '验证码已发送', icon: 'success' });
           isCounting.value = true;
+          form.code = res.data.sms_code;
           const timer = setInterval(() => {
             countdown.value--
             if (countdown.value <= 0) {
@@ -301,7 +304,7 @@ const toggleConfirmPassword = () => {
 .page-wrap{
 	background: 
 	url("/static/images/index/bg.png") no-repeat center/cover;
-	grid-template-rows: 80rpx 1fr 120rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 120rpx;
 }		
 	
 </style>

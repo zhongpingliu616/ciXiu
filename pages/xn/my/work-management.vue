@@ -41,6 +41,8 @@
 	</view>
 </template>
 <script setup name="workManagement">
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 import Completed from '@/components/xn/work-management/Completed.vue'
 import Unfinished from '@/components/xn/work-management/Unfinished.vue'
 const componentMap = {
@@ -101,12 +103,12 @@ const currentWork = computed(()=>{
 	border: 2rpx solid $app-border-color;
 }
 .order-container {
-  height: 80vh;
+  height: 85vh;
 }
 .page-wrap{
 	background: 
 	url("/static/images/index/bg.png") no-repeat center/cover;
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }		
 	
 </style>

@@ -248,31 +248,12 @@
 		"selectedColor": "#FFF3CF",
 		"borderStyle": "black",
 		"backgroundColor": "#77171D",
+		"height": "0px",
 		"list": [
-			{
-			"pagePath": "pages/index",
-			"iconPath": "static/images/index_gray_icon.png",
-			"selectedIconPath": "static/images/index_active_icon.png",
-			"text": "首页"
-			},
-			{
-				"pagePath": "pages/xn/orders/index",
-				"iconPath": "static/images/order_gray_icon.png",
-				"selectedIconPath": "static/images/order_active_icon.png",
-				"text": "订单"
-			}, 
-			{
-				"pagePath": "pages/xn/income/index",
-				"iconPath": "static/images/income_gray_icon.png",
-				"selectedIconPath": "static/images/income_active_icon.png",
-				"text": "收益"
-			}, 
-			{
-				"pagePath": "pages/xn/my/index",
-				"iconPath": "static/images/my_gray_icon.png",
-				"selectedIconPath": "static/images/my_active_icon.png",
-				"text": "我的"
-			}
+			{ "pagePath": "pages/index" },
+			{ "pagePath": "pages/xn/orders/index" },
+			{ "pagePath": "pages/xn/income/index" },
+			{ "pagePath": "pages/xn/my/index" }
 		]
 	},
 

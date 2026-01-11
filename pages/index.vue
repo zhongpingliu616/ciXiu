@@ -1,6 +1,8 @@
 <template>
 	<view class="page-wrap index">
-		<view></view>
+		<view :style="{
+				  paddingTop: $safeAreaInfo.top +'rpx'
+			  }"></view>
 		<!-- <LayoutNavigation :title="title" /> -->
 		<view class="page-content">
 			<up-row customStyle="margin-bottom: 10px">
@@ -52,7 +54,7 @@
 	 <LayoutCustomBarGz v-else> </LayoutCustomBarGz>
 	</view>
   <keep-alive>
-<up-popup :show="showSearchPageXn" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+<up-popup :show="showSearchPageXn" bgColor="#691e23" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
 	  <XnIndexSearch @close="closeSearch"></XnIndexSearch>
 </up-popup>
 </keep-alive>
@@ -64,6 +66,7 @@ import IndexXn from '@/components/xn/index/Xn.vue'
 import IndexGz from '@/components/gz/index/Gz.vue'
 import { getBannerList,messageLists} from '@/api/index.js'
 const { proxy } = getCurrentInstance();
+const safeTopValue = proxy.$safeAreaInfo.top +'rpx'
 const componentMap = {
   IndexXn,
   IndexGz
@@ -159,7 +162,9 @@ onMounted(() => {
   getBannerListFunction();
   getMessageListFunction();
 });
-
+onLaunch(() => {
+  
+})
 onShow(() => {
 	tokenXn = proxy.$globalUserInfoXn?.token || uni.getStorageSync('tokenXn');
 	tokenGz = proxy.$globalUserInfoGz?.token || uni.getStorageSync('tokenGz');
@@ -245,7 +250,7 @@ onShow(() => {
 	
 }
 .page-wrap{
-	grid-template-rows: 0rpx 1fr 120rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 40rpx;
 }
 .title {
 	font-size: 36rpx;

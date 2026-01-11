@@ -38,7 +38,8 @@
 <script setup name="systemNotification">
 let title = ref("系统通知");	
 let eventChannel = ref(null);
-const {proxy} = getCurrentInstance();
+const { proxy } = getCurrentInstance();
+const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 // 模拟数据
 const notifications = ref([
   // {
@@ -140,7 +141,7 @@ onLoad(()=>{
   white-space: nowrap;
 }
 .page-wrap{
-	grid-template-rows: 80rpx 1fr 0rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;
 }		
 	
 </style>
