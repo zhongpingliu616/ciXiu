@@ -118,32 +118,30 @@ const handleSubmit = async ()=>{
 	  // 2. 先上传图片获取服务器路径
 	  // 这里假设 uploadImage 返回的是图片 URL 字符串
 	  // 如果返回的是对象，请根据实际接口调整
-	  const frontUrl = await uploadImage(idCardImages.front);
-	  const backUrl = await uploadImage(idCardImages.back);
-	  
-	  console.log('Front URL:', frontUrl);
-	  console.log('Back URL:', backUrl);
+	  const frontRes = await uploadImage(idCardImages.front);
+	  const backRes = await uploadImage(idCardImages.back);
+    
 
 	  // 3. 提交认证信息
 	  const res = await addAuthen({
-		front_image: frontUrl.url,
-		back_image: backUrl.url
+      front_image: frontRes.data.url || "",
+      back_image: backRes.data.url || ""
 	  });
 	  
 	  const { code=9999, data,msg } = res;
 	  if (code === 200) {
-		uni.showToast({
-		  title: '上传成功，等待审核',
-		  icon: 'success'
-		});
-		
-		// 更新用户信息中的实名状态
-		userStore.updateUserInfo('XN', { real_name_check: 1 }); // 假设 1 表示审核中或已提交
-		
-		// 延迟跳转
-		setTimeout(() => {
-			uni.reLaunch({ url: '/pages/index' });
-		}, 1500);
+      uni.showToast({
+        title: '上传成功，等待审核',
+        icon: 'success'
+      });
+      
+      // 更新用户信息中的实名状态
+      userStore.updateUserInfo('XN', { real_name_check: 1 }); // 假设 1 表示审核中或已提交
+      
+      // 延迟跳转
+      setTimeout(() => {
+        uni.reLaunch({ url: '/pages/index' });
+      }, 1500);
 	  } else {
 		uni.showToast({
 		  title: msg || '上传失败，请重试',

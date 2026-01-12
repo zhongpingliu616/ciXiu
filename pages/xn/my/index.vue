@@ -168,7 +168,7 @@
 <script setup>
 let showClearModal = ref(false);
 const title = ref("我的");
-
+const {proxy} = getCurrentInstance();
 // 作品数据
 const worksList = ref([
 	{ src: 'https://cdn.uviewui.com/uview/album/1.jpg', id: 1 },
@@ -248,12 +248,24 @@ const confirmClear = ()=>{
 const handleLogout = () => {
 	showClearModal.value = true;
 	uni.clearStorageSync();
+	uni.navigateTo({
+		url: '/pages/login?role=XN'
+	});
 };
 
 // 跳转个人资料编辑
 const handleProfileClick = () => {
 	uni.navigateTo({
-		url: '/pages/xn/my/profile-edit'
+		url: '/pages/xn/my/profile-edit',
+		success(res) {
+				res.eventChannel.emit('sendUserData', {
+					reg_ip:proxy.$globalUserInfoXn.reg_ip,
+					avatar:proxy.$globalUserInfoXn.avatar,
+					nick_name:proxy.$globalUserInfoXn.nick_name,
+					phone:proxy.$globalUserInfoXn.phone,
+					signature:proxy.$globalUserInfoXn.signature
+				});
+			}
 	});
 };
 

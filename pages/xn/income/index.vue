@@ -94,7 +94,7 @@
 		</view>
 		<LayoutCustomBarXn />
 	</view>
-<up-popup :show="showWithdrawalMethod" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+<up-popup :show="showWithdrawalMethod" zIndex="998" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
 	  <KeepAlive>
 		<XnIncomeWithdrawalMethod @close="closeSearch"></XnIncomeWithdrawalMethod>
 	  </KeepAlive>

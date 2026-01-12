@@ -98,7 +98,6 @@ import { useConfigStore } from '@/stores/configStore'
 	</script>
 
 <style lang="scss">
-	@import '@/uni_modules/uview-plus/index.scss';
 	html,
 	body,
 	page,

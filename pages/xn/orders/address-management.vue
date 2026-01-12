@@ -173,7 +173,7 @@ const handleEdit = (item) => {
 };
 const confirmDelete = async () => {
 	const item = addressList.value[deleteIndex];
-	return ;
+	if(item.is_default_address) return uni.showToast({ title: '默认地址不能删除', icon: 'none' });
 	try {
 		const res = await deleteAddress({ id: item.id });
 		if (res.code === 200 || res.code === 0) {
@@ -188,7 +188,6 @@ const confirmDelete = async () => {
 	}
 };
 const handleDelete = (index) => {
-	alert(index);
 	showDeleteModal.value = true;
 	deleteIndex = index;
 };
