@@ -38,7 +38,23 @@ const currentDetail = computed(()=>{
 	return  comRole
 })
 const onShare = ()=>{
-      console.log('分享按钮被点击');
+	// #ifdef APP-PLUS
+	  uni.shareWithSystem({
+	  	provider: "weixin",
+	  	scene: "WXSceneTimeline",
+	  	type: 0,
+	  	href: `/pages/xn/collection-detail/index?id=${detailId.value}`,
+	  	title: "优秀绣娘",
+	  	summary: "我正在下单刺绣珍品，来看看吧！",
+	  	imageUrl: collectionImage,
+	  	success: function (res) {
+	  		console.log("success:" + JSON.stringify(res));
+	  	},
+	  	fail: function (err) {
+	  		console.log("fail:" + JSON.stringify(err));
+	  	}
+	  });
+	// #endif
     }
 onLoad(({id,workType})=>{
 	detailId.value = id;
