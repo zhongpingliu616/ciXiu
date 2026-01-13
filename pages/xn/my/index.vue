@@ -159,16 +159,18 @@
 		<LayoutCustomBarXn></LayoutCustomBarXn>
 	</view>
 	<CxModal
-	  v-model:show="showClearModal"
+	  v-model:show="showLogoutModal"
 	  content="确定要退出登录吗？"
-	  @confirm="confirmClear"
+	  @confirm="confirmLogout"
 	/>
 </template>
 
 <script setup>
-let showClearModal = ref(false);
+	import { useLoginStore } from '@/stores/userLogin'
+let showLogoutModal = ref(false);
 const title = ref("我的");
 const {proxy} = getCurrentInstance();
+const userStore = useLoginStore()
 // 作品数据
 const worksList = ref([
 	{ src: 'https://cdn.uviewui.com/uview/album/1.jpg', id: 1 },
@@ -239,18 +241,16 @@ const navigateToContract = () => {
 		url: '/pages/xn/level/electronic-contract'
 	});
 };
-const confirmClear = ()=>{
+const confirmLogout = ()=>{
+	uni.clearStorageSync();
 	uni.reLaunch({
-		url: '/pages/xn/my/login'
+		url: '/pages/login?role=XN'
 	});
 };
 // 退出登录
 const handleLogout = () => {
-	showClearModal.value = true;
-	uni.clearStorageSync();
-	uni.navigateTo({
-		url: '/pages/login?role=XN'
-	});
+	showLogoutModal.value = true;
+	
 };
 
 // 跳转个人资料编辑
@@ -268,7 +268,9 @@ const handleProfileClick = () => {
 			}
 	});
 };
-
+onShow(()=>{
+	userStore.fetchUserInfo();
+});
 onMounted(() => {
   console.log('我的页面加载');
 });

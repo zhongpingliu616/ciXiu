@@ -93,6 +93,7 @@
 </template>
 
 <script setup neme="withdrawXn">
+	// 弃用此页面
 const amount = ref('600.00');
 const showMethodModal = ref(false);
 

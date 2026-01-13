@@ -2,9 +2,10 @@
 	<view class="page-wrap">
 		<LayoutNavigation :title="title" />
 		<view class="page-content">
-			<image class="logo" src="@/static/images/public_logo.png"></image>
+			<image class="logo" style="width: 180rpx;" mode="widthFix" :src="configStore.config.web_log"></image>
 			<view class="text-area">
-				<text class="title">传统刺绣xxx数字资产</text>
+				<view class="title">{{configStore.config.web_title}}</view>
+				<view class="sub-title">{{configStore.config.web_subtitle}}</view>
 			</view>
 			<view class="login-box">
 				<image src="@/static/images/user/login-box-bg.png"></image>
@@ -70,8 +71,8 @@
 	<view></view>
 	</view>
 </template>
-
 <script setup>
+import { useConfigStore } from '@/stores/configStore'
 import { useLoginStore } from '@/stores/userLogin'
 import { login } from '@/api/index'
 const { proxy } = getCurrentInstance();
@@ -81,9 +82,11 @@ const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 	let mentStatusXn = ref(false);
 	let mentStatusGz = ref(false);
 	const loading = ref(false);
-	let title = ref("login");
+	let title = ref("登录");
 	let tabActiveIndex = ref(0);
 	const userStore = useLoginStore()
+	const configStore = useConfigStore()
+	console.log("配置信息", configStore.config);
 	const lineBg = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD4AAAASCAMAAAA0cZ07AAABSlBMVEUAAAD/VQD/VVX/QED/KgD/Kir/VSr/VVX/f1X/TTPoRi7/Ri7tNyTtWzf5STH5Tzf5VTf5Wz3/STH/VTf/W0P4TDT4Uzn4Uzv4XD/7TDT7XD/4Kxz6Qi76Qy77Y0f7ZUf9fFn4Khz4Qy76ZEb7e1j7fVj6UTn6Tzf6Vjz6Vz76UDn6VTz6WT/5Tjb5Ujn5VDz7Tjb7Wj/4LB35QC35Qy/7Zkj8e1j8fFn4LB35Kxz5QC35Qy/7Y0b7Zkn8fFn8fVr4Kx34LB34LB74LR/4Lh/4LyD4MCH4MSL4MyL4NCP5NST5NiX5OCb5OSf5Oij5PCn5PSr5Pyv5QC35Qi76Tzf6UTn6Ujr6VDv6Vjz6Vz77ZUf7Zkj7aEr7aUv7a0z7bE37bk77b0/7cFD7clH7c1L8dFP8dVT8dlX8eFX8eVb8elf8e1j8fFj8fFlFVbOBAAAAQHRSTlMAAwMEBgYGBgYKCwsODioqKioqKip1dXV1dXWQkJCQkJCRkZGRkaChoaGiouLj4+Pj4+7u7u7u7u/v7+/v7+/v7+/vJ9rf/wAAANxJREFUOMtjYMALmJkZKAGcnBRpZ2OjSDu/AEXaxcQp0c2tp8+NXwWLtJGTs4urm7uHp5e3j6+ff0CgsQwrVFItLFwDymSXN42JjYtPSExKTklNS8/IzMo2U+BgkHZwRNceFCwL1sGlHhoWHqHJBebIRUWja8/JVWCwxKbdmpGTlU9UNwSkPVJHQpCNk8kGm3Z77NpNGHlYhSQNINoNpUTYeLFrN2dQxKZdCRJwyI5XxqZdFRh0FujarZRgQacVFq4NDzpbdO12KhyURhwtkw0Dv/BAZhkKMyyh4gIA26VeW8woj3cAAAAASUVORK5CYII=";
 	const loginTabs = reactive([  
 	    { name: '公众端' },  
@@ -100,136 +103,135 @@ const handleWechatLogin = () => {
   console.log('点击了微信登录');
   // 这里可以调用 uView Plus 的 API 或者原生的支付/登录接口
 }
-	function loginChange(e){
-		// console.log("切换了", e);
-		tabActiveIndex.value  = e.index;
+function loginChange(e){
+	// console.log("切换了", e);
+	tabActiveIndex.value  = e.index;
+};
+const handleLogin = () => {
+	tabActiveIndex.value == 1 ? xiuNiangLogin() : gongzhongLogin();
+}
+const xiuNiangLogin = () => {
+	if(!xiuliangFormRef.value.greetment){
+				uni.showToast({
+				title: '请勾选同意条款',
+				icon: 'error',
+				duration: 2000
+				});
+				return ;
 	};
-	const handleLogin = () => {
-		tabActiveIndex.value == 1 ? xiuNiangLogin() : gongzhongLogin();
-	}
-	const xiuNiangLogin = () => {
-		if(!xiuliangFormRef.value.greetment){
-				 uni.showToast({
-				 	title: '请勾选同意条款',
-					icon: 'error',
-				 	duration: 2000
-				 });
-				 return ;
-		};
-		 xiuliangFormRef.value.validateLoginForm(async (valid, formData={}) => {
-		   if (!valid) return;
-				loading.value = true;
-				try {
-					const { accoutName, password } = formData;
-					const res = await login({
-						username: accoutName,
-						password: password
-					});
-					
-					if (res.code === 200) {
-						const { token, info } = res.data;
-						console.log('登录成功，用户信息：', info);
-						// 更新用户信息 (store + storage)
-						userStore.updateUserInfo('XN', {
-							token: token,
-							user: info.username,
-							id: info.id || '', 
-							phone: info.phone,
-							avatar: info.avatar,
-							nick_name: info.nick_name,
-							real_name_check: info.real_name_check,
-							level: info.level,
-							is_buy: info.is_buy
-						});
-						
-						// 清除另一个角色的 token
-						uni.removeStorageSync('tokenGz');
-						userStore.userInfoGz.token = '';
-						userStore.setRole('XN');
+	xiuliangFormRef.value.validateLoginForm(async (valid, formData={}) => {
+	if (!valid) return;
+		loading.value = true;
+		try {
+			const { accoutName, password } = formData;
+			const res = await login({
+				username: accoutName,
+				password: password
+			});
+			
+			if (res.code === 200) {
+				const { token, info } = res.data;
+				// 更新用户信息 (store + storage)
+				userStore.updateUserInfo('XN', {
+					token: token,
+					user: info.username,
+					id: info.id || '', 
+					phone: info.phone,
+					avatar: info.avatar,
+					nick_name: info.nick_name,
+					real_name_check: info.real_name_check,
+					level: info.level,
+					is_buy: info.is_buy
+				});
+				
+				// 清除另一个角色的 token
+				uni.removeStorageSync('tokenGz');
+				userStore.userInfoGz.token = '';
+				userStore.setRole('XN');
 
-						// 登录成功后的逻辑判断
-						// 1. 检查是否有等级 (level == 0 表示无等级)
-						if (info.level === 0) {
-							uni.reLaunch({
-								url: '/pages/xn/level/index'
-							});
-							uni.showToast({
-								title: '请先选择等级',
-								icon: 'none'
-							});
-						} 
-						// 2. 检查是否实名认证 (real_name_check == 2 表示未实名)
-						else if (info.real_name_check === 2) {
-							uni.reLaunch({
-								url: '/pages/xn/my/identity-authentication'
-							});
-							uni.showToast({
-								title: '请先完成实名认证',
-								icon: 'none'
-							});
-						} 
-						// 3. 一切正常，进入首页
-						else {
-							uni.reLaunch({
-								url: '/pages/index'
-							});
-							uni.showToast({
-								title: '绣娘登录成功',
-								icon: 'success'
-							});
-						}
-					} else {
-						uni.showToast({
-							title: res.msg || '登录失败',
-							icon: 'none'
-						});
-					}
-				} catch (error) {
+				// 登录成功后的逻辑判断
+				// 1. 检查是否有等级 (level == 0 表示无等级)
+				if (info.level === 0) {
+					uni.reLaunch({
+						url: '/pages/xn/level/index'
+					});
 					uni.showToast({
-						title: error.msg || '登录请求失败',
+						title: '请先选择等级',
 						icon: 'none'
 					});
-				} finally {
-					loading.value = false;
+				} 
+				// 2. 检查是否实名认证 (real_name_check == 2 表示未实名)
+				else if (info.real_name_check === 2) {
+					uni.reLaunch({
+						url: '/pages/xn/my/identity-authentication'
+					});
+					uni.showToast({
+						title: '请先完成实名认证',
+						icon: 'none'
+					});
+				} 
+				// 3. 一切正常，进入首页
+				else {
+					uni.reLaunch({
+						url: '/pages/index'
+					});
+					uni.showToast({
+						title: '绣娘登录成功',
+						icon: 'success'
+					});
 				}
-		 })
+			} else {
+				uni.showToast({
+					title: res.msg || '登录失败',
+					icon: 'none'
+				});
+			}
+		} catch (error) {
+			uni.showToast({
+				title: error.msg || '登录请求失败',
+				icon: 'none'
+			});
+		} finally {
+			loading.value = false;
+		}
+	})
+};
+const gongzhongLogin = () => {
+	if(!gongzhongFormRef.value.greetment){
+				uni.showToast({
+				title: '请勾选同意条款',
+				icon: 'error',
+				duration: 2000
+				});
+				return ;
 	};
-	const gongzhongLogin = () => {
-		if(!gongzhongFormRef.value.greetment){
-				 uni.showToast({
-				 	title: '请勾选同意条款',
-					icon: 'error',
-				 	duration: 2000
-				 });
-				 return ;
-		};
-		 gongzhongFormRef.value.validateLoginForm(valid => {
-		   if (!valid) return;
-				loading.value = true;
-				// const loginResult = await login()			
-				setTimeout(() => {
-				  loading.value = false;
-				  
-				  // 更新用户信息 (store + storage)
-				  userStore.updateUserInfo('GZ', { 
-					  token: 'Gz777888' 
-				  });
-				  
-				  // 清除另一个角色的 token
-				  uni.removeStorageSync('tokenXn');
-				  userStore.userInfoXn.token = '';
-				  userStore.setRole('gz');
+		gongzhongFormRef.value.validateLoginForm(valid => {
+		if (!valid) return;
+			loading.value = true;
+			// const loginResult = await login()			
+			setTimeout(() => {
+				loading.value = false;
+				
+				// 更新用户信息 (store + storage)
+				userStore.updateUserInfo('GZ', { 
+					token: 'Gz777888' 
+				});
+				
+				// 清除另一个角色的 token
+				uni.removeStorageSync('tokenXn');
+				userStore.userInfoXn.token = '';
+				userStore.setRole('gz');
 
-				  uni.reLaunch({
-					  url: '/pages/index'
-				  });
-				  uni.showToast({
-					title: '公众登录成功',
-					icon: 'success'
-				  })
-				}, 3000);
-		 })
-	};
+				uni.reLaunch({
+					url: '/pages/index'
+				});
+				uni.showToast({
+				title: '公众登录成功',
+				icon: 'success'
+				})
+			}, 3000);
+		})
+};
 onLoad((query) => {
   const pages = getCurrentPages();
   const prevPage = pages[pages.length - 2];
@@ -270,7 +272,7 @@ onLoad((query) => {
 		display: block;
 		width: 98%;
 		height: auto;
-		aspect-ratio: 7 / 5;
+		aspect-ratio: 7 / 5.5;
 		margin: 0 auto;
 	}
 }
@@ -279,10 +281,12 @@ onLoad((query) => {
 	inset:40rpx 80rpx;
 }
 .text-area {
-	display: flex;
-	justify-content: center;
+	text-align: center;
 }
-
+.sub-title {
+	font-size: 24rpx;
+	color: #fff;
+}
 .title {
 	font-size: 36rpx;
 	color: #fff;

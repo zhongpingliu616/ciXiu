@@ -4,14 +4,14 @@
 		<view class="page-content">
 			<view class="form-card">
 				<u-cell-group :border="false">
-					<u-cell title="头像" :isLink="true" @click="handleAvatarClick" :border="false" :titleStyle="{
+					<u-cell title="头像" :isLink="true" :border="false" :titleStyle="{
 					fontSize: '28rpx',
 					color: '#333',
 					fontWeight: '500'
 				  }" customStyle="padding: 30rpx 0;">
 						<template #value>
 							<view class="avatar-wrap">
-								<image class="avatar" :src="userInfo.avatar" mode="aspectFill"></image>
+								<image class="avatar" :src="userInfo.avatar" mode="aspectFill" @click="handleAvatarClick"></image>
 							</view>
 						</template>
 					</u-cell>
@@ -103,9 +103,9 @@ let avatarRes = {
 		msg: ''
 };
 let userInfo = reactive({
-	avatar: 'https://cdn.uviewui.com/uview/album/1.jpg',
-	reg_ip: '56205620000',
-	nickname: '会吃人的饭',
+	avatar: '',
+	reg_ip: '',
+	nickname: '',
 	signature: ''
 });
 
@@ -116,8 +116,7 @@ const handleAvatarClick = () => {
 	uni.chooseImage({
 		count: 1,
 		success: async (res) => {
-	  		console.log('选择图片成功:', res.tempFilePaths[0])
-			 avatarRes = await uploadImage(res.tempFilePaths[0]);
+			avatarRes = await uploadImage(res.tempFilePaths[0]);
 			const { code=9999, data={},msg='' } = avatarRes;
 			if (code === 200) {
 				uni.showToast({
@@ -131,10 +130,7 @@ const handleAvatarClick = () => {
 					icon: 'none'
 				});
 			}
-			
 			// 这里可以添加上传图片的逻辑
-
-			
 		}
 	});
 };
@@ -150,7 +146,7 @@ const handleSubmit = async () => {
 		const { code=9999, data,msg } = res;
 		if (code === 200) {
 			uni.showToast({
-				title: '已提交，等待审核',
+				title: '已提交',
 				icon: 'success'
 			});
 			// 更新用户信息中的昵称和签名
@@ -178,10 +174,10 @@ const canSaveProfile = computed(() => {
   if (!pageLoaded.value || !originProfile.value) {
     return false
   }
-
+  const nameChanged = !!tempNickname.value && tempNickname.value !== originProfile.value.nickname
   return (
     userInfo.avatar !== originProfile.value.avatar ||
-    userInfo.nickname !== originProfile.value.nickname ||
+    nameChanged ||
     userInfo.signature !== originProfile.value.signature
   )
 })
@@ -210,23 +206,25 @@ const handleQrCodeClick = () => {
 	// 这里可以跳转到二维码页面
 	console.log('查看二维码');
 };
-onMounted(async () => {
+onLoad(() => {
+	// 从事件通道接收用户数据
   originProfile.value = {
     avatar: userInfo.avatar,
     nickname: userInfo.nickname,
     signature: userInfo.signature
   }
-
   pageLoaded.value = true
-})
-onLoad(() => {
-	// 从事件通道接收用户数据
 	eventChannel.on('sendUserData', (data) => {
-		console.log('接收用户数据:', data);
 		userInfo.reg_ip = data.reg_ip;
 		userInfo.avatar = data.avatar;
 		userInfo.nickname = data.nick_name;
 		userInfo.signature = data.signature;
+		originProfile.value = {
+			avatar: userInfo.avatar,
+			nickname: userInfo.nickname,
+			signature: userInfo.signature
+		}
+		pageLoaded.value = true
 	});
 });
 </script>

@@ -156,6 +156,11 @@
 			"style": {
 				"navigationBarTitleText": "充值记录"
 			}
+		},{
+			"path": "pages/xn/income/recharge-record-detail",
+			"style": {
+				"navigationBarTitleText": "充值记录详情"
+			}
 		},
 		{
 			"path": "pages/xn/income/refund-detail",

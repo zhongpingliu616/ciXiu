@@ -8,7 +8,7 @@
 	<up-col span="10"> 
 		<CxSwiperUni
 			:list="announcementList"
-			swiperHeight="46rpx"
+			swiperHeight="36rpx"
 			:config="{
 				indicatorDots:false,
 				autoplay:true,
@@ -53,7 +53,7 @@
 						 :customStyle="{
 							 width: 'auto',
 							 display:'inline-block',
-							 padding:'12rpx 22rpx',
+							 padding:'0rpx 22rpx',
 							 fontSize: '24rpx',
 							 height:'auto'
 						}"
@@ -105,7 +105,7 @@
 </template>
 
 <script setup name="IndexXn">	
-import { taskLists,noticeLists } from '@/api/index.js'
+import { taskLists,noticeLists,addOrder } from '@/api/index.js'
 let cxScrollViewRef = ref();
 const collectionList = [
 		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理',path:'/pages/xn/orders/order-management' },
@@ -212,12 +212,7 @@ const jumDetail = (item) => {
 	})
 }
 // 抢单按钮点击事件
-const handleGrab = (item) => {
-	console.log(item)
-  if (!item.canGrab && false) { // 暂时注释掉等级判断，等待接口字段确认
-    uni.showToast({ title: '等级不足，无法抢单', icon: 'none' })
-    return
-  };
+const handleGrab = async (item) => {
   uni.navigateTo({
   	url: `/pages/xn/my/deposit?id=${item.id}`
   })

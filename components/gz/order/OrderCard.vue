@@ -159,6 +159,7 @@ const handleGrab = (item) => {
   background: #FEE8E8;
   border-radius: 10rpx;
   color: #F82B1D;
+  align-items: center;
 }
 
 .rise-rate {

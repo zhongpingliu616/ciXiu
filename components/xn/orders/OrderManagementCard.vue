@@ -18,13 +18,13 @@
 				  span="3">
 					  <view class="right-wrap">
 					      <view class="status-btn">
-					        <up-button
+					        <!-- <up-button
 					          type="primary"
 					          :plain="true"
 					          :customStyle="{
 					            border: 'none'
 					          }"
-					        >
+					        > -->
 					          <text
 					            :style="{
 					              fontSize: '24rpx',
@@ -33,7 +33,7 @@
 					          >
 					            {{ statusText }}
 					          </text>
-					        </up-button>
+					        <!-- </up-button> -->
 
 					      </view>
 					    </view>
@@ -121,15 +121,14 @@
 			   </view> -->
 		   </template>
 
-		   <!-- 验收成功/验收失败/已取消: 删除订单 -->
-		   <template v-else-if="item.status === 90">
+		   <!-- 验收成功/验收失败/已取消: 删除订单 不设删除订单--> 
+		   <!-- <template v-else-if="item.status === 90">
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
 				   @click="handleAction('delete')" text="删除订单"></CxComfirmBtn>
 			   </view>
-		   </template>
-
+		   </template> -->
 	   </view>
    </view>
 </template>

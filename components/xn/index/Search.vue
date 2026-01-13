@@ -56,7 +56,7 @@
 		  :isRefreshing="refreshing"
 		  :loadStatus="loadStatus"
 		  :iconType="iconType"
-		  :enableRefresh="true"
+		  :enableRefresh="false"
 		  :enableLoadMore="true"
 		  >
 			<template #scrollContain>
@@ -322,12 +322,6 @@ onMounted(() => {
   :deep(.u-tag__text--medium){
     font-size: 18rpx;}
 }
-	
-	
-	
-	
-	
-	
 
 .search-bar{
 	

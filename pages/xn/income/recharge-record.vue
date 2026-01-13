@@ -4,26 +4,27 @@
 		<view class="page-content">
 			<view class="withdrawal-list">
 				<u-cell-group :border="false">
-				<u-cell
-					v-for="(item, index) in withdrawalList"
-					:key="index"
-					:title="item.title"
-					:label="item.time"
-					:border-bottom="true"
-					:titleStyle="{ fontSize: '18rpx', fontWeight: 'bold' }"
-					:custom-style="{ padding: '16rpx 24rpx' }"
-				>
-					<!-- 右侧状态标签 -->
-					<template #right-icon>
-					<view class="refund-amount">
-						{{ item.amount }}
-						<!-- <br/>
-						<view class="status-type" :style="{ color: statusColors[item.statusColor] }">
-							{{ item.status }}
-						</view> -->
-					</view>
-					</template>
-				</u-cell>
+					<u-cell
+						v-for="(item, index) in withdrawalList"
+						:key="index"
+						:title="item.type_name"
+						:label="item.create_time"
+						:border-bottom="true"
+						:titleStyle="{ fontSize: '18rpx', fontWeight: 'bold' }"
+						:custom-style="{ padding: '16rpx 24rpx' }"
+					>
+						<!-- 右侧状态标签 -->
+						<template #right-icon>
+							<view class="refund-amount" @click="handleClick(item)">
+								<view class="status-type">
+									{{ item.amount }}
+								</view> 
+								<view class="status-type" :style="{ color: getStatusColors(item.status),fontSize:'12rpx' }">
+									{{ getStatusType(item.status) }}
+								</view>
+							</view>
+						</template>
+					</u-cell>
 				</u-cell-group>
 			</view>
 			
@@ -34,39 +35,34 @@
 				:icon-size="150"
 				></u-empty>
 		</view>
-	 <view>	</view>>
+	 <view>	</view>
 	</view>
 </template>
 
 
 <script setup name="withdrawal-record">
+import { depositOrderLists } from '@/api/xn.js'
 const { proxy } = getCurrentInstance();
 const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 let title = ref("充值记录");	
 // 模拟数据
 const withdrawalList = ref([
-  {
-    title: '余额提现到银行卡',
-    amount: '-10.00',
-    time: '2025-12-29 21:49:37',
-    status: '交易进行中',
-	statusColor: 'warning'
-  },
-  {
-    title: '余额提现到微信',
-    amount: '-10.00',
-    time: '2025-12-29 21:49:37',
-    status: '已完成',
-	statusColor: 'success'
-  },
-  {
-    title: '余额提现到支付宝',
-    amount: '-10.00',
-    time: '2025-12-29 21:49:37',
-    status: '打款失败，请检查收款方式',
-	statusColor: 'error'
-  }
+//   {
+//     "id": 2,
+// 	"order_no": "emd2026011223061322954",
+// 	"amount": "5000.00",
+// 	"status": 0,
+// 	"create_time": "2026-01-12 23:06:13",
+// 	"remark": "",
+// 	"type_name": "微信"
+//   }
 ])
+const getStatusColors = (status) => {
+  if (status == 0) return '#036BF2'
+  if (status == 1) return '#666666'
+  if (status.includes(2)) return '#CA3C3B'
+  return '#CA3C3B'
+};
 const statusColors = {
   'warning': '#036BF2',
   'success': '#666666',
@@ -74,11 +70,28 @@ const statusColors = {
 }
 // 根据状态返回 tag 类型
 const getStatusType = (status) => {
-  if (status === '交易进行中') return 'warning'
-  if (status === '已完成') return 'success'
-  if (status.includes('失败')) return 'error'
-  return 'info'
-}	
+  if (status === 0) return '交易进行中'
+  if (status === 1) return '已完成'
+  if (status.includes(2)) return '失败'
+  return '失败'
+}
+// 点击事件处理函数
+const handleClick = (item) => {
+   uni.navigateTo({
+    url: `/pages/xn/income/withdraw-cash-detail?id=${item.id}&order_no=${item.order_no}`
+  })
+}
+onMounted(async () => {
+  const {code,data={},msg} = await depositOrderLists({
+    page_no: 1,
+    page_size: 10,
+  });
+  if(code === 200){
+    withdrawalList.value = data.list || []
+  } else {
+    uni.showToast(msg)
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -88,7 +101,6 @@ const getStatusType = (status) => {
 }
 .refund-amount{
 	text-align: right;
-	color: #CA3C3B;
 }
 /* 自定义金额颜色 */
 .u-cell__value {

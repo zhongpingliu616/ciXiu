@@ -54,10 +54,10 @@
 	 <LayoutCustomBarGz v-else> </LayoutCustomBarGz>
 	</view>
   <keep-alive>
-<up-popup :show="showSearchPageXn" bgColor="#691e23" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
-	  <XnIndexSearch @close="closeSearch"></XnIndexSearch>
-</up-popup>
-</keep-alive>
+		<up-popup :show="showSearchPageXn" bgColor="#691e23" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+			<XnIndexSearch @close="closeSearch"></XnIndexSearch>
+		</up-popup>
+  </keep-alive>
 </template>
 
 <script setup>

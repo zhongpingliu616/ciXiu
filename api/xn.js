@@ -50,6 +50,10 @@ export const addBank = (data) => post('/embroid/bank/add', data) // 新增银行
 export const addWithdrawalOrder = (data) => post('/embroid/withdrawalOrder/add', data) // 新增提现订单
 export const withdrawalOrderLists = () => get('/embroid/withdrawalOrder/lists') // 获取提现订单列表
 export const withdrawalOrderDetails = (data) => get('/embroid/withdrawalOrder/details', data) // 获取提现订单详情
+export const depositAccountLists = () => get('/embroid/depositAccount/lists') // 获取入款账号
+export const addDepositOrder = (data) => post('/embroid/depositOrder/add', data) // 新增入款订单
+export const depositOrderLists = () => get('/embroid/depositOrder/lists') // 获取入款订单列表
+export const depositOrderDetails = (data) => get('/embroid/depositOrder/details', data) // 获取入款订单详情
 
 
 

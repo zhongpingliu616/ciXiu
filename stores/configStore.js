@@ -15,13 +15,13 @@ export const useConfigStore = defineStore('config', () => {
   // 获取配置列表 Action
   async function fetchConfig() {
     try {
-      const res = await getConfigList();
-      if (res.code === 200) {
-        config.value = res.data;
+      const { code=9999, data={},msg='' } = await getConfigList();
+      if (code === 200) {
+        config.value = data.lists || {};
         // 持久化保存
-        uni.setStorageSync('appConfig', res.data);
+        uni.setStorageSync('appConfig', data.lists || {});
       } else {
-        console.error('获取配置失败:', res.msg);
+        console.error('获取配置失败:', msg);
       }
     } catch (error) {
       console.error('获取配置异常:', error);

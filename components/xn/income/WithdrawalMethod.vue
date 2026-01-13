@@ -761,13 +761,13 @@ const onBankBlur = async (index)=>{
   position: absolute;
   top: -12rpx;
   right: -12rpx;
-  width: 36rpx;
-  height: 36rpx;
+  width: 26rpx;
+  height: 26rpx;
   background: rgba(0,0,0,.6);
   color: #fff;
   border-radius: 50%;
   text-align: center;
-  line-height: 36rpx;
+  line-height: 26rpx;
   font-size: 24rpx;
 }
 .page-wrap{

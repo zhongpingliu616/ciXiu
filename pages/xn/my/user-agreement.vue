@@ -3,13 +3,13 @@
 	<LayoutNavigation :title="title" />
 		<view class="page-content">
 			<view class="agreement-card">
-				<image 
-						v-if="configStore.config.lists.user_agreement" 
-						:src="configStore.config.lists.user_agreement" 
+				<!-- <image 
+						v-if="configStore.config.user_agreement" 
+						:src="configStore.config.user_agreement" 
 						mode="widthFix" 
 						style="width: 100%; display: block;"
-					/>
-			    <!-- <u-card
+					/> -->
+			    <u-card
 			      :border="false"
 			      :head-style="{ padding: '16rpx 32rpx', backgroundColor: '#fff' }"
 			      :body-style="{ padding: '24rpx 32rpx', backgroundColor: '#fff' }"
@@ -22,18 +22,13 @@
 			        </view>
 			      </template>
 			
-			      正文内容
 			      <template #body>
-			        <view class="card-content">
-						<image
-							src="/static/images/user/login-bg.png" 
-							mode="widthFix" 
-							style="width: 100%; display: block;"
-						/>
+			        <view class="card-content" v-html="configStore.config.user_agreement" >
+						
 						
 			        </view>
 			      </template>
-			    </u-card> -->
+			    </u-card>
 				<br />
 				<view class="confirm-btn">
 					<CxComfirmBtn
@@ -98,7 +93,8 @@ const notAgree = () => {
     font-size: 28rpx;
     line-height: 1.6;
     color: #555;
-
+	max-height: 55vh;
+	overflow-y: auto;
     p {
       margin-bottom: 24rpx;
     }

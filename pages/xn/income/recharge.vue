@@ -6,7 +6,7 @@
 			<view class="card balance-card">
 				<view class="left">
 					<view class="label">账户余额（元）</view>
-					<view class="amount">{{ formatAmount(availableAmount) }}</view>
+					<view class="amount">{{ formatAmount($globalUserInfoXn.amount) }}</view>
 				</view>
 				<view class="right">
 					<text class="total">________________</text>
@@ -16,6 +16,7 @@
 							@click.stop='goToRecord'
 							:btnStyle="{
 								height: '40rpx',
+								width: '120rpx',
 								padding: '0rpx 10rpx',
 								background: 'none',
 								color: '#523027',
@@ -63,7 +64,7 @@
 			</view>
 			<!-- <view class="method-list">
 				<view
-				v-for="(item, index) in methods"
+				v-for="(item, index) in depostAccountAry"
 				:key="index"
 				class="method-item"
 				@click="selectMethod(index)"
@@ -72,7 +73,7 @@
 					<CxIconFont :code="item.icon" size="40rpx" :color="item.color" /> &nbsp;&nbsp;
 					<text>{{ item.name }}</text>
 				</view>
-				<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="selectedMethod == index"></u-icon>
+				<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="selectedIndex == index"></u-icon>
 				<uni-icons type="circle" color="#ccc" size="40" v-else></uni-icons>
 				</view>
 			</view> -->
@@ -110,16 +111,17 @@
 		<!-- 支付方式列表 -->
 		<view class="payment-list">
 			<view
-				v-for="(item, index) in methods"
+				v-for="(item, index) in depostAccountAry"
 				:key="index"
 				class="method-item"
 				@click="selectMethod(item, index)"
 				>
 				<view class="left">
-					<CxIconFont :code="item.icon" size="40rpx" :color="item.color" /> &nbsp;&nbsp;
-					<text>{{ item.name }}</text>
+					<image :src="item.qrcode" width="40rpx" height="40rpx" class="icon" /> &nbsp;&nbsp;
+					<!-- <CxIconFont :code="item.icon" size="40rpx" :color="item.color" /> &nbsp;&nbsp; -->
+					<text>{{ item.payment_name }}</text>
 				</view>
-				<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="selectedMethod == index"></u-icon>
+				<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="selectedIndex == index"></u-icon>
 				<uni-icons type="circle" color="#ccc" size="30" v-else></uni-icons>
 			</view>
 		</view>
@@ -152,13 +154,13 @@
 
 
 <script setup name="recharge">
+import { depositAccountLists, addDepositOrder } from '@/api/xn.js'
 const { proxy } = getCurrentInstance();
 const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 let title = ref("我的钱包");
-const availableAmount = ref(22123)
-const totalEarned = ref(212334.00)
-const withdrawAmount = ref('')
-const selectedMethod = ref(0)
+let depostAccountAry= ref([]);
+const withdrawAmount = ref('');
+const selectedIndex = ref(0);
 const payType = ref("支付宝");
 const props = defineProps({
   modelValue: {
@@ -188,7 +190,9 @@ watch(
     show.value = val
   }
 )
-
+const selectedItem = computed(() => {
+  return depostAccountAry.value[selectedIndex.value] || {}
+})
 // 当前选中项
 const selected = ref('wechat') // 默认选中微信
 
@@ -199,10 +203,10 @@ const onCancel = () => {
 }
 
 // 确认选择并触发 confirm 事件
-const onConfirm = () => {
+const onConfirm = async() => {
   // emit('confirm', selected.value)
-  show.value = false  
-  payType.value = methods.value[selectedMethod.value]?.name;
+  show.value = false 
+  payType.value = selectedItem.value.payment_name;
 }
 // 格式化金额显示
 const formatAmount = (num) => {
@@ -225,13 +229,13 @@ const validateAmount = () => {
 
 // 选择充值方式
 const selectMethod = (item,index) => {
-  selectedMethod.value = index;
+  selectedIndex.value = index;
 }
 
 // 是否可提交
 const canSubmit = computed(() => {
   const amount = Number(withdrawAmount.value)
-  return amount >= 1 && amount <= availableAmount.value
+  return amount >= 1 && amount <= formatAmount(proxy.$globalUserInfoXn.amount)
 })
 
 // 提交充值
@@ -244,7 +248,18 @@ const submitWithdraw = () => {
 // 跳转充值记录
 const goToRecord = () => {
   uni.navigateTo({ url: '/pages/xn/income/recharge-record' })
-}	
+}
+const getDepostAccountData = async ()=>{
+	const {code,data={},msg} = await depositAccountLists();
+	if(code === 200){
+		depostAccountAry.value = data.lists || [];
+	} else {
+		uni.showToast(msg)
+	}
+};
+onMounted(() => {
+  getDepostAccountData()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -345,7 +360,7 @@ const goToRecord = () => {
       opacity: 0;
     }
     .cash-btn {
-      width: 60%;
+      
     }
   }
 .balance-card {

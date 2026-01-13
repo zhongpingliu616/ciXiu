@@ -10,11 +10,11 @@
 		   <view class="card-title">{{ item.name }}</view>
 		   <view class="tags">
 			 <CxTag
-			   :text="item.difficulty"
+			   :text="item.period"
 			   :bgGradient="['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']"
 			 />&nbsp;
 			 <CxTag
-			   :text="item.tags"
+			   :text="item.difficulty"
 			   :bgGradient="['rgba(248,163,29,0.1)', 'rgba(248,163,29,0.1)']"
 			 />
 		   </view>
@@ -23,7 +23,7 @@
 			   <view class="quota-progress">
 				   <text>剩余名额</text>
 				   <view class="lightning-icon">⚡</view>
-			   </view>&nbsp;{{ item.total }}
+			   </view>&nbsp;&nbsp;{{ item.total }}
 			   
 			 </view>
 			 <view class="can-grab" :class="{'authen-gray':item.rush_status==2}">
@@ -167,6 +167,7 @@ const handleItem = (item) => {
   background: #FEE8E8;
   border-radius: 10rpx;
   color: #F82B1D;
+  align-items: center;
 }
 
 .rise-rate {

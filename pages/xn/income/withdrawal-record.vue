@@ -18,7 +18,7 @@
 						<view class="refund-amount" @click="handleClick(item)">
 							{{ item.amount }}
 							<br/>
-							<view class="status-type" :style="{ color: getStatusColors(item.status) }">
+							<view class="status-type" :style="{ color: getStatusColors(item.status),fontSize:'12rpx' }">
 								{{ getStatusText(item.status) }}
 							</view>
 						</view>
@@ -106,7 +106,6 @@ const getWithdrawalOrderLists = async()=>{
 }
 .refund-amount{
 	text-align: right;
-	color: #117D5B;
 }
 /* 自定义金额颜色 */
 .u-cell__value {

@@ -82,13 +82,16 @@ const scrollTop = ref(0);
 
 const handleEnter = () => {
 		loading.value = true;
-		setTimeout(() => {
-		  loading.value = false;
-		  uni.showToast({
+		 uni.showToast({
 			title: '已确认',
 			icon: 'success'
 		  });
-		}, 3000);
+		setTimeout(() => {
+		  loading.value = false;
+		  uni.navigateBack({
+			delta: 1
+		  })
+		}, 2200);
 	};	
 	
 const upper = (e) => {
