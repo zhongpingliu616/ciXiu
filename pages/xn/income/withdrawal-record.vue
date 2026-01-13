@@ -7,21 +7,21 @@
 				<u-cell
 					v-for="(item, index) in withdrawalList"
 					:key="index"
-					:title="item.title"
-					:label="item.time"
+					:title="item.type_name"
+					:label="item.create_time"
 					:border-bottom="true"
 					:titleStyle="{ fontSize: '18rpx', fontWeight: 'bold' }"
 					:custom-style="{ padding: '16rpx 24rpx' }"
 				>
 					<!-- 右侧状态标签 -->
 					<template #right-icon>
-					<view class="refund-amount">
-						{{ item.amount }}
-						<br/>
-						<view class="status-type" :style="{ color: statusColors[item.statusColor] }">
-							{{ item.status }}
+						<view class="refund-amount" @click="handleClick(item)">
+							{{ item.amount }}
+							<br/>
+							<view class="status-type" :style="{ color: getStatusColors(item.status) }">
+								{{ getStatusText(item.status) }}
+							</view>
 						</view>
-					</view>
 					</template>
 				</u-cell>
 				</u-cell-group>
@@ -34,51 +34,69 @@
 				:icon-size="150"
 				></u-empty>
 		</view>
-	 <view>	</view>>
+	 <view>	</view>
 	</view>
 </template>
 
-
 <script setup name="withdrawal-record">
+import { withdrawalOrderLists } from '@/api/xn'
 const { proxy } = getCurrentInstance();
 const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
 let title = ref("提现记录");	
 // 模拟数据
 const withdrawalList = ref([
-  {
-    title: '余额提现到银行卡',
-    amount: '-10.00',
-    time: '2025-12-29 21:49:37',
-    status: '交易进行中',
-	statusColor: 'warning'
-  },
-  {
-    title: '余额提现到微信',
-    amount: '-10.00',
-    time: '2025-12-29 21:49:37',
-    status: '已完成',
-	statusColor: 'success'
-  },
-  {
-    title: '余额提现到支付宝',
-    amount: '-10.00',
-    time: '2025-12-29 21:49:37',
-    status: '打款失败，请检查收款方式',
-	statusColor: 'error'
-  }
+//   {
+//     type_name: '余额提现到银行卡',
+//     amount: '-10.00',
+//     create_time: '2025-12-29 21:49:37',
+//     status: 0,
+// 	statusColor: 'warning'
+//   }
 ])
-const statusColors = {
-  'warning': '#036BF2',
-  'success': '#666666',
-  'error': '#CA3C3B'
-}
+const getStatusColors = (status) => {
+  if (status == 0) return '#036BF2'
+  if (status == 1) return '#666666'
+  if (status.includes(2)) return '#CA3C3B'
+  return '#CA3C3B'
+};
 // 根据状态返回 tag 类型
 const getStatusType = (status) => {
-  if (status === '交易进行中') return 'warning'
-  if (status === '已完成') return 'success'
-  if (status.includes('失败')) return 'error'
-  return 'info'
-}	
+  if (status == 0) return 'warning'
+  if (status == 1) return 'success'
+  if (status.includes(2)) return 'error'
+  return 'error'
+}
+// 点击提现详情
+const handleClick = (item) => {
+  uni.navigateTo({
+    url: `/pages/xn/income/withdraw-cash-detail?id=${item.id}&order_no=${item.order_no}`
+  })
+}
+// 根据状态返回 状态文本
+const getStatusText = (status) => {
+  if (status == 0) return '交易进行中'
+  if (status == 1) return '已完成'
+  if (status.includes(2)) return '打款失败，请检查收款方式'
+  return '打款失败'
+}
+
+onMounted(() => {
+  getWithdrawalOrderLists()
+})
+// 获取提现订单列表
+const getWithdrawalOrderLists = async()=>{
+  const { code=9999, data,msg } = await withdrawalOrderLists();
+  if (code === 200) {
+    if(data?.lists.length>0){
+      withdrawalList.value = data.lists;
+  } else {
+    uni.showToast({
+      title: msg || '获取提现记录失败',
+      icon: 'none'
+    });
+  }
+}
+};
 </script>
 
 <style lang="scss" scoped>

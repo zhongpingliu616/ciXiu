@@ -47,6 +47,9 @@ export const editBank = (data) => post('/embroid/bank/edit', data) // 编辑银�
 export const bankLists = () => get('/embroid/bank/lists') // 获取支付方式列表
 export const deleteBank = (data) => post('/embroid/bank/del', data) // 删除银行卡
 export const addBank = (data) => post('/embroid/bank/add', data) // 新增银行卡
+export const addWithdrawalOrder = (data) => post('/embroid/withdrawalOrder/add', data) // 新增提现订单
+export const withdrawalOrderLists = () => get('/embroid/withdrawalOrder/lists') // 获取提现订单列表
+export const withdrawalOrderDetails = (data) => get('/embroid/withdrawalOrder/details', data) // 获取提现订单详情
 
 
 

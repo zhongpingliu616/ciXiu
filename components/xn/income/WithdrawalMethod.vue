@@ -40,11 +40,21 @@
                         >
                         <template #head>
                             <view class="title">
-                                 <u-cell title="微信名：" :border-bottom="false">
+                                 <u-cell title="微信昵称：" :border-bottom="false">
                                     <template #value>
                                       <u-input
-                                        v-model="wechatRealname"
-                                        placeholder="请输入微信号"
+                                        v-model="wechatAccountData.account_name"
+                                        placeholder="请输入微信昵称"
+                                        input-align="right"
+                                        border="none"
+                                      />
+                                    </template>
+                                </u-cell>
+                                 <u-cell title="微信账号：" :border-bottom="false">
+                                    <template #value>
+                                      <u-input
+                                        v-model="wechatAccountData.account_number"
+                                        placeholder="请输入微信账号"
                                         input-align="right"
                                         border="none"
                                       />
@@ -86,10 +96,20 @@
                         >
                           <template #head>
                               <view class="title">
-                                  <u-cell title="支付宝名：" :border-bottom="false">
+                                  <u-cell title="支付宝昵称：" :border-bottom="false">
                                       <template #value>
                                         <u-input
-                                          v-model="alipayRealname"
+                                          v-model="alipayAccountData.account_name"
+                                          placeholder="请输入支付宝昵称"
+                                          input-align="right"
+                                          border="none"
+                                        />
+                                      </template>
+                                  </u-cell>
+                                  <u-cell title="支付宝账号：" :border-bottom="false">
+                                      <template #value>
+                                        <u-input
+                                          v-model="alipayAccountData.account_number"
                                           placeholder="请输入支付宝账号"
                                           input-align="right"
                                           border="none"
@@ -149,6 +169,7 @@
                               </u-button>
                               <u-input
                                 v-model="item.account_number"
+                                @update:modelValue="onBankInput(index)"
                                 placeholder="请输入卡号"
                                 input-align="right"
                                 type="number"
@@ -162,7 +183,8 @@
                         <u-cell title="账户名：" :border-bottom="false">
                           <template #value>
                             <u-input
-                              v-model="item.real_name"
+                              v-model="item.account_name"
+                              @update:modelValue="onBankInput(index)"
                               placeholder="请输入账户名"
                               input-align="right"
                               border="none"
@@ -175,6 +197,7 @@
                           <template #value>
                             <u-input
                               v-model="item.opening_bank"
+                              @update:modelValue="onBankInput(index)"
                               placeholder="请输入开户行"
                               input-align="right"
                               border="none"
@@ -218,17 +241,28 @@ const statusBar = uni.getSystemInfoSync().statusBarHeight;
 const emit = defineEmits(['close']);
 let showDeleterModal = ref(false);
 let showDeleterBank = ref(false);
-let wechatRealname = ref('');
-let alipayRealname = ref('');
+let wechatAccountData = ref({
+  account_name: '',
+  account_number: '',
+  qrcode: ''
+});
+let alipayAccountData = ref({
+  account_name: '',
+  account_number: '',
+  qrcode: ''
+}); 
 let suppportTypeList =ref([]);
 const bankBranchRegStrict =/^(?=.*银行)[\u4e00-\u9fa5A-Za-z0-9（）()·\-]{4,40}$/;
 const { proxy } = getCurrentInstance();
 const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
+// 记录是否已有对应类型数据
+const hasWechat = ref(false);
+const hasAlipay = ref(false);
 // 初始数据
 let bankFormData = ref([
     //   {
     //   account_number: '67345832594814212',
-    //   real_name: '沈梦一',
+    //   account_name: '沈梦一',
     //   opening_bank: '浙江支付宝网商银行'
     // }
 ])
@@ -259,7 +293,7 @@ const validateBankForms = () => {
       });
       return false;
     }
-    if (!bank.real_name.trim()) {
+    if (!bank.account_name.trim()) {
       uni.showToast({
         title: `第${i + 1}张银行卡请输入账户名`,
         icon: 'none'
@@ -293,40 +327,15 @@ const validateBankForms = () => {
   }
   return true;
 };
+// 已保存内容指纹
+const savedHashes = new Map();
 
-const handleSubmitBankCard = async ()=>{
-  // 1. 验证银行卡表单
-  if (!validateBankForms()) {
-    return;
-  }
-  // 上传银行卡
-  const {code=9999, data,msg } = await editBank({
-      id: 3,
-      real_name: bankFormData.value[0].real_name,
-      account_number: bankFormData.value[0].account_number,
-      is_default: 1,
-      bank_id: matchBankId(bankFormData.value[0].opening_bank),
-      opening_bank: bankFormData.value[0].opening_bank
-  })
-    if(code===200){
-      uni.showToast({
-        title: '更新成功',
-        icon: 'success'
-      });
-    } else {
-      uni.showToast({
-        title: msg || '更新失败',
-        icon: 'none'
-      });
-    }
-  
-}
 const previewImage = (url) => {
   uni.previewImage({ urls: [url] })
 }
 
 const confirmDeleteQrcode = async ()=>{
-    uploadImages[currentQrCodeType] = '';
+    uploadImages.value[currentQrCodeType] = '';
     defaultUploadImages[currentQrCodeType] = '';
     const {code=999,data,msg} = await deleteBank({
       id: currentQrCodeType === 'wechatQrCode' ? 1 : 2
@@ -336,6 +345,7 @@ const confirmDeleteQrcode = async ()=>{
         title: '删除成功',
         icon: 'success'
       });
+      getCurrentPayList();
     } else {
       uni.showToast({
         title: msg || '删除失败',
@@ -343,8 +353,25 @@ const confirmDeleteQrcode = async ()=>{
       });
     }
 };
-const confirmDeleteBank = ()=>{
-     bankFormData.value.splice(deleteBankIndex.value, 1);
+const confirmDeleteBank = async ()=>{
+  const item = bankFormData.value[deleteBankIndex.value];
+  if(!item){
+    return;
+  }
+  // 优先走服务端删除
+  if(item.id){
+    const {code=9999,msg} = await deleteBank({ id: item.id });
+    if(code===200){
+      uni.showToast({ title: '删除成功', icon: 'success' });
+      getCurrentPayList();
+    } else {
+      uni.showToast({ title: msg || '删除失败', icon: 'none' });
+    }
+  } else {
+    // 本地新增未保存项，直接移除
+    bankFormData.value.splice(deleteBankIndex.value, 1);
+    uni.showToast({ title: '已移除', icon: 'success' });
+  }
 };
 const handleDelete = (type) => {
     currentQrCodeType = type;
@@ -354,9 +381,9 @@ const handleDelete = (type) => {
 const handleUpload = (type) => {
   console.log(`点击上传${type === 'wechatQrCode' ? '微信' : '支付宝'}`)
   if(type=='wechatQrCode'){
-      if(!wechatRealname.value){
+      if(!wechatAccountData.value.account_number || !wechatAccountData.value.account_name){
         uni.showToast({
-          title: '请先输入微信号',
+          title: '请先输入微信号和微信账号',
           icon: 'none'
         });
         return;
@@ -364,23 +391,31 @@ const handleUpload = (type) => {
        uni.chooseImage({
         count: 1,
         success: async (res) => {
-            uploadImages[type] = res.tempFilePaths[0];
+            uploadImages.value[type] = res.tempFilePaths[0];
           const {code=9999, data,msg } = await uploadImage(res.tempFilePaths[0]);
+          if(data.url)uploadImages.value[type] = data.url;
             // 你可以在这里保存图片路径或上传到服务器
             if (code === 200) {
-              const updateRes = await editBank({
-                id: 1,
-                real_name: wechatRealname.value,
-                account_number: proxy.$globalUserInfoXn.nick_name,
+              let payload = {
+                type: 1,
+                account_name: wechatAccountData.value.account_name,
+                account_number: wechatAccountData.value.account_number,
                 is_default: 1,
                 qrcode: data.url
-              });
+              };
+              if(hasWechat.value){
+                payload.id = wechatAccountData.value.id;
+              } 
+              const updateRes = hasWechat.value ? await editBank(payload) : await addBank(payload);
               uni.showToast({
                 title: '更新成功',
                 icon: 'success'
               });
               // 保存图片路径到状态
-              uploadImages[type] = data.url;
+              uploadImages.value[type] = data.url;
+              defaultUploadImages.wechatQrCode = data.url;
+              hasWechat.value = true;
+              getCurrentPayList();
             } else {
               uni.showToast({
                 title: msg || '更新失败',
@@ -391,9 +426,9 @@ const handleUpload = (type) => {
         })
     };
     if(type=='alipayQrCode'){
-      if(!alipayRealname.value){
+      if(!alipayAccountData.value.account_name || !alipayAccountData.value.account_number){
         uni.showToast({
-          title: '请先输入支付宝账号',
+          title: '请先输入支付宝账号和支付宝昵称',
           icon: 'none'
         });
         return;
@@ -401,23 +436,31 @@ const handleUpload = (type) => {
        uni.chooseImage({
         count: 1,
         success: async (res) => {
-            uploadImages[type] = res.tempFilePaths[0];
+            uploadImages.value[type] = res.tempFilePaths[0];
           const {code=9999, data,msg } = await uploadImage(res.tempFilePaths[0]);
             // 你可以在这里保存图片路径或上传到服务器
+          if(data.url)uploadImages.value[type] = data.url;
             if (code === 200) {
-              const updateRes = await editBank({
-                id: 2,
-                real_name: alipayRealname.value,
-                account_number: proxy.$globalUserInfoXn.nick_name,
+              let payload = {
+                type: 2,
+                account_name: alipayAccountData.value.account_name,
                 is_default: 1,
+                account_number: alipayAccountData.value.account_number,
                 qrcode: data.url
-              });
+              };
+              if(hasAlipay.value){
+                payload.id = alipayAccountData.value.id;
+              } 
+              const updateRes = hasAlipay.value ? await editBank(payload) : await addBank(payload);
               uni.showToast({
                 title: '更新成功',
                 icon: 'success'
               });
               // 保存图片路径到状态
-              uploadImages[type] = data.url;
+              uploadImages.value[type] = data.url;
+              defaultUploadImages.alipayQrCode = data.url;
+              hasAlipay.value = true;
+              getCurrentPayList();
             } else {
               uni.showToast({
                 title: msg || '更新失败',
@@ -427,9 +470,6 @@ const handleUpload = (type) => {
           }
         });
     };
-
-
- 
 };
 
 
@@ -437,7 +477,7 @@ const handleUpload = (type) => {
 const addBankCard = () => {
   bankFormData.value.push({
     account_number: '',
-    real_name: '',
+    account_name: '',
     opening_bank: ''
   });
 };
@@ -478,11 +518,17 @@ const getCurrentPayList = async()=>{
       bankFormData.value = [];
       data.lists.forEach(element => {
         if(element.type == 1){
-          defaultUploadImages[uploadImages.wechatQrCode] = element.qrcode;
+          hasWechat.value = true;
+          wechatAccountData.value = element;
+          defaultUploadImages.wechatQrCode = element.qrcode || '';
         } else if(element.type == 2){
-          defaultUploadImages[uploadImages.alipayQrCode] = element.qrcode;
+          hasAlipay.value = true;
+          alipayAccountData.value = element;
+          defaultUploadImages.alipayQrCode = element.qrcode || '';
         } else if(element.type == 3){
           bankFormData.value.push(element);
+          const hash = computeBankHash(element);
+          if (element.id) savedHashes.set(element.id, hash);
         }
       });
     }
@@ -531,6 +577,76 @@ function matchBankId(input) {
 
   return bank ? bank.id : null
 }
+function computeBankHash(item){
+  return [item.account_name, item.account_number, item.opening_bank]
+    .map(v => String(v ?? '').trim()).join('|');
+}
+const debounce = (fn, wait) => {
+  let t;
+  return (...args) => {
+    if (t) clearTimeout(t);
+    t = setTimeout(() => fn(...args), wait);
+  };
+};
+const bankTimers = new Map();
+const onBankInput = (index) => {
+  const timer = bankTimers.get(index);
+  if (timer) clearTimeout(timer);
+  const id = setTimeout(() => {
+    onBankBlur(index);
+  }, 1600);
+  bankTimers.set(index, id);
+};
+// 单条银行卡验证
+function validateSingleBank(item){
+  if(!item.account_number || !item.account_name || !item.opening_bank) {
+    uni.showToast({
+      title: '请完整输入银行信息',
+      icon: 'none'
+    });
+    return false;
+  };
+  if(!/^\d{10,20}$/.test(String(item.account_number).trim())){
+    uni.showToast({
+      title: '请输入正确的银行卡号',
+      icon: 'none'
+    });
+    return false;
+  };
+  // 开户行不再强校验“包含银行”，仅作非空校验，避免合法名称被阻断
+  return true;
+}
+// 失焦自动保存：银行卡
+const onBankBlur = async (index)=>{
+  const item = bankFormData.value[index];
+  if(!item) return;
+  if(!validateSingleBank(item)){
+    return;
+  }
+  const hash = computeBankHash(item);
+  const key = item.id ?? `n-${index}`;
+  if (savedHashes.get(key) === hash) {
+    return;
+  }
+  const common = {
+    account_name: item.account_name,
+    account_number: item.account_number,
+    is_default: 1,
+    opening_bank: item.opening_bank,
+    bank_id: matchBankId(item.opening_bank)
+  };
+  const res = item.id 
+    ? await editBank({ id: item.id, type: item.type, ...common }) 
+    : await addBank({ type: 3, ...common }); // id=3 表示银行卡类型
+  const {code=9999,msg} = res || {};
+  if(code===200){
+    uni.showToast({ title: '已保存', icon: 'success' });
+    savedHashes.set(key, hash);
+    getCurrentPayList();
+  } else {
+    uni.showToast({ title: msg || '保存失败', icon: 'none' });
+  }
+};
 </script>
 
 <style lang="scss" scoped>

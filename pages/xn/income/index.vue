@@ -14,7 +14,7 @@
 				<view class="card-top">
 					<view class="balance-info">
 						<text class="label">账户余额 (RWVA)</text>
-						<text class="amount">{{ $globalUserInfoXn.income }}</text>
+						<text class="amount">{{ $globalUserInfoXn.amount }}</text>
 						<text class="note">仅每周三10:00-12:00提现</text>
 					</view>
 					<view class="action-btns">
@@ -55,7 +55,7 @@
 					<view class="stat-divider"></view>
 					<view class="stat-item">
 						<text class="stat-label">待到账收益(元)</text>
-						<text class="stat-value">999,222.00</text>
+						<text class="stat-value">{{ $globalUserInfoXn.forecast_income }}</text>
 					</view>
 				</view>
 			</view>

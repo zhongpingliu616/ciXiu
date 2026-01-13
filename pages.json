@@ -134,6 +134,12 @@
 			}
 		},
 		{
+			"path": "pages/xn/income/withdraw-cash-detail",
+			"style": {
+				"navigationBarTitleText": "提现详情"
+			}
+		},
+		{
 			"path": "pages/xn/income/withdrawal-record",
 			"style": {
 				"navigationBarTitleText": "提现记录"
