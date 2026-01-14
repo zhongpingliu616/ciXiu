@@ -62,7 +62,7 @@
 </template>
 
 <script setup name="orders">
-import { taskLists } from '@/api/index.js'
+import { taskLists,addOrder } from '@/api/index.js'
 const { proxy } = getCurrentInstance();
 const safeTopValue = (proxy.$safeAreaInfo.top +24) +'rpx'
 let title = ref("orders");
@@ -83,6 +83,7 @@ const pageSize = ref(10)
 const noMore = ref(false)
 const loadStatus = ref('loadmore') // 'loadmore', 'loading', 'nomore'
 const iconType = ref('flower')
+let marginResultData = ref({})
 let hasMore = true
 let isLoading = false // 防止重复触发
 
@@ -155,16 +156,39 @@ const jumDetail = (item) => {
 		url: `/pages/xn/collection-detail/index?id=${item.id}`
 	})
 }
+const getDeposit = async (id)=>{
+	if(!id){
+		uni.showToast({ title: '订单ID不能为空', icon: 'none' })
+		return;
+	}
+	const {code, msg ,data={}} = await addOrder({id});
+	
+	if(code == 200){
+		uni.showToast({title: '订单创建成功', icon: 'success' })
+		marginResultData.value = data.lists || {};
+		marginResultData.value.id = id;
+		
+		setTimeout(() => {
+			uni.navigateTo({
+					url: `/pages/xn/my/deposit?id=${id}`,
+					success: (res) => {
+						res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+					},
+					fail: (err) => {
+						console.error('跳转失败', err);
+					}
+				})
+		}, 1500)
+	} else {
+		uni.showToast({ title: msg || '订单创建失败', icon: 'none' })
+		// setTimeout(() => {
+		// 	uni.navigateBack()
+		// }, 1500)
+	};
+}
 // 抢单按钮点击事件
 const handleGrab = (item) => {
-	console.log(item)
-  if (!item.canGrab && false) {
-    uni.showToast({ title: '等级不足，无法抢单', icon: 'none' })
-    return
-  }
-  uni.navigateTo({
-  	url: `/pages/xn/my/deposit?id=${item.id}`
-  })
+	getDeposit(item.id);
 }
 
 // 页面加载时初始化数据

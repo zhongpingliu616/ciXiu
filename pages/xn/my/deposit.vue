@@ -8,7 +8,7 @@
 					<u-cell :key="index" 
 					:border="false"
 					class="form-item"
-					:title="`￥ ${marginResultData.deposit}`"
+					:title="`￥ ${marginResultData.deposit ?? 0}`"
 					:value="marginResultData.label"
 					:title-style="{ fontSize: '32rpx', fontWeight: 'bold', color: '#333' }"
 					:value-style="{ fontSize: '30rpx', color: '#666' }"
@@ -114,6 +114,8 @@
 <script setup name="pay-deposit">
 import { getLevelLists,addOrder,orderPay,memberAddress } from '@/api/index'
 const { proxy } = getCurrentInstance();
+const eventChannel = ref(null);
+eventChannel.value = proxy.getOpenerEventChannel();
 let title = ref("压金");
 let show = ref(false);
 let loading = ref(false);
@@ -132,7 +134,7 @@ const marginResultData = ref({ deposit: 0, label: '(1000 - 6000)￥' });
 const disabledConfirm = computed(()=>(marginResultData.value?.deposit>0));
 const handlePayment = async ()=>{
 	showAddress.value = true;
-	
+	loading.value = true;
 
 };
 const onConfirm = async()=>{
@@ -193,28 +195,17 @@ const requireAddressList = async ()=>{
 		uni.showToast({ title: msg || '地址加载失败', icon: 'none' })
 	}
 }; 
-const getDeposit = async ()=>{
-	const {code, msg ,data={}} = await addOrder({id});
-	
-	if(code == 200){
-		uni.showToast({title: '缴纳压金成功', icon: 'success' })
-		marginResultData.value = data.lists || {};
-		requireAddressList();
-		return
-	} else {
-		uni.showToast({ title: msg || '缴纳压金失败', icon: 'none' })
-		setTimeout(() => {
-			uni.navigateBack()
-		}, 1500)
-	};
-}
+
 onMounted(async () => {
-	getDeposit();
+	requireAddressList();
 })
 onLoad((options) => {
 	if (options.id) {
        id = options.id;
-    }
+    };
+	eventChannel.value.on('sendMarginDatas', (data) => {
+		marginResultData.value = data.marginResultData || {};
+	});
 })
 </script>
 
@@ -239,7 +230,7 @@ onLoad((options) => {
 	display: flex;
 	align-items:center;
 	justify-content: space-between;
-	color: #ccc;
+	color: #b47c7d;
 	margin: 10rpx 0;
 }
 .payment-list {

@@ -5,8 +5,11 @@
 			<!-- 可提现额度卡片 -->
 			<view class="card balance-card">
 				<view class="left">
-					<view class="label">账户余额（元）</view>
-					<view class="amount">{{ formatAmount($globalUserInfoXn.amount) }}</view>
+					<view class="label">账户余额</view>
+					<view class="amount">
+						¥<up-count-to :endVal="$globalUserInfoXn.amount" separator="," bold fontSize="48rpx" color="#523027"></up-count-to>
+						<!-- {{ formatAmount($globalUserInfoXn.amount) }} -->
+					</view>
 				</view>
 				<view class="right">
 					<text class="total">________________</text>

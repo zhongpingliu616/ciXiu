@@ -1,5 +1,4 @@
 const BASE_URL = import.meta.env.VITE_APP_BASE_URL || ''
-console.log("当前环境",import.meta.env.VITE_APP_BASE_URL)
 import { useLoginStore } from '@/stores/userLogin'
 
 function request(options) {
@@ -66,7 +65,7 @@ function request(options) {
            }
         }
 
-        /** 业务层约定（按你后端改） */
+
         // 注意：有些接口成功时 code 也是 200，或者其他约定。请根据后端实际情况调整。
         // 这里假设 data.code === 0 为成功。
         // 增加对 code 200 的兼容，防止部分接口返回 200 但非 0 被误判
@@ -136,7 +135,7 @@ function request(options) {
       },
 
       complete() {
-        // showLoading && uni.hideLoading()
+        showLoading && uni.hideLoading()
       }
     })
   })

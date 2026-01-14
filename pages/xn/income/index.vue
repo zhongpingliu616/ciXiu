@@ -14,7 +14,11 @@
 				<view class="card-top">
 					<view class="balance-info">
 						<text class="label">账户余额 (RWVA)</text>
-						<text class="amount">{{ $globalUserInfoXn.amount }}</text>
+						<text class="amount">
+							<up-count-to :endVal="$globalUserInfoXn.amount" separator="," bold fontSize="62rpx" color="#523027"></up-count-to>
+							<!-- {{ $globalUserInfoXn.amount }} -->
+
+						</text>
 						<text class="note">仅每周三10:00-12:00提现</text>
 					</view>
 					<view class="action-btns">

@@ -123,7 +123,7 @@ const emit = defineEmits(['showSearch']);
 
 // 模拟用户等级（用于判断是否可抢单）
 const userLevel = ref(3) // 假设用户等级为3
-
+let marginResultData = ref({})
 // 数据状态
 const listData = ref([])
 const loading = ref(false)
@@ -211,11 +211,40 @@ const jumDetail = (item) => {
 		url: `/pages/xn/collection-detail/index?id=${item.id}`
 	})
 }
+const getDeposit = async (id)=>{
+	if(!id){
+		uni.showToast({ title: '订单ID不能为空', icon: 'none' })
+		return;
+	}
+	const {code, msg ,data={}} = await addOrder({id});
+	
+	if(code == 200){
+		uni.showToast({title: '订单创建成功', icon: 'success' })
+		marginResultData.value = data.lists || {};
+		marginResultData.value.id = id;
+		
+		setTimeout(() => {
+			uni.navigateTo({
+					url: `/pages/xn/my/deposit?id=${id}`,
+					success: (res) => {
+						res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+					},
+					fail: (err) => {
+						console.error('跳转失败', err);
+					}
+				})
+		}, 1500)
+	} else {
+		uni.showToast({ title: msg || '订单创建失败', icon: 'none' })
+		// setTimeout(() => {
+		// 	uni.navigateBack()
+		// }, 1500)
+	};
+}
 // 抢单按钮点击事件
 const handleGrab = async (item) => {
-  uni.navigateTo({
-  	url: `/pages/xn/my/deposit?id=${item.id}`
-  })
+	await getDeposit(item.id);
+  
 }
 // 获取公告列表
 const getNoticeList = async () => {

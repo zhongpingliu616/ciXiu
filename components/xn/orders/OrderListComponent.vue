@@ -53,7 +53,7 @@
 </template>
 
 <script setup name="OrderListComponent">
-import { orderLists,editOrderSatus } from '@/api/index.js'
+import { orderLists,editOrderSatus,orderDetails } from '@/api/index.js'
 const props = defineProps({
   // 订单状态，如果为 null/undefined 则显示全部。可以是数字或数字数组
   status: {
@@ -90,6 +90,7 @@ let showProduced = ref(false);
 let showConfirmOrder = ref(false);
 let showDeleOrder = ref(false);
 let currentItem ={};
+let marginResultData = ref({});
 
 // 获取数据
 const fetchData = async (isRefresh = false) => {
@@ -212,6 +213,33 @@ const confirmProduced = async ()=>{
 const confirmDeleOrder = ()=>{
 	
 };
+// 获取订单详情向压金页面传递压金数据
+const getOrderDetails = async (item)=>{
+	if(!item.id){
+		uni.showToast({ title: '订单ID不能为空', icon: 'none' })
+		return;
+	}
+	const {code, msg ,data={}} = await orderDetails({order_id:item.order_id});
+	
+	if(code == 200){
+		marginResultData.value = data.lists || {};
+		marginResultData.value.id = item.id;
+		uni.navigateTo({
+        url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
+        success: (res) => {
+          res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+        },
+        fail: (err) => {
+          console.error('跳转失败', err);
+        }
+      })
+	} else {
+		uni.showToast({ title: msg || '订单详情获取失败', icon: 'none' })
+		// setTimeout(() => {
+		// 	uni.navigateBack()
+		// }, 1500)
+	};
+}
 // 处理操作事件
 const handleAction = ({ type, item }) => {
   currentItem = item;
@@ -220,10 +248,9 @@ const handleAction = ({ type, item }) => {
 	    showCancelModal.value = true;
      break
     case 'pay': // 去支付
-      uni.navigateTo({
-        url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`
-      })
-      uni.showToast({ title: '跳转支付页面', icon: 'none' })
+      getOrderDetails(item);
+      
+      // uni.showToast({ title: '跳转支付页面', icon: 'none' })
       break
     case 'remind':
       uni.showToast({ title: '已提醒商家发货', icon: 'success' })

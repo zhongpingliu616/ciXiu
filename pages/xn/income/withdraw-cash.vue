@@ -6,7 +6,10 @@
 			<view class="card balance-card">
 			<view class="left">
 				<text class="label">¥</text>
-				<text class="amount">{{ formatAmount($globalUserInfoXn.amount) }}</text>
+				<text class="amount">
+          <up-count-to :endVal="$globalUserInfoXn.amount" separator="," fontSize="48rpx" color="#523027"></up-count-to>
+          </text>
+          <!-- {{ formatAmount($globalUserInfoXn.amount) }} -->
 			</view>
 			<view class="right">
 				<!-- <text class="total">累计赚了：¥{{ formatAmount($globalUserInfoXn.earned) }}</text> -->
