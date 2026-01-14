@@ -24,6 +24,8 @@
 
 
 <script setup name="block">
+import { bankLists } from '../../api/xn';
+
 	const props = defineProps(
 	{
 	  cardIndex: {
@@ -49,7 +51,8 @@
 	  background: `
 			url(static/images/common/level-item-bg-${props.cardIndex==props.selectIndex?'active':'none'}.png) no-repeat center / contain,
 			url(static/images/common/level-item-bg-${props.cardIndex}.png) no-repeat center / contain
-		  `
+		  `,
+      backgroundSize: '20rpx'
 	}));
 </script>
 

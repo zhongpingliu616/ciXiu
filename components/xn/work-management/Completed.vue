@@ -233,6 +233,7 @@ onMounted(() => {
 		width: 92%;
 		top: -10rpx;
 		background: url(@/static/images/common/card-top-1.png) repeat-x;
+		background-size: 12rpx;
 	}
 	&::after{
 		display: block;
@@ -243,6 +244,7 @@ onMounted(() => {
 		height: 24rpx;
 		width: 92%;
 		background: url(@/static/images/common/card-top-2.png) repeat-x;
+		background-size: 12rpx;
 		
 	}
 }

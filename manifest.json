@@ -1,7 +1,7 @@
 {
-    "name" : "xiuniang",
+    "name" : "刺绣",
     "appid" : "__UNI__89950EE",
-    "description" : "",
+    "description" : "高端传统刺绣文创",
     "versionName" : "1.0.0",
     "versionCode" : "100",
     "transformPx" : false,
@@ -45,7 +45,10 @@
                 "dSYMs" : false
             },
             /* SDK配置 */
-            "sdkConfigs" : {}
+            "sdkConfigs" : {},
+            "splashscreen" : {
+                "androidStyle" : "common"
+            }
         }
     },
     /* 快应用特有相关 */
@@ -78,6 +81,8 @@
         },
         "devServer" : {
             "port" : ""
-        }
-    }
+        },
+        "title" : "刺绣"
+    },
+    "locale" : "en"
 }

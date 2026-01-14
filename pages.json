@@ -259,7 +259,7 @@
 		"selectedColor": "#FFF3CF",
 		"borderStyle": "black",
 		"backgroundColor": "#77171D",
-		"height": "0px",
+		"height": "1rpx",
 		"list": [
 			{ "pagePath": "pages/index" },
 			{ "pagePath": "pages/xn/orders/index" },

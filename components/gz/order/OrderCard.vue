@@ -78,6 +78,7 @@ const handleGrab = (item) => {
 		width: 90%;
 		top: -10rpx;
 		background: url(@/static/images/common/card-top-1.png) repeat-x;
+		background-size: 12rpx;
 	}
 	&::after{
 		display: block;
@@ -88,6 +89,7 @@ const handleGrab = (item) => {
 		height: 24rpx;
 		width: 90%;
 		background: url(@/static/images/common/card-top-2.png) repeat-x;
+		background-size: 12rpx;
 		
 	}
 }
