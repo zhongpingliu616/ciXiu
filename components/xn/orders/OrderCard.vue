@@ -2,12 +2,11 @@
 <view
 	 :key="item.id+Math.random()"
 	 class="order-card-item"
-	 @click.stop="handleItem(item)"
    >	
 	   <view class="card-header">
 		 <image :src="item.image" class="card-image" mode="aspectFill" />
 		 <view class="card-content">
-		   <view class="card-title">{{ item.name }}</view>
+		   <view class="card-title" @tap="($event)=>handleItem(item, $event)">{{ item.name }}</view>
 		   <view class="tags">
 			 <CxTag
 			   :text="item.period"
@@ -30,7 +29,7 @@
 				 <CxComfirmBtn :btnStyle="{
 					width: '168rpx',
 					height: '60rpx',
-				 }" @click.stop="handleGrab(item)" :text="item.rush_status==1 ? '一键抢单' : '等级不符'"></CxComfirmBtn>
+				 }" @tap="($event)=>handleGrab(item, $event)" :text="item.rush_status==1 ? '一键抢单' : '等级不符'"></CxComfirmBtn>
 			 </view>
 		   </view>
 		 </view>
@@ -56,12 +55,13 @@ const props = defineProps({
    }
 })
 // 抢单按钮点击事件
-const handleGrab = (item) => {
+const handleGrab = (item, e) => {
+ e && e.stopPropagation && e.stopPropagation();
   emit('grabOrderClick',item)
 }
 // 整个卡片点击事件
-const handleItem = (item) => {
-  emit('handleItemClick',item)
+const handleItem = (item,e) => {
+   emit('handleItemClick',item)
 }
 
 </script>

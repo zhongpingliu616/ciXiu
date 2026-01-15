@@ -49,7 +49,7 @@
 					<view class="grid-item" @click="handleOrderClick('progress')">
 						<view class="icon-wrap">
 							<u-icon name="clock" size="50rpx" color="#333"></u-icon>
-							<view class="badge">9</view>
+							<view class="badge" v-if="progressNum">{{progressNum}}</view>
 						</view>
 						<text class="grid-text">进行中</text>
 					</view>
@@ -81,7 +81,7 @@
 						> 
 							<template #item="{item}">
 								<view class="work-item">
-									<image class="work-img" mode="aspectFill" :src="item.src"></image>
+									<image class="work-img"  style="width: 228px; height: 228px;" mode="aspectFill" :src="item.image"></image>
 								</view>
 							</template>
 						</CxScrollView>
@@ -166,16 +166,31 @@
 </template>
 
 <script setup>
-	import { useLoginStore } from '@/stores/userLogin'
+import { orderLists } from '@/api/index.js'
+import { useLoginStore } from '@/stores/userLogin'
 let showLogoutModal = ref(false);
 const title = ref("我的");
+const progressNum = ref(0);
 const {proxy} = getCurrentInstance();
 const userStore = useLoginStore()
 // 作品数据
 const worksList = ref([
-	{ src: 'https://cdn.uviewui.com/uview/album/1.jpg', id: 1 },
-	{ src: 'https://cdn.uviewui.com/uview/album/2.jpg', id: 2 },
-	{ src: 'https://cdn.uviewui.com/uview/album/3.jpg', id: 3 },
+	{ 
+		"id": 1,
+		"order_id": "em2026010706583531889",
+		"username": "a123455",
+		"status": 10,
+		"create_time": "2026-01-07 06:58:35",
+		"task_info": "",
+		"reward_amount": "1200.00",
+		"end_time": "2027-01-02 06:58:35",
+		"name": "古韵,非遗刺绣",
+		"period": "360天",
+		"difficulty": "难度困难",
+		image: 'https://cdn.uviewui.com/uview/album/1.jpg'
+	},
+	{ image: 'https://cdn.uviewui.com/uview/album/2.jpg', id: 2 },
+	{ image: 'https://cdn.uviewui.com/uview/album/3.jpg', id: 3 },
 	// { src: 'https://cdn.uviewui.com/uview/album/4.jpg', id: 4 },
 	// { src: 'https://cdn.uviewui.com/uview/album/5.jpg', id: 5 },
 ]);
@@ -224,7 +239,6 @@ const handleOrderClick = (type) => {
 
 // 作品更多点击
 const handleWorksMore = () => {
-	console.log('Works more');
 	uni.navigateTo({
 		url: '/pages/xn/my/work-management'
 	});
@@ -268,11 +282,39 @@ const handleProfileClick = () => {
 			}
 	});
 };
+
+const getMyWorks = async () => {
+	const {code,data={},msg} = await orderLists({
+		status_list: '50,60,70,80',
+		page_no: 1,
+		page_size: 3
+	});
+	if(code === 200){
+		progressNum.value = data?.count || 0;
+		data?.lists?.forEach((item,index) => {
+			if(index>2) return;
+			worksList.value[index] = item;
+		});
+	} else {
+		uni.showToast(msg)
+	}
+
+	const progressRes = await orderLists({
+		status_list: '10,20,30,40,50,60',
+		page_no: 1,
+		page_size: 2
+	});
+	if(code === 200){
+		progressNum.value = progressRes?.data?.count || 0;
+	} else {
+		uni.showToast(msg)
+	}
+};
 onShow(()=>{
 	userStore.fetchUserInfo();
 });
 onMounted(() => {
-  console.log('我的页面加载');
+  getMyWorks();
 });
 </script>
 

@@ -31,16 +31,23 @@
 					</u-cell>
 				</u-cell-group>
 			</view>
-
+			
 			<view class="form-card mt-20">
 				<u-cell-group :border="false">
-					<u-cell title="昵称" :isLink="true" @click="handleNicknameClick" :border="true" :titleStyle="{
+					<u-cell title="昵称" :isLink="true" :border="true" :titleStyle="{
 						fontSize: '28rpx',
 						color: '#333',
 						fontWeight: '500'
 					  }" customStyle="padding: 30rpx 0;">
 						<template #value>
-							<text class="nickname-text">{{ userInfo.nickname }}</text>
+							<u-input
+							  v-model="userInfo.nickname"
+							  placeholder="请输入昵称"
+							  input-align="right"
+							  border="none"
+							  class="nickname-text"
+							/>
+							<!-- <text class="nickname-text" @click="handleNicknameClick">{{ userInfo.nickname }}</text> -->
 						</template>
 					  </u-cell>
 					  <u-cell title="我的二维码" :isLink="true" @click="handleQrCodeClick" :border="false" :titleStyle="{
@@ -138,8 +145,8 @@ const handleSubmit = async () => {
 	try {
 		// 1. 提交更新信息
 		const res = await updateUserInfo({
-			avatar: avatarRes.data.url || "",
-			nick_name: tempNickname.value || "",
+			avatar: userInfo.avatar || "",
+			nick_name: userInfo.nickname || "",
 			signature: userInfo.signature || ""
 		});
 		
@@ -174,10 +181,9 @@ const canSaveProfile = computed(() => {
   if (!pageLoaded.value || !originProfile.value) {
     return false
   }
-  const nameChanged = !!tempNickname.value && tempNickname.value !== originProfile.value.nickname
   return (
     userInfo.avatar !== originProfile.value.avatar ||
-    nameChanged ||
+    userInfo.nickname !== originProfile.value.nickname ||
     userInfo.signature !== originProfile.value.signature
   )
 })

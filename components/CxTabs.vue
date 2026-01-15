@@ -11,6 +11,7 @@
 		:current="tabActiveIndex"
 		lineBgSize="100% 100%"
 	    @change="tabSwitch"
+	    @click="tabSwitch"
 	> 
 		  <template
 			 v-if="$slots.tabItem"
@@ -50,9 +51,9 @@ const defaultItemStyle = {
 			
 		};
 const props = defineProps({
- modelValue: {
-	type: Number,
-	default: 0
+  modelValue: {
+    type: Number,
+    default: 0
   },
   tabItems: {
 	type: Array,
@@ -87,12 +88,13 @@ const props = defineProps({
 	type: String,
 	default: "60rpx"
   },
- lineHeight: {
-	type: String,
-	default: "18rpx"
+  lineHeight: {
+    type: String,
+    default: "18rpx"
   }
 });
-let tabActiveIndex = ref(props.modelValue.value);
+
+let tabActiveIndex = ref(props.modelValue);
 const emit = defineEmits(['changeTab','update:modelValue']);
 
 const mergedActiveStyle = computed(() => ({

@@ -42,11 +42,11 @@
 			<view class="input-wrapper">
 				<text class="yen">¥</text>
 				<up-input
-				v-model="withdrawAmount"
-				type="number"
-				placeholder="请输入充值金额,最低1元无上限"
-				class="input"
-				@input="validateAmount"
+					v-model="withdrawAmount"
+					type="number"
+					placeholder="请输入充值金额,最低1元无上限"
+					class="input"
+					@input="validateAmount"
 				/>
 				<!-- <text class="all" @click="withdrawAll">全部提现</text> -->
 			</view>
@@ -164,7 +164,7 @@ let title = ref("我的钱包");
 let depostAccountAry= ref([]);
 const withdrawAmount = ref('');
 const selectedIndex = ref(0);
-const payType = ref("支付宝");
+const payType = ref("");
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -238,14 +238,25 @@ const selectMethod = (item,index) => {
 // 是否可提交
 const canSubmit = computed(() => {
   const amount = Number(withdrawAmount.value)
-  return amount >= 1 && amount <= formatAmount(proxy.$globalUserInfoXn.amount)
+  const amountBoolean = amount >= 1 && amount <= formatAmount(proxy.$globalUserInfoXn.amount)
+  return amountBoolean && payType.value !== ""
 })
 
 // 提交充值
-const submitWithdraw = () => {
+const submitWithdraw = async() => {
   if (!canSubmit.value) return
   uni.showToast('提现申请已提交，请等待到账')
   // TODO: 调用接口
+  const {code,msg} = await addDepositOrder({
+    amount: withdrawAmount.value,
+    deposit_account_id: selectedItem.value.id,
+  });
+  if(code === 200){
+    uni.showToast(msg)
+    emit('confirm')
+  } else {
+    uni.showToast(msg)
+  }
 }
 
 // 跳转充值记录
@@ -256,6 +267,9 @@ const getDepostAccountData = async ()=>{
 	const {code,data={},msg} = await depositAccountLists();
 	if(code === 200){
 		depostAccountAry.value = data.lists || [];
+		payType.value = "";
+		withdrawAmount.value = "";
+		
 	} else {
 		uni.showToast(msg)
 	}

@@ -1,55 +1,59 @@
 <template>
-<BaseProductList
-  @onScrollToLower="onScrollToLower"
-  @onRefresh="onRefresh"
-  :isRefreshing="refreshing"
-  :loadStatus="loadStatus"
-  :iconType="iconType"
-  :enableRefresh="true"
-  :enableLoadMore="true"
-  class="order-list"
+  <BaseProductList
+    @onScrollToLower="onScrollToLower"
+    @onRefresh="onRefresh"
+    :isRefreshing="refreshing"
+    :loadStatus="loadStatus"
+    :iconType="iconType"
+    :enableRefresh="false"
+    :enableLoadMore="true"
+    class="order-list"
+    >
+    <template #scrollContain>
+      <!-- 订单列表 -->
+      <template v-for="(item, index) in listData" :key="item.id+Math.random()">
+          <XnOrdersOrderManagementCard :item="item" @action="handleAction"></XnOrdersOrderManagementCard>
+      </template>
+    </template>
+    </BaseProductList>
+
+
+
+
+  <CxModal
+    v-model:show="showCancelModal"
+    content="确定要取消订单吗？"
+    @confirm="confirmCancelOrder"
+  />
+  <CxModal
+    v-model:show="showConfirmOrder"
+    content="确认收材料了吗？"
+    @confirm="confirmOrder"
+  />
+  <CxModal
+    v-model:show="showProduced"
+    content="确认完成了吗？"
+    @confirm="confirmProduced"
   >
-	<template #scrollContain>
-		<!-- 订单列表 -->
-		<template v-for="(item, index) in listData" :key="item.id">
-				<XnOrdersOrderManagementCard :item="item" @action="handleAction"></XnOrdersOrderManagementCard>
-		</template>
-	</template>
-  </BaseProductList>
-<CxModal
-  v-model:show="showCancelModal"
-  content="确定要取消订单吗？"
-  @confirm="confirmCancelOrder"
-/>
-<CxModal
-  v-model:show="showConfirmOrder"
-  content="确认收材料了吗？"
-  @confirm="confirmOrder"
-/>
-<CxModal
-  v-model:show="showProduced"
-  content="确认完成了吗？"
-  @confirm="confirmProduced"
->
-    <view class="input-wrap">
-      <view style="font-size:28rpx; color:#333; margin-bottom:10rpx;">请输入物流单号,切勿填错</view>
-      <u-input
-        v-model="logisticsNumber"
-        placeholder="请输入你的物流单号"
-        border="surround"
-        clearable
-        :customStyle="{
-          height: '52rpx',
-          borderRadius: '10rpx'
-        }"
-      ></u-input>
-    </view>
-</CxModal>
-<CxModal
-  v-model:show="showDeleOrder"
-  content="确定要删除订单吗？"
-  @confirm="confirmDeleOrder"
-/>
+      <view class="input-wrap">
+        <view style="font-size:28rpx; color:#333; margin-bottom:10rpx;">请输入物流单号,切勿填错</view>
+        <u-input
+          v-model="logisticsNumber"
+          placeholder="请输入你的物流单号"
+          border="surround"
+          clearable
+          :customStyle="{
+            height: '52rpx',
+            borderRadius: '10rpx'
+          }"
+        ></u-input>
+      </view>
+  </CxModal>
+  <CxModal
+    v-model:show="showDeleOrder"
+    content="确定要删除订单吗？"
+    @confirm="confirmDeleOrder"
+  />
 </template>
 
 <script setup name="OrderListComponent">
@@ -64,15 +68,15 @@ const props = defineProps({
 
 // 状态定义
 const ORDER_STATUS = {
-  WAIT_PAY: 10, // 待支付
-  WAIT_SHIP: 20, // 待发货
-  WAIT_RECEIVE_MATERIAL: 30, // 待接收材料
-  WAIT_SHIP_PRODUCT: 40, // 待发成品
-  DELIVERED: 50, // 待接收成品
-  WAIT_ACCEPT: 60, // 待验收
-  ACCEPT_SUCCESS: 70, // 验收成功
-  ACCEPT_FAIL: 80, // 验收失败
-  CANCELLED: 90 // 取消订单
+      WAIT_PAY: 10, // 待支付
+      WAIT_SHIP: 20, // 待发货
+      WAIT_RECEIVE_MATERIAL: 30, // 待接收材料
+      WAIT_SHIP_PRODUCT: 40, // 待发成品
+      DELIVERED: 50, // 待接收成品
+      WAIT_ACCEPT: 60, // 待验收
+      ACCEPT_SUCCESS: 70, // 验收成功
+      ACCEPT_FAIL: 80, // 验收失败
+      CANCELLED: 90 // 取消订单
 }
 
 // 数据状态
@@ -121,8 +125,9 @@ const fetchData = async (isRefresh = false) => {
     
     if (res.code === 200 || res.code === 0) {
       const newData = res.data.lists || []; // 假设返回结构是 data.lists
-      
       if (newData.length < pageSize.value) {
+
+      console.log(newData.length, pageSize.value);
         noMore.value = true
         loadStatus.value = 'nomore'
       }
@@ -287,10 +292,14 @@ const handleAction = ({ type, item }) => {
     }
 }
 
-// 监听 status 变化 (虽然目前是作为组件复用，通常不会动态变 status，但加上是个好习惯)
-watch(() => props.status, () => {
-  onRefresh()
-})
+// 监听 status 变化
+watch(
+  () => props.status,
+  (newVal, oldVal) => {
+    onRefresh()
+  },
+  { deep: true, immediate: true }
+)
 
 onMounted(() => {
  fetchData();

@@ -2,9 +2,9 @@
 <view
 	 :key="item.id+Math.random()"
 	 class="order-card-item"
-	 @click="handleCardClick"
    >
-		<view class="order-status">
+		<view class="order-status" 
+	 	@click.stop="handleCardClick">
 			<up-row 
 			justify="space-between"
 			customStyle="margin-bottom: 1rpx">
@@ -67,10 +67,10 @@
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
-				   @click="handleAction('cancel')" text="取消订单"></CxComfirmBtn>
+				   @click.stop="handleAction('cancel')" text="取消订单"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 			   <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('pay')" text="去支付"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('pay')" text="去支付"></CxComfirmBtn>
 			   </view>
 		   </template>
 		   
@@ -79,7 +79,7 @@
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
-				   @click="handleAction('remind')" text="提醒发货"></CxComfirmBtn>
+				   @click.stop="handleAction('remind')" text="提醒发货"></CxComfirmBtn>
 			   </view>
 		   </template>
 
@@ -88,36 +88,36 @@
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
-				   @click="handleAction('logistics')" text="查看物流"></CxComfirmBtn>
+				   @click.stop="handleAction('logistics')" text="查看物流"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
-				   @click="handleAction('receivingMaterials')" text="已收材料"></CxComfirmBtn>
+				   @click.stop="handleAction('receivingMaterials')" text="已收材料"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 		   </template>
 
 		   <!-- 待发成品:  制作完成 -->
 		   <template v-else-if="item.status === 40">
 			   <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('produced')" text="制作完成"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('produced')" text="制作完成"></CxComfirmBtn>
 			   </view>
 		   </template>
 
 		   <!-- 待接收成品:  已接收成品 -->
 		   <template v-else-if="item.status === 50">
 			   <!-- <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('finishedProductReceived')" text="已接收成品"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('finishedProductReceived')" text="已接收成品"></CxComfirmBtn>
 			   </view> -->
 		   </template>
 
 		   <!-- 待验收:  验收成功  验收失败-->
 		   <template v-else-if="item.status === 60">
 			   <!-- <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('acceptanceSuccessful')" text="验收成功"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('acceptanceSuccessful')" text="验收成功"></CxComfirmBtn>
 			   </view>&nbsp;&nbsp;
 			   <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click="handleAction('acceptanceFailure')" text="验收失败"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('acceptanceFailure')" text="验收失败"></CxComfirmBtn>
 			   </view> -->
 		   </template>
 
@@ -126,7 +126,7 @@
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
-				   @click="handleAction('delete')" text="删除订单"></CxComfirmBtn>
+				   @click.stop="handleAction('delete')" text="删除订单"></CxComfirmBtn>
 			   </view>
 		   </template> -->
 	   </view>

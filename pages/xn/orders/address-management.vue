@@ -16,7 +16,7 @@
 						<view class="default-wrap" @click.stop="handleSetDefault(index)">
 							<view class="radio-icon">
 								<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="item.is_default_address"></u-icon>
-								<uni-icons type="circle" color="#ccc" size="40" v-else></uni-icons>
+								<uni-icons type="circle" color="#ccc" size="30rpx" v-else></uni-icons>
 								 &nbsp;
 							</view>
 

@@ -18,9 +18,7 @@
 			 class="order-management-tabs"
 			 />
 		  <view class="orders-list">
-			  <keep-alive>
 			    <XnOrdersOrderListComponent :status="currentStatus" :key="currentWorkIndex" />
-			  </keep-alive>
 		  </view>
 		</view>
 	 <view></view>

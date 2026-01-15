@@ -187,7 +187,7 @@ const getDeposit = async (id)=>{
 	};
 }
 // 抢单按钮点击事件
-const handleGrab = (item) => {
+const handleGrab = (item, e) => {
 	getDeposit(item.id);
 }
 

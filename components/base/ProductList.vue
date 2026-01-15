@@ -10,15 +10,15 @@
     <scroll-view
       class="scroll-wrapper"
       scroll-y
-	  :enable-back-to-top="true"
+	    :enable-back-to-top="true"
       :refresher-enabled="enableRefresh"
       :refresher-triggered="isRefreshing"
-	  :refresher-default-style="'black'"
+	    :refresher-default-style="'black'"
       @refresherrefresh="onRefresh"
       @scrolltolower="onScrollToLower"
       :scroll-with-animation="true"
-	  refresher-background="none"
-	  :lower-threshold="100"
+	    refresher-background="none"
+	    :lower-threshold="100"
     >
       <!-- 商品列表 -->
 	  <slot name="scrollContain">
