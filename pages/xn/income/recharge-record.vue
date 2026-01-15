@@ -87,7 +87,7 @@ onMounted(async () => {
     page_size: 10,
   });
   if(code === 200){
-    withdrawalList.value = data.list || []
+    withdrawalList.value = data.lists || []
   } else {
     uni.showToast(msg)
   }

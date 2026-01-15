@@ -113,17 +113,31 @@ const mergedItemStyle = computed(() => ({
 watch(
   () => props.modelValue,
   (val) => {
-	  tabActiveIndex.value = val;
-  },{
-	  immediate: true
+    tabActiveIndex.value = val;
+  },
+  {
+    immediate: true
   }
 )
-function tabSwitch({ index, name }){
-		// console.log("切换了", e);
-		tabActiveIndex.value  = index;
-		emit('update:modelValue', index);
-		emit('changeTab', {index, item: props.tabItems[index] });
-	};
+
+function tabSwitch(e){
+  let index
+  if (typeof e === 'number') {
+    index = e
+  } else if (e && typeof e === 'object') {
+    if (typeof e.index === 'number') {
+      index = e.index
+    } else if (typeof e.current === 'number') {
+      index = e.current
+    }
+  }
+  if (typeof index !== 'number') {
+    index = 0
+  }
+  tabActiveIndex.value = index
+  emit('update:modelValue', index)
+  emit('changeTab', { index, item: props.tabItems[index] })
+}
 </script>
 
 <style lang="scss" scoped>

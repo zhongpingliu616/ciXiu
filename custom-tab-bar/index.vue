@@ -17,7 +17,7 @@
 </template>
 
 <script setup>
-	alert("自定义");
+  console.log("custom-tab-bar");
 const tabs = [
   {
     path: '/pages/xn/index/index',

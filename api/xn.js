@@ -54,6 +54,7 @@ export const depositAccountLists = () => get('/embroid/depositAccount/lists') //
 export const addDepositOrder = (data) => post('/embroid/depositOrder/add', data) // 新增入款订单
 export const depositOrderLists = () => get('/embroid/depositOrder/lists') // 获取入款订单列表
 export const depositOrderDetails = (data) => get('/embroid/depositOrder/details', data) // 获取入款订单详情
+export const orderRemind = (data) => post('/embroid/order/remind', data) // 提醒平台发货
 
 
 

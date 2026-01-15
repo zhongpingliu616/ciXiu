@@ -18,7 +18,13 @@
 			 class="order-management-tabs"
 			 />
 		  <view class="orders-list">
-			    <XnOrdersOrderListComponent :status="currentStatus" :key="currentWorkIndex" />
+			<keep-alive>
+				<component
+					:is="OrderListComponent"
+					:status="currentStatus"
+					:key="`order-${currentStatus}`"
+				/>
+			</keep-alive>
 		  </view>
 		</view>
 	 <view></view>
@@ -27,7 +33,9 @@
 
 
 <script setup name="orderManagement">
-let title = ref("订单管理");	
+import OrderListComponent from '@/components/xn/orders/OrderListComponent.vue'
+let title = ref("订单管理");
+let orderListRef = ref(null);
 let currentWorkIndex = ref(0);
 const { proxy } = getCurrentInstance();
 const safeTopValue = (proxy.$safeAreaInfo.top + 80) +'rpx';
@@ -51,6 +59,14 @@ let lineBg = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAICAMAAACMAFxI
 const currentStatus = computed(() => {
 	return tabsConfig[currentWorkIndex.value].status;
 });
+
+const currentStatusKey = computed(() => {
+  const status = currentStatus.value
+  return status === null || status === undefined ? null : status;
+})
+watch(currentStatus, (newVal, oldVal) => {
+  orderListRef.value?.setStatus(oldVal)
+})
 
 onLoad((options) => {
 	if (options.tabIndex) {

@@ -48,6 +48,16 @@ import { useConfigStore } from '@/stores/configStore'
 					return true
 				}
 			})
+		});
+		const preloadPages = [
+			'/pages/index',
+			'/pages/xn/iorders/index',
+			'/pages/xn/income/index',
+			'/pages/xn/my/index'
+			];
+
+		preloadPages.forEach(url => {
+			uni.preloadPage({ url })
 		})
 	})
 	

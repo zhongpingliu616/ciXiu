@@ -253,6 +253,11 @@ onLoad((query) => {
 </script>
 
 <style lang="scss" scoped>
+:deep(.back){
+	&>div{
+		display: none;
+	}
+}
 .page-wrap{
 	background: url("@/static/images/user/login-bg.png") no-repeat center/cover;
 	grid-template-rows: v-bind(safeTopValue) 1fr 0rpx;

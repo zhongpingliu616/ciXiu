@@ -65,7 +65,7 @@ function go(path) {
   right: 0;
   bottom: 0;
   height: 124rpx;
-  background: #77171d;
+  background: #691e23;
   border-top-left-radius: 60rpx;
   border-top-right-radius: 60rpx;
   display: flex;

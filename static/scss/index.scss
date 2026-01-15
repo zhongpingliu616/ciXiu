@@ -26,13 +26,13 @@ $deputy-btn-color:RGBA(252, 124, 89, 1);
 }
 body{
 	font-size: 24rpx;
+	background:#691e23;
 }
 .page-wrap{
 	 height: 100vh;
-	 background:
-	 url("/static/images/index/bg.png") no-repeat center/cover;
-	  display: grid;
-	  grid-template-rows: 80rpx 1fr 120rpx;
+	 background: url("/static/images/index/bg.png") no-repeat center/cover;
+	display: grid;
+	grid-template-rows: 80rpx 1fr 120rpx;
 }
 .page-content{
   overflow-y: auto;

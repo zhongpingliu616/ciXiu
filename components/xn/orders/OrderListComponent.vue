@@ -10,15 +10,11 @@
     class="order-list"
     >
     <template #scrollContain>
-      <!-- 订单列表 -->
-      <template v-for="(item, index) in listData" :key="item.id+Math.random()">
+      <template v-for="(item, index) in listData" :key="item.id || index">
           <XnOrdersOrderManagementCard :item="item" @action="handleAction"></XnOrdersOrderManagementCard>
       </template>
     </template>
     </BaseProductList>
-
-
-
 
   <CxModal
     v-model:show="showCancelModal"
@@ -57,14 +53,27 @@
 </template>
 
 <script setup name="OrderListComponent">
-import { orderLists,editOrderSatus,orderDetails } from '@/api/index.js'
+import { orderLists,editOrderSatus,orderDetails,orderRemind } from '@/api/index.js'
 const props = defineProps({
   // 订单状态，如果为 null/undefined 则显示全部。可以是数字或数字数组
   status: {
-    type: [Number, Array],
+    type: [Number, Array, null, undefined],
     default: null
   }
 })
+
+
+const localStatus = ref(props.status)
+
+watch(
+  () => props.status,
+  val => localStatus.value = val
+)
+
+function setStatus(val) {
+  localStatus.value = val
+}
+
 
 // 状态定义
 const ORDER_STATUS = {
@@ -117,7 +126,7 @@ const fetchData = async (isRefresh = false) => {
     
     // 如果 status 存在且不是 'null'/'undefined' (代表全部)，则添加到参数中
     // 根据 order-management.vue，"全部"对应的 status 是 null
-    if (props.status !== null && props.status !== undefined) {      
+    if (props.status != null && props.status != undefined) {      
       params.status = props.status;
     }
 
@@ -127,7 +136,6 @@ const fetchData = async (isRefresh = false) => {
       const newData = res.data.lists || []; // 假设返回结构是 data.lists
       if (newData.length < pageSize.value) {
 
-      console.log(newData.length, pageSize.value);
         noMore.value = true
         loadStatus.value = 'nomore'
       }
@@ -153,6 +161,11 @@ const fetchData = async (isRefresh = false) => {
     refreshing.value = false
   }
 }
+
+onActivated(() => {
+  alert(localStatus.value)
+ //  console.log('组件被激活（从 keep-alive 缓存中恢复）')
+})
 
 // 下拉刷新
 const onRefresh = () => {
@@ -214,6 +227,18 @@ const confirmProduced = async ()=>{
     uni.showToast({ title: msg || '操作失败', icon: 'none' });
   }
 };
+// 提醒商家发货
+const remindOrder = async (item)=>{
+	const {msg,data,code} = await orderRemind({
+    order_id:item.order_id
+  });
+  if(code===200){
+    uni.showToast({ title: '已提醒商家发货', icon: 'none' });
+    // onRefresh();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
+};
 // 删除订单
 const confirmDeleOrder = ()=>{
 	
@@ -257,12 +282,10 @@ const handleAction = ({ type, item }) => {
       
       // uni.showToast({ title: '跳转支付页面', icon: 'none' })
       break
-    case 'remind':
-      uni.showToast({ title: '已提醒商家发货', icon: 'success' })
-      window.location.href = 'https://www.baidu.com/s?wd=773394725450239'
-
+    case 'remind': // 提醒商家发货
+      remindOrder(item);
       break
-    case 'logistics':
+    case 'logistics': // 查看物流详情
       uni.navigateTo({
         url: 'https://www.baidu.com/s?wd=773394725450239',
         success: (res) => {
@@ -271,16 +294,16 @@ const handleAction = ({ type, item }) => {
       })
       uni.showToast({ title: '查看物流详情', icon: 'none' })
       break
-    case 'receivingMaterials':
+    case 'receivingMaterials': // 确认收到材料
 	    showConfirmOrder.value = true;
       break
-    case 'delete':
+    case 'delete': // 删除订单
 	    showDeleOrder.value = true;
       break
-    case 'produced':
+    case 'produced': // 确认完成作品
 	    showProduced.value = true;
       break
-    case 'detail':
+    case 'detail': // 查看订单详情
       uni.navigateTo({
         url: `/pages/xn/orders/detail`,
         success: (res) => {
@@ -292,18 +315,12 @@ const handleAction = ({ type, item }) => {
     }
 }
 
-// 监听 status 变化
-watch(
-  () => props.status,
-  (newVal, oldVal) => {
-    onRefresh()
-  },
-  { deep: true, immediate: true }
-)
-
 onMounted(() => {
- fetchData();
+ fetchData(true);
 });
+
+
+defineExpose({ setStatus })
 </script>
 
 <style lang="scss" scoped>
