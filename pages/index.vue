@@ -2,7 +2,8 @@
 	<view class="page-wrap index">
 		<view :style="{
 				  paddingTop: $safeAreaInfo.top +'rpx'
-			  }"></view>
+			  }">
+		</view>
 		<!-- <LayoutNavigation :title="title" /> -->
 		<view class="page-content">
 			<up-row customStyle="margin-bottom: 10px">

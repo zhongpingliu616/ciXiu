@@ -163,7 +163,6 @@ const fetchData = async (isRefresh = false) => {
 }
 
 onActivated(() => {
-  alert(localStatus.value)
  //  console.log('组件被激活（从 keep-alive 缓存中恢复）')
 })
 

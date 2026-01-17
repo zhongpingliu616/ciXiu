@@ -99,7 +99,7 @@ import { useConfigStore } from '@/stores/configStore'
 			uni.reLaunch({
 				url: '/pages/login'
 			})
-		}
+		};
 	})
 	
 	onHide(() => {

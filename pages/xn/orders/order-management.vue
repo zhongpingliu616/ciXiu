@@ -18,19 +18,27 @@
 			 class="order-management-tabs"
 			 />
 		  <view class="orders-list">
-			<keep-alive>
+			<!-- #ifdef APP-PLUS -->
 				<component
+				:is="OrderListComponent"
+				:status="currentStatus"
+				:key="`order-${currentStatus}`"
+				/>
+			<!-- #endif -->
+			 <!-- #ifdef H5 -->
+				<keep-alive>
+					<component
 					:is="OrderListComponent"
 					:status="currentStatus"
 					:key="`order-${currentStatus}`"
-				/>
-			</keep-alive>
+					/>
+				</keep-alive>
+			<!-- #endif -->
 		  </view>
 		</view>
 	 <view></view>
 	</view>
 </template>
-
 
 <script setup name="orderManagement">
 import OrderListComponent from '@/components/xn/orders/OrderListComponent.vue'

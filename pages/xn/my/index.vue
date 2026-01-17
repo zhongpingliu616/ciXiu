@@ -81,7 +81,7 @@
 						> 
 							<template #item="{item}">
 								<view class="work-item">
-									<image class="work-img"  style="width: 228px; height: 228px;" mode="aspectFill" :src="item.image"></image>
+									<image class="work-img"  mode="aspectFill" :src="item.image"></image>
 								</view>
 							</template>
 						</CxScrollView>
@@ -133,7 +133,7 @@
 						<template #title>
 						    <text class="cell-title">电子合同</text>
 						  </template>
-						<template #icon>							
+						<template #icon>
 							<image style="width: 30rpx; height: 30rpx; background-color: #eeeeee;" mode="aspectFill" src="@/static/images/user/contract.png" ></image>
 							&nbsp;&nbsp; 
 						</template>
@@ -168,6 +168,9 @@
 <script setup>
 import { orderLists } from '@/api/index.js'
 import { useLoginStore } from '@/stores/userLogin'
+import myWork1 from '@/static/images/user/my-work-1.png'
+import myWork2 from '@/static/images/user/my-work-2.png'
+import myWork3 from '@/static/images/user/my-work-3.png'
 let showLogoutModal = ref(false);
 const title = ref("我的");
 const progressNum = ref(0);
@@ -176,7 +179,7 @@ const userStore = useLoginStore()
 // 作品数据
 const worksList = ref([
 	{ 
-		"id": 1,
+		id: 1,
 		"order_id": "em2026010706583531889",
 		"username": "a123455",
 		"status": 10,
@@ -187,10 +190,10 @@ const worksList = ref([
 		"name": "古韵,非遗刺绣",
 		"period": "360天",
 		"difficulty": "难度困难",
-		image: 'https://cdn.uviewui.com/uview/album/1.jpg'
+		image: myWork1
 	},
-	{ image: 'https://cdn.uviewui.com/uview/album/2.jpg', id: 2 },
-	{ image: 'https://cdn.uviewui.com/uview/album/3.jpg', id: 3 },
+	{ id: 2, image: myWork2 },
+	{ id: 3, image: myWork3 },
 	// { src: 'https://cdn.uviewui.com/uview/album/4.jpg', id: 4 },
 	// { src: 'https://cdn.uviewui.com/uview/album/5.jpg', id: 5 },
 ]);
@@ -314,7 +317,7 @@ onShow(()=>{
 	userStore.fetchUserInfo();
 });
 onMounted(() => {
-  getMyWorks();
+  //getMyWorks();
 });
 </script>
 
@@ -499,15 +502,15 @@ onMounted(() => {
 		height: 230rpx; 
 		margin-top: 20rpx;
 	}
-	
+	.work-img {
+			width: 228rpx; 
+			height: 228rpx;
+		}
 	.work-item {
 		height: 220rpx;
 		overflow: hidden;
 		border: 2rpx solid #F4E5BC;
 		background-color: #333;
-		
-		.work-img {
-		}
 	}
 }
 

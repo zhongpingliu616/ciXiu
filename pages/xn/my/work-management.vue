@@ -14,6 +14,7 @@
 			 lineColor="rgba(244, 229, 188, 1)"
 			 v-model="currentWorkIndex"
 			 class="work-tabs"
+			 @changeTab="changeTab"
 			 >
 			 <template #tabItem="{ item, index }">
 			     <view
@@ -31,9 +32,27 @@
 			</CxTabs>
 			<view class="order-list">
 				 <view class="order-container">
-				     <keep-alive>
+					 <!-- swiper 内容区 -->
+					<!-- <swiper
+					class="content-swiper"
+					:current="swiperCurrent"
+					@animationfinish="onSwiperFinish"
+					>
+						<swiper-item v-for="(item, index) in workLabel" :key="index">
+							<view class="tab-content">
+								<Completed  v-if="index ==0"/>
+								<Unfinished v-else />
+							</view>
+						</swiper-item>
+					</swiper> -->
+				<!-- #ifdef APP-PLUS -->
+					<component :is="currentWork" />
+				<!-- #endif -->
+				<!-- #ifdef H5 -->
+					<keep-alive>
 				       <component :is="currentWork" />
 				     </keep-alive>
+				<!-- #endif -->
 				   </view>
 			</view>
 		</view>
@@ -52,17 +71,33 @@ const componentMap = {
 let title = ref("作品管理");	
 let defaultWork = ref('Unfinished');
 let currentWorkIndex = ref(0);
+const swiperCurrent = ref(0); 
 let workLabel = ref([
-				{ name: '已完成作品',rolse: "Completed" },
-				{ name: '未完成作品',rolse: "Unfinished" }
+				{ name: '已完成作品',rolse: "Completed", component: Completed },
+				{ name: '未完成作品',rolse: "Unfinished", component: Unfinished }
 			]);
 const currentWork = computed(()=>{
 	const comRole = componentMap[currentWorkIndex.value==1?"Unfinished":"Completed"];
 	return  comRole
 })
+const changeTab = ({index}) => {
+  swiperCurrent.value = index;
+}
+// const onSwiperTransition = (e) => {
+//   swiperCurrent.value = e.detail.current;
+// };
+
+const onSwiperFinish = (e) => {
+  swiperCurrent.value = e.detail.current;
+  currentWorkIndex.value = e.detail.current;
+};
 </script>
 
 <style lang="scss" scoped>
+.content-swiper {
+  height: 100%;
+}
+
 .tab-item {
   display: flex;
   align-items: center;

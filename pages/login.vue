@@ -56,6 +56,7 @@
 			
 			      <!-- 微信按钮 -->
 			      <view class="login-button" @click="handleWechatLogin">
+					<!-- <CxIconFont code="&#xe607;" color="#2ac445" size="70rpx" /> -->
 			        <u-image
 			          src="/static/images/user/wechat.png"
 			          mode="aspectFit"

@@ -5,7 +5,7 @@
 			<view class="sys-block-result">
 				<text class="sys-result-title">需要缴纳压金</text>
 				<view class="form-container">
-					<u-cell :key="index" 
+					<u-cell 
 					:border="false"
 					class="form-item"
 					:title="`￥ ${marginResultData.deposit ?? 0}`"
@@ -51,64 +51,65 @@
 				</view>
 			</CxPopup>
 		</view>
-	</view>
-<u-popup
-    v-model:show="showAddress"
-    mode="bottom"
-    :border-radius="20"
-    closeable
-    :close-icon-pos="'top-right'"
-    :closeable="true"
-    :mask-close-able="true"
-    :safe-area-inset-bottom="true"
-    :z-index="9999"
-    :custom-style="{ width: '100%', maxWidth: '100%', background: '#7a1e28' }"
-  >
-    <view class="payment-list-warpper">
-	  	<!-- 标题 -->
-		<view class="title">请选择您的收货地址</view>
+		<u-popup
+			v-model:show="showAddress"
+			mode="bottom"
+			:border-radius="20"
+			closeable
+			:close-icon-pos="'top-right'"
+			:closeable="true"
+			:mask-close-able="true"
+			:safe-area-inset-bottom="true"
+			:z-index="9999"
+			:custom-style="{ width: '100%', maxWidth: '100%', background: '#7a1e28' }"
+		>
+			<view class="payment-list-warpper">
+				<!-- 标题 -->
+				<view class="title">请选择您的收货地址</view>
 
-		<!-- 收货地列表 -->
-		<view class="payment-list">
-			<view
-				v-for="(item, index) in addressList"
-				:key="index"
-				class="method-item"
-				@click="selectAddress(item, index)"
-				>
-				<view class="left">
-					<!-- <CxIconFont :code="item.icon" size="40rpx" :color="item.color" /> &nbsp;&nbsp; -->
-					<text>{{ item.contact_person }} {{ item.contact_phone }} {{ item.detail_address }}</text>
+				<!-- 收货地列表 -->
+				<view class="payment-list">
+					<view
+						v-for="(item, index) in addressList"
+						:key="index"
+						class="method-item"
+						@click="selectAddress(item, index)"
+						>
+						<view class="left">
+							<!-- <CxIconFont :code="item.icon" size="40rpx" :color="item.color" /> &nbsp;&nbsp; -->
+							<text>{{ item.contact_person }} {{ item.contact_phone }} {{ item.detail_address }}</text>
+						</view>
+						<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="selectedAddressIndex === index"></u-icon>
+						<uni-icons type="circle" color="#ccc" size="30rpx" v-else></uni-icons>
+					</view>
 				</view>
-				<u-icon name="checkmark-circle-fill" color="#FF4D4F" size="30rpx" v-if="selectedAddressIndex === index"></u-icon>
-				<uni-icons type="circle" color="#ccc" size="30" v-else></uni-icons>
+
+				<!-- 按钮区域 -->
+				<view class="btn-group">
+				<CxComfirmBtn 
+					text="取消" 
+					@click="showAddress = false"
+					:btnStyle="{
+						flex: 1,
+						marginRight: '10px',
+						background: 'transparent',
+						border: '2px solid #fff',
+						color: '#fff',
+					}" />
+				<CxComfirmBtn 
+					text="确定" 
+					@click="onConfirm"
+					:btnStyle="{
+						flex: 1,
+						background: 'linear-gradient(90deg, #ff6b6b, #ff9c6b)',
+						color: '#fff',
+					}" />
+				</view>
+
 			</view>
-		</view>
-
-		<!-- 按钮区域 -->
-		<view class="btn-group">
-		<CxComfirmBtn 
-			text="取消" 
-			@click="showAddress = false"
-			:btnStyle="{
-				flex: 1,
-				marginRight: '10px',
-				background: 'transparent',
-				border: '2px solid #fff',
-				color: '#fff',
-			}" />
-		<CxComfirmBtn 
-			text="确定" 
-			@click="onConfirm"
-			:btnStyle="{
-				flex: 1,
-				background: 'linear-gradient(90deg, #ff6b6b, #ff9c6b)',
-				color: '#fff',
-			}" />
-		</view>
-
+		</u-popup>
 	</view>
-  </u-popup>
+
 </template>
 
 <script setup name="pay-deposit">
