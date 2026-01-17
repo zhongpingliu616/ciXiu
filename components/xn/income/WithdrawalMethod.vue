@@ -194,15 +194,15 @@
 
                         <!-- 开户行 -->
                         <u-cell title="开户行：" :border-bottom="false">
-                          <template #value>
-                            <u-input
-                              v-model="item.opening_bank"
-                              @update:modelValue="onBankInput(index)"
-                              placeholder="请输入开户行"
-                              input-align="right"
-                              border="none"
-                            />
-                          </template>
+						  <template #value>
+							<u-input
+							  v-model="item.opening_bank"
+							  @update:modelValue="onBankInput(index)"
+							  placeholder="请输入开户行"
+							  input-align="right"
+							  border="none"
+							/>
+						  </template>
                         </u-cell>
                       </u-cell-group>
                     </view>
@@ -211,12 +211,12 @@
                       <text class="add-text">新增银行卡</text>
                     </view>
                     <!-- 保存 -->
-                    <!-- <CxComfirmBtn 
+                    <!-- <CxComfirmBtn
                         text="保存"
                         @click="handleSubmitBankCard"
                         :btnStyle="{
-                            
-                        }" /> -->
+                        }" /> 
+					-->
             </view>
         </scroll-view>
         <view></view>

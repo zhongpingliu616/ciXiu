@@ -56,14 +56,14 @@ const withdrawalList = ref([
 const getStatusColors = (status) => {
   if (status == 0) return '#036BF2'
   if (status == 1) return '#666666'
-  if (status.includes(2)) return '#CA3C3B'
+  if (status == 2) return '#CA3C3B'
   return '#CA3C3B'
 };
 // 根据状态返回 tag 类型
 const getStatusType = (status) => {
   if (status == 0) return 'warning'
   if (status == 1) return 'success'
-  if (status.includes(2)) return 'error'
+  if (status == 2) return 'error'
   return 'error'
 }
 // 点击提现详情
@@ -76,7 +76,7 @@ const handleClick = (item) => {
 const getStatusText = (status) => {
   if (status == 0) return '交易进行中'
   if (status == 1) return '已完成'
-  if (status.includes(2)) return '打款失败，请检查收款方式'
+  if (status == 2) return '打款失败，请检查收款方式'
   return '打款失败'
 }
 
