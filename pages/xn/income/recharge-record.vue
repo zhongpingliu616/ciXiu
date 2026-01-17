@@ -77,6 +77,7 @@ const getStatusType = (status) => {
 }
 // 点击事件处理函数
 const handleClick = (item) => {
+		return;
    uni.navigateTo({
     url: `/pages/xn/income/withdraw-cash-detail?id=${item.id}&order_no=${item.order_no}`
   })
