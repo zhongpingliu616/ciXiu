@@ -18,7 +18,7 @@ export const useLoginStore = defineStore('loginInfo',() => {
 		
 	const storedGz = uni.getStorageSync('userInfoGz') || {};
 	let userInfoGz = reactive({
-			zcount:0,
+			count:0,
 			user: "admin" , 			
 			token: "",
 			id: "45665785785" ,

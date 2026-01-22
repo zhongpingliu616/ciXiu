@@ -11,6 +11,7 @@
 		:current="tabActiveIndex"
 		lineBgSize="100% 110%"
 	    @change="tabSwitch"
+		class="base-role-tabs"
 	</up-tabs>
 </template>
 

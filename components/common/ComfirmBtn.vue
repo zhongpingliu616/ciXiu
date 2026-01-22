@@ -10,13 +10,21 @@
 		border: '2rpx solid #FFE185',
 		borderRadius: '100rpx',
 		height: '100rpx',
-		boxSizing: 'border-box'
+		boxSizing: 'border-box',
+		...btnStyle
 	  }"
 	></up-button>
 </template>
 
 <script setup>
-	defineProps(["text","loading"])
+	defineProps({
+		text: String,
+		loading: Boolean,
+		btnStyle: {
+			type: Object,
+			default: () => ({})
+		}
+	})
 </script>
 
 <style lang="scss" scoped>

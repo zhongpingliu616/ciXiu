@@ -144,10 +144,16 @@ const xiuNiangLogin = () => {
 					level: info.level,
 					is_buy: info.is_buy
 				});
-				
+				userStore.fetchUserInfo();
 				// 清除另一个角色的 token
 				uni.removeStorageSync('tokenGz');
-				userStore.userInfoGz.token = '';
+				uni.removeStorageSync('userInfoGz');	
+				userStore.userInfoGz = {
+					token: '',
+					user: '',
+					id: '',
+					status: 0
+				};
 				userStore.setRole('XN');
 
 				// 登录成功后的逻辑判断
@@ -220,8 +226,14 @@ const gongzhongLogin = () => {
 				
 				// 清除另一个角色的 token
 				uni.removeStorageSync('tokenXn');
-				userStore.userInfoXn.token = '';
-				userStore.setRole('gz');
+				uni.removeStorageSync('userInfoXn');
+				userStore.userInfoXn = {
+					token: '',
+					user: '',
+					id: '',
+					status: 0
+				};
+				userStore.setRole('GZ');
 
 				uni.reLaunch({
 					url: '/pages/index'

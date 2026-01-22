@@ -178,13 +178,12 @@ const validateForm = () => {
   } else if (!/^1[3-9]\d{9}$/.test(form.phone)) {
     errors.phone = '手机号格式不正确';
     isValid = false;
-  }
-
+  };
   // 验证码校验
   if (!form.code) {
     errors.code = '验证码不能为空';
     isValid = false;
-  } else if (form.code.length !== 6) { // 假设验证码是6位
+  } else if ((`${form.code.length}`).trim()!= 6) { // 假设验证码是6位
     errors.code = '验证码格式不正确'; 
     isValid = false;
   }

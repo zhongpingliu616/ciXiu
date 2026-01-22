@@ -7,7 +7,7 @@
 		<!-- <LayoutNavigation :title="title" /> -->
 		<view class="page-content">
 			<up-row customStyle="margin-bottom: 10px">
-				  <up-col :span="showRoleTabs ? 5 : 0" v-if="showRoleTabs">
+				  <up-col :span="showRoleTabs ? 2 : 2" v-if="showRoleTabs">
 					  <view class="tabs-wrap">
 						  <BaseRolseTabs
 							:tabItems="topTabItems"
@@ -18,7 +18,7 @@
 						  ></BaseRolseTabs>
 					  </view>
 				  </up-col>
-				  <up-col :span="showRoleTabs ? 5 : 10">
+				  <up-col :span="showRoleTabs ? 8 : 8">
 					  <view class="search-bar">
 						  <CxSearch
 							 placeholder="输入搜索内容"
@@ -35,6 +35,7 @@
 					  </view>
 				  </up-col>
 			  </up-row>
+			  <!-- 公告 -->
 			  <view class="banner-swiper">
 				  <CxSwiperUni
 				    :list="swiperListUni"
@@ -48,7 +49,7 @@
 				  </CxSwiperUni>
 			  </view>
 			 <keep-alive>
-			   <component :is="currentRole" @showSearch="showSearch" />
+			   <component :is="currentComponent" @showSearch="showSearch" />
 			 </keep-alive>
 		</view>
 	 <LayoutCustomBarXn v-if="userStore.currentRole=='XN'" />
@@ -56,7 +57,13 @@
 	</view>
   <keep-alive>
 		<up-popup :show="showSearchPageXn" bgColor="#691e23" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
-			<XnIndexSearch @close="closeSearch"></XnIndexSearch>
+			<XnIndexSearch @close="showSearchPageXn = false" />
+		</up-popup>
+
+  </keep-alive>
+  <keep-alive>
+		<up-popup :show="showSearchPageGz" bgColor="#691e23" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+			<GzIndexSearch @close="showSearchPageGz = false" />
 		</up-popup>
   </keep-alive>
 </template>
@@ -77,7 +84,7 @@ const swiperListUni = ref([]);
 	
 const userStore = useLoginStore();
 let bannerCurrent = ref(1);
-
+const currentRole = ref(userStore.currentRole);
 let collectionCurIndex = ref(0);
 let title = ref("1200");
 let tabIndex = ref(0);
@@ -91,36 +98,49 @@ const inactiveStyle = ref({
 			color: '#CCBCBC'
 		});
 const topTabItems = ref([
-			{ name: '公众端',rolse: "IndexGz" },
+			{ name: '刺绣坊',rolse: "IndexGz" },
 			{ name: '绣娘端',rolse: "IndexXn"}
 		]);
 		// cxScrollViewRef.value.scrollToNext();
 let tokenXn = userStore.userInfoXn?.token || uni.getStorageSync('tokenXn');
 let tokenGz = userStore.userInfoGz?.token || uni.getStorageSync('tokenGz');
 let showSearchPageXn = ref(false);
-const showRoleTabs = ref(false); // 控制顶部角色切换标签的显示
+let showSearchPageGz = ref(false);
+const showRoleTabs = ref(true); // 控制顶部角色切换标签的显示
 
 const seeSysNotice = ()=>{
 	// if(!hasSysNotice.value) return;
-	uni.navigateTo({
-		url: "/pages/xn/my/system-notification",
-		success: (res) => {
-			res.eventChannel.emit('sendMessageDatas', { messageListsData: messageListsData.value });
-		}
-	});
-};
-const closeSearch = ()=>{
-	showSearchPageXn.value = false;
-};
-const showSearch = () => {
-	showSearchPageXn.value = true;
+	if(currentRole.value === 'XN'){
+		uni.navigateTo({
+			url: "/pages/xn/my/system-notification",
+			success: (res) => {
+				res.eventChannel.emit('sendMessageDatas', { messageListsData: messageListsData.value });
+			}
+		});
+	} else if(currentRole.value === 'GZ'){
+		uni.navigateTo({
+			url: "/pages/gz/my/system-notification",
+			success: (res) => {
+				res.eventChannel.emit('sendMessageDatas', { messageListsData: messageListsData.value });
+			}
+		});
+	}
 };
 
-const currentRole = computed(()=>{
+const showSearch = () => {
+	if(currentRole.value === 'XN'){
+		showSearchPageXn.value = true;
+	} else {
+		showSearchPageGz.value = true;
+	}
+};
+
+const currentComponent = computed(()=>{
 	const comRole = componentMap[topTabItems.value[tabIndex.value].rolse];
 	return  comRole
 });
 const changeRole = ({index, item})=>{
+	return;
 	tabIndex.value = index;
 	// 这里不需要再 check token 了，因为进入首页时已经 check 过了，且如果是单角色登录，Tabs 是隐藏的
 };
@@ -160,8 +180,8 @@ const getMessageListFunction = async () => {
   }
 };
 onMounted(() => {
-  getBannerListFunction();
-  getMessageListFunction();
+//   getBannerListFunction();
+//   getMessageListFunction();
 });
 onLaunch(() => {
   
@@ -169,24 +189,24 @@ onLaunch(() => {
 onShow(() => {
 	tokenXn = proxy.$globalUserInfoXn?.token || uni.getStorageSync('tokenXn');
 	tokenGz = proxy.$globalUserInfoGz?.token || uni.getStorageSync('tokenGz');
-	const currentRole = userStore.currentRole || uni.getStorageSync('currentRole');
+	currentRole.value = userStore.currentRole || uni.getStorageSync('currentRole');
 
 	if (!tokenGz && !tokenXn) {
 		uni.reLaunch({
-			url: '/pages/my/login'
+			url: '/pages/login'
 		})
 		return;
 	}
 
 	// 根据角色设置显示的 Tab
-	if (currentRole === 'XN') {
+	if (currentRole.value === 'XN') {
 		// 绣娘端，对应 index 1
 		tabIndex.value = 1;
-		showRoleTabs.value = false; // 隐藏切换
-	} else if (currentRole === 'gz') {
+		showRoleTabs.value = true; // 隐藏切换
+	} else if (currentRole.value === 'GZ') {
 		// 公众端，对应 index 0
 		tabIndex.value = 0;
-		showRoleTabs.value = false; // 隐藏切换
+		showRoleTabs.value = true; // 隐藏切换
 	} else {
 		// 默认情况或者双角色（如果有）
 		if (tokenXn) tabIndex.value = 1;
@@ -198,7 +218,7 @@ onShow(() => {
 	if (tabIndex.value === 1 && !tokenXn) {
 		// 只有公众端 token 但想看绣娘端 -> 切回公众端
 		tabIndex.value = 0;
-	} else if (tabIndex.value === 0 && !tokenGz) {
+	} else if (tabIndex.value === 0 && !tokenGz) {ß
 		tabIndex.value = 1;
 	}
 })
@@ -251,7 +271,7 @@ onShow(() => {
 	
 }
 .page-wrap{
-	grid-template-rows: v-bind(safeTopValue) 1fr 40rpx;
+	grid-template-rows: v-bind(safeTopValue) 1fr 124rpx;
 }
 .title {
 	font-size: 36rpx;

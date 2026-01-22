@@ -19,18 +19,18 @@
 <script setup>
   console.log("custom-tab-bar");
 const tabs = [
-  {
-    path: '/pages/xn/index/index',
-    text: '首页',
-    icon: '/static/images/index_gray_icon.png',
-    activeIcon: '/static/images/index_active_icon.png'
-  },
-  {
-    path: '/pages/xn/orders/index',
-    text: '订单',
-    icon: '/static/images/order_gray_icon.png',
-    activeIcon: '/static/images/order_active_icon.png'
-  },
+  // {
+  //   path: '/pages/xn/index/index',
+  //   text: '首页',
+  //   icon: '/static/images/index_gray_icon.png',
+  //   activeIcon: '/static/images/index_active_icon.png'
+  // },
+  // {
+  //   path: '/pages/xn/orders/index',
+  //   text: '订单',
+  //   icon: '/static/images/order_gray_icon.png',
+  //   activeIcon: '/static/images/order_active_icon.png'
+  // },
   // {
   //   path: '/pages/xn/income/index',
   //   text: '收益',

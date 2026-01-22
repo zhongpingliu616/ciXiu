@@ -10,7 +10,6 @@ import { useConfigStore } from '@/stores/configStore'
 		
 		// 初始化获取全局配置
 		configStore.fetchConfig();
-		userStore.fetchUserInfo();
 		const whiteList = [
 			// '/pages/index',
 			'/pages/login',
@@ -99,6 +98,8 @@ import { useConfigStore } from '@/stores/configStore'
 			uni.reLaunch({
 				url: '/pages/login'
 			})
+		} else {
+			
 		};
 	})
 	

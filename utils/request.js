@@ -99,7 +99,7 @@ function request(options) {
     
              setTimeout(() => {
                uni.reLaunch({
-                 url: `/pages/my/login?role=${expiredRole}`
+                 url: `/pages/login?role=${expiredRole}`
                })
              }, 500)
     

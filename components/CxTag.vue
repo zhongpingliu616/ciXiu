@@ -2,9 +2,10 @@
   <up-tag
     class="gradient-tag"
     :disabled="disabled"
-	:custom-style="tagStyle"
-    @click="handleClick"
-  >
+    :custom-style="tagStyle"
+      @click="handleClick"
+      :shape="shape"
+    >
     <view class="custom-tag">
       <!-- 图片图标 -->
       <image
@@ -41,6 +42,7 @@ const defaultTextStyle = {
 const props = defineProps({
   text: { type: String, required: true },
   icon: { type: String, default: '' },
+  shape: { type: String, default: '' },
   iconType: { type: String, default: 'image' },
   iconColor: { type: String, default: '' },
   customStyle: {
@@ -74,7 +76,7 @@ const tagStyle = computed(() => {
     return {
       background: props.bgColor,
       border: 'none',
-	  borderRadius: '10rpx',
+	  borderRadius: '30rpx',
 	  padding: '0',	  
 	  ...props.customStyle
     }
@@ -89,12 +91,11 @@ const tagStyle = computed(() => {
         ${props.bgGradient[1]}
       )`,
       border: 'none',
-	  borderRadius: '10rpx',
+	  borderRadius: '30rpx',
 	  padding: '0',	  
 	 ...props.customStyle
     }
   }
-
   return {}
 })
 

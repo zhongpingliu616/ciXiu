@@ -12,6 +12,7 @@
 		lineBgSize="100% 100%"
 	    @change="tabSwitch"
 	    @click="tabSwitch"
+		class="cx-tabs"
 	> 
 		  <template
 			 v-if="$slots.tabItem"

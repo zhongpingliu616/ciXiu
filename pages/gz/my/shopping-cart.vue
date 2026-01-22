@@ -1,10 +1,11 @@
 <template>
 	<view class="page-wrap index">
-	<LayoutNavigation :title="title" > 
+	<LayoutNavigationGz :title="title" > 
 		<template #right>
-			<text class="management-cart" @tap="managementCart=!managementCart">{{managementCart?"取消":"管理"}}</text>
+      <up-icon name="setting" size="28rpx" color="#fff" @tap="managementCart=!managementCart"></up-icon>
+			<!-- <text class="management-cart" @tap="managementCart=!managementCart">{{managementCart?"取消":"管理"}}</text> -->
 		</template>
-	</LayoutNavigation>
+	</LayoutNavigationGz>
 		<view class="page-content">
 			 <view class="cart-container">
 			    <!-- 下拉刷新容器 -->

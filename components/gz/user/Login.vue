@@ -93,8 +93,8 @@ const passwordRef = ref(null)
 const loading = ref(false)
 const showPwd = ref(false)
 const form = ref({
-  accoutName: '',
-  password: ''
+  accoutName: '13566578986',
+  password: 'lzp@123456'
 })
 const props = defineProps({
   modelValue: {

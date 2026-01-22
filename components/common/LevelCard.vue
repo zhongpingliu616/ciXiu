@@ -24,6 +24,7 @@
 
 
 <script setup name="block">
+import { computed } from 'vue';
 import { bankLists } from '../../api/xn';
 
 	const props = defineProps(
@@ -47,23 +48,19 @@ import { bankLists } from '../../api/xn';
 	  },
 	}
 )
-	const bgStyle = computed(() => ({
-	  background: `
-			url(static/images/common/level-item-bg-${props.cardIndex==props.selectIndex?'active':'none'}.png) no-repeat center / contain,
-			url(static/images/common/level-item-bg-${props.cardIndex}.png) no-repeat center / contain
-		  `,
-      backgroundSize: '20rpx'
-	}));
+	const bgStyle = computed(() => {
+		const activeStatus = props.cardIndex === props.selectIndex ? 'active' : 'none';
+		return {
+			background: `url(/static/images/common/level-item-bg-${activeStatus}.png) no-repeat center / contain, url(/static/images/common/level-item-bg-${props.cardIndex}.png) no-repeat center / contain`
+		}
+	});
 </script>
 
 <style lang="scss" scoped>
 .card-container {
 }
 .card-content {
-  background-image: url(@/static/images/common/level-item-bg-1.png);
-  background-repeat: no-repeat;
-  background-position: 0 0;
-  background-size: contain;
+  background: url(@/static/images/common/level-item-bg-1.png) no-repeat center / contain;
   background-color: transparent;
   border-radius: 24rpx;
   padding: 30rpx 40rpx;

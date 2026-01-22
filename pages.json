@@ -56,6 +56,30 @@
 			}
 		},
 		{
+			"path": "pages/xn/my/customer-service",
+			"style": {
+				"navigationBarTitleText": "帮助与客服"
+			}
+		},
+		{
+			"path": "pages/xn/my/promotion-code",
+			"style": {
+				"navigationBarTitleText": "我的推广码"
+			}
+		},
+		{
+			"path": "pages/xn/my/my-team",
+			"style": {
+				"navigationBarTitleText": "我的团队"
+			}
+		},
+		{
+			"path": "pages/xn/my/promotion-revenue",
+			"style": {
+				"navigationBarTitleText": "推广收益明细"
+			}
+		},
+		{
 			"path": "pages/xn/my/regist",
 			"style": {
 				"navigationBarTitleText": "注册绣娘"
@@ -113,6 +137,24 @@
 			"path": "pages/xn/my/deposit",
 			"style": {
 				"navigationBarTitleText": "压金"
+			}
+		},
+		{
+			"path": "pages/xn/orders/confirm-order",
+			"style": {
+				"navigationBarTitleText": "确认订单"
+			}
+		},
+		{
+			"path": "pages/xn/orders/select-address",
+			"style": {
+				"navigationBarTitleText": "选择地址"
+			}
+		},
+		{
+			"path": "pages/xn/orders/submit-product",
+			"style": {
+				"navigationBarTitleText": "提交作品"
 			}
 		},
 		{
@@ -181,6 +223,18 @@
 			}
 		},
 		{
+			"path": "pages/gz/my/system-notification",
+			"style": {
+				"navigationBarTitleText": "系统通知"
+			}
+		},
+		{
+			"path": "pages/gz/my/system-notification-detail",
+			"style": {
+				"navigationBarTitleText": "系统通知详情"
+			}
+		},
+		{
 			"path": "pages/gz/grab-order/index",
 			"style": {
 				"navigationBarTitleText": "一键抢单"
@@ -193,6 +247,24 @@
 			}
 		},
 		{
+			"path": "pages/gz/offline-exhibition",
+			"style": {
+				"navigationBarTitleText": "线下展会"
+			}
+		},
+		{
+			"path": "pages/gz/register-exhibition",
+			"style": {
+				"navigationBarTitleText": "报名展会"
+			}
+		},
+		{
+			"path": "pages/gz/registration-successful",
+			"style": {
+				"navigationBarTitleText": "报名成功"
+			}
+		},
+		{
 			"path": "pages/gz/level/pay-deposit",
 			"style": {
 				"navigationBarTitleText": "保证金"
@@ -202,6 +274,12 @@
 			"path": "pages/gz/level/electronic-contract",
 			"style": {
 				"navigationBarTitleText": "电子合同"
+			}
+		},
+		{
+			"path": "pages/gz/collectibles/index",
+			"style": {
+				"navigationBarTitleText": "藏品"
 			}
 		},
 		{
@@ -264,7 +342,10 @@
 			{ "pagePath": "pages/index" },
 			{ "pagePath": "pages/xn/orders/index" },
 			{ "pagePath": "pages/xn/income/index" },
-			{ "pagePath": "pages/xn/my/index" }
+			{ "pagePath": "pages/xn/my/index" },
+			{ "pagePath": "pages/gz/collectibles/index" },
+			{ "pagePath": "pages/gz/income/index" },
+			{ "pagePath": "pages/gz/my/index" }
 		]
 	},
 

@@ -64,12 +64,12 @@ function go(path) {
   left: 0;
   right: 0;
   bottom: 0;
-  height: 124rpx;
-  background: #691e23;
-  border-top-left-radius: 60rpx;
-  border-top-right-radius: 60rpx;
+  height: 120rpx;
+  background: linear-gradient(0deg, #7B191F 0%, #B64138 100%);
+  // border-top-left-radius: 60rpx;
+  // border-top-right-radius: 60rpx;
   display: flex;
-  border: 8rpx solid #F3D89E;
+  border-top: 2rpx solid #F3D89E;
   border-bottom: none;
 }
 

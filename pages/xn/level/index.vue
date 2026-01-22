@@ -2,13 +2,13 @@
 	<view class="page-wrap grab-order">
 	<LayoutNavigation :title="title" />
 		<view class="page-content">
-			<!-- <view class="u-block-box">
+			<view class="u-block-box">
 					<CommonStep
 						:blockSteps="blockSteps" 
 						:currentStep="currentStep"
 						>
 					</CommonStep>
-			</view> -->
+			</view>
 			<view class="cloud-list">
 				<CommonLevelCard
 					v-for="(item,index) in cardAry" :key="item.name"
@@ -50,9 +50,10 @@ let cardAry = reactive([
 	// },
 ]);
 const blockSteps = reactive([
+	// {
+	// 	text: "手机号验证"
+	// },
 	{
-		text: "手机号验证"
-	},{
 		text: "身份验证"
 	},{
 		text: "等级选择"

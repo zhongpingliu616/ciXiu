@@ -93,40 +93,124 @@
 			<view class="menu-list">
 				<u-cell-group :border="false">
 					<u-cell
+						:isLink="true"
+						:border="false"
+						customStyle="padding: 20rpx 10rpx; background-color: #fff; font-size: 28rpx"
+						class="cell-item"
+						@tap="handleTeamClick('/pages/xn/my/my-team')"
+					>
+						<template #title>
+						    <text class="cell-title">我的团队</text>
+						  </template>
+						<template #icon>
+							<CxIconFont code="&#xe609;" color="#303133" size="28rpx" /> &nbsp;
+						</template>
+					</u-cell>
+				</u-cell-group>
+			</view>
+			<view class="menu-list">
+				<u-cell-group :border="false">
+					<u-cell
+						title="提现方式"
+						:isLink="true"
+						customStyle="padding: 20rpx 10rpx; padding-bottom:0rpx;  background-color: #fff; font-size: 28rpx"
+						class="cell-item"
+						@click="showWithdrawalMethod = true"
+					>
+						<template #title>
+							<text class="cell-title">提现方式</text>
+							</template>
+						<template #icon>
+							<CxIconFont code="&#xe683;" color="#303133" size="28rpx" /> &nbsp;
+						</template>
+					</u-cell>
+					<u-cell
 						title="收货地址"
 						:isLink="true"
 						:border="false"
-						customStyle="padding: 30rpx 30rpx; background-color: #fff; border-radius: 16rpx 16rpx 0 0; font-size: 28rpx"
+						customStyle="padding: 20rpx 10rpx; padding-top:0rpx; background-color: #fff;  font-size: 28rpx"
 						class="cell-item"
-						@click="navigateToAddress"
+						@click="handleTeamClick('/pages/xn/orders/address-management')"
 					>
 						<template #title>
 						    <text class="cell-title">收货地址</text>
 						  </template>
 						<template #icon>
-							<u-icon name="map" size="32rpx" color="#333" style="margin-right: 20rpx;"></u-icon>
+							<u-icon name="map" size="32rpx" color="#333" ></u-icon>
+						</template>
+					</u-cell>
+				</u-cell-group>
+			</view>
+			<view class="menu-list">
+				<u-cell-group :border="false">
+					<u-cell
+						title="帮助与客服"
+						:isLink="true"
+						:border="false"
+						customStyle="padding: 20rpx 10rpx; background-color: #fff; border-radius: 16rpx 16rpx 0 0; font-size: 28rpx"
+						class="cell-item"
+						@click="handleTeamClick('/pages/xn/my/customer-service')"
+					>
+						<template #title>
+						    <text class="cell-title">帮助与客服</text>
+						  </template>
+						<template #icon>
+							<CxIconFont code="&#xe88f;" color="#303133" size="28rpx" /> &nbsp;
 						</template>
 					</u-cell>
 					<u-cell
-						title="我的动态"
+						title="用户协议"
 						:isLink="true"
 						:border="false"
-						customStyle="padding: 30rpx 30rpx; background-color: #fff; font-size: 28rpx"
+						customStyle="padding: 20rpx 10rpx; background-color: #fff; font-size: 28rpx"
+						class="cell-item"
+					> 
+						<template #title>
+						    <text class="cell-title">用户协议</text>
+						  </template>
+						<template #icon>
+							<CxIconFont code="&#xe605;" color="#303133" size="28rpx" /> &nbsp;
+						</template>
+					</u-cell>
+
+					<u-cell
+						title="隐私政策"
+						:isLink="true"
+						:border="false"
+						customStyle="padding: 20rpx 10rpx; background-color: #fff; font-size: 28rpx"
 						class="cell-item"
 					>
 						<template #title>
-						    <text class="cell-title">我的动态</text>
+						    <text class="cell-title">隐私政策</text>
 						  </template>
 						<template #icon>
-							<image style="width: 30rpx; height: 30rpx; background-color: #eeeeee;" mode="aspectFill" src="@/static/images/user/dynamic.png" ></image>
-							&nbsp;&nbsp;
+							<CxIconFont code="&#xe633;" color="#303133" size="28rpx" /> &nbsp;
 						</template>
 					</u-cell>
+					<u-cell
+						title="关于刺绣坊"
+						:isLink="true"
+						:border="false"
+						customStyle="padding: 20rpx 10rpx; background-color: #fff; border-radius: 0 0 16rpx 16rpx;"
+						class="cell-item"
+					>
+						<template #title>
+						    <text class="cell-title">关于刺绣坊</text>
+						  </template>
+						<template #icon>
+							<CxIconFont code="&#xeb65;" color="#303133" size="28rpx" /> &nbsp;
+						</template>
+					</u-cell>
+					
+				</u-cell-group>
+			</view>
+			<view class="menu-list">
+				<u-cell-group :border="false">
 					<u-cell
 						title="电子合同"
 						:isLink="true"
 						:border="false"
-						customStyle="padding: 30rpx 30rpx; background-color: #fff; border-radius: 0 0 16rpx 16rpx;"
+						customStyle="padding: 20rpx 10rpx; background-color: #fff; border-radius: 0 0 16rpx 16rpx;"
 						class="cell-item"
 						@click="navigateToContract"
 					>
@@ -134,8 +218,7 @@
 						    <text class="cell-title">电子合同</text>
 						  </template>
 						<template #icon>
-							<image style="width: 30rpx; height: 30rpx; background-color: #eeeeee;" mode="aspectFill" src="@/static/images/user/contract.png" ></image>
-							&nbsp;&nbsp; 
+							<CxIconFont code="&#xe613;" color="#303133" size="28rpx" /> &nbsp;
 						</template>
 					</u-cell>
 				</u-cell-group>
@@ -163,6 +246,11 @@
 	  content="确定要退出登录吗？"
 	  @confirm="confirmLogout"
 	/>
+<up-popup :show="showWithdrawalMethod" zIndex="998" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+	  <KeepAlive>
+		<XnIncomeWithdrawalMethod @close="showWithdrawalMethod = false"></XnIncomeWithdrawalMethod>
+	  </KeepAlive>
+</up-popup>
 </template>
 
 <script setup>
@@ -176,6 +264,7 @@ const title = ref("我的");
 const progressNum = ref(0);
 const {proxy} = getCurrentInstance();
 const userStore = useLoginStore()
+let showWithdrawalMethod = ref(false);
 // 作品数据
 const worksList = ref([
 	{ 
@@ -201,9 +290,9 @@ function maskPhone(phone) {
   if (!phone) return ''
   return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
 }
-const navigateToAddress = () => {
+const handleTeamClick = (path) => {
 	uni.navigateTo({
-		url: '/pages/xn/orders/address-management'
+		url: path
 	});
 };
 // 订单点击
