@@ -6,29 +6,29 @@
 			<view class="stats-grid">
 				<view class="stats-row">
 					<view class="stats-item">
-						<view class="stats-value">{{ stats.totalPromote || 12 }}</view>
+						<view class="stats-value">{{ statDatas.count || 0 }}</view>
 						<view class="stats-label">累计推广人数</view>
 					</view>
 					<view class="stats-item">
-						<view class="stats-value">{{ stats.directPromote || 5 }}</view>
+						<view class="stats-value">{{ statDatas.direct_count || 0 }}</view>
 						<view class="stats-label">直接推广人数</view>
 					</view>
 					<view class="stats-item">
-						<view class="stats-value">{{ stats.indirectPromote || 7 }}</view>
+						<view class="stats-value">{{ statDatas.indirect_count || 0}}</view>
 						<view class="stats-label">间接推广人数</view>
 					</view>
 				</view>
 				<view class="stats-row">
 					<view class="stats-item">
-						<view class="stats-value">{{ stats.depositReduction || '12382.00' }}</view>
+						<view class="stats-value">{{ statDatas.margin_amount || '0' }}</view>
 						<view class="stats-label">押金减免额度</view>
 					</view>
 					<view class="stats-item">
-						<view class="stats-value">{{ stats.directRevenue || '4234.56' }}</view>
+						<view class="stats-value">{{ statDatas.total_direct_margin_amount || 0 }}</view>
 						<view class="stats-label">直接推广收益</view>
 					</view>
 					<view class="stats-item">
-						<view class="stats-value">{{ stats.indirectRevenue || '42349.34' }}</view>
+						<view class="stats-value">{{ statDatas.total_indirect_margin_amount || 0 }}</view>
 						<view class="stats-label">间接推广收益</view>
 					</view>
 				</view>
@@ -50,7 +50,7 @@
 				<view class="card-header">
 					<view class="header-left">
 						<view class="red-bar"></view>
-						<text class="title">团队排行（共{{ teamList.length }}人）</text>
+						<text class="title">团队排行（共{{ teamListDatas.length }}人）</text>
 					</view>
 					<view class="revenue-btn" @click="goToRevenue">
 						推广收益明细
@@ -59,28 +59,39 @@
 				</view>
 
 				<!-- Search Bar -->
-				<view class="search-bar">
-					<input type="text" placeholder="输入账号/姓名" v-model="keyword" class="search-input" placeholder-class="placeholder-style" />
+				<view class="search-bar" v-if="false">
+					<input type="text" placeholder="输入账号/姓名" v-model="keyword" class="search-input" placeholder-class="placeholder-style" @confirm="getTeamList(true)" />
 
-					<u-icon name="search" color="#999" size="42rpx" style="margin-right: 10rpx;"></u-icon>
+					<u-icon name="search" color="#999" size="42rpx" style="margin-right: 10rpx;" @click="getTeamList(true)"></u-icon>
 				</view>
 
 				<!-- Team List -->
 				<view class="team-list">
-					<view class="team-item" v-for="(item, index) in teamList" :key="index">
-						<image class="avatar" :src="item.avatar || '/static/images/public_logo.png'" mode="aspectFill"></image>
-						<view class="item-info">
-							<view class="name-row">
-								<text class="name">{{ item.name }}</text>
-								<view class="tag">直推{{ item.directCount }}人</view>
+					<BaseProductList
+						:isRefreshing="refreshing"
+						:loadStatus="loadStatus"
+						:enableRefresh="false"
+						:enableLoadMore="true"
+						@onRefresh="onRefresh"
+						@onScrollToLower="onScrollToLower"
+					>
+						<template #scrollContain>
+							<view class="team-item" v-for="(item, index) in teamListDatas" :key="index">
+								<image class="avatar" :src="item.avatar || '/static/images/public_logo.png'" mode="aspectFill"></image>
+								<view class="item-info">
+									<view class="name-row">
+										<text class="name">{{ item.nick_name }}</text>
+										<view class="tag">直推{{ item.direct_margin_amount || '0' }}人</view>
+									</view>
+									<view class="account">账号：{{ item.username }}</view>
+								</view>
+								<view class="item-right">
+									<view class="revenue">¥{{ item.total_margin_amount }}</view>
+									<view class="order-count">共{{ item.total_task_completed_count }}单</view>
+								</view>
 							</view>
-							<view class="account">账号：{{ item.account }}</view>
-						</view>
-						<view class="item-right">
-							<view class="revenue">¥{{ item.totalRevenue }}</view>
-							<view class="order-count">共{{ item.orderCount }}单</view>
-						</view>
-					</view>
+						</template>
+					</BaseProductList>
 				</view>
 			</view>
 		</view>
@@ -96,45 +107,49 @@
 </template>
 
 <script setup name="myTeam">
-import { ref } from 'vue'
+import { teamStatistics, teamLists } from '@/api/index'
 
 const title = ref('我的团队')
 const keyword = ref('')
+const page = ref(1)
+const limit = ref(10)
+const loadStatus = ref('loadmore')
+const refreshing = ref(false)
 
-const stats = ref({
-	totalPromote: 12,
-	directPromote: 5,
-	indirectPromote: 7,
-	depositReduction: '12382.00',
-	directRevenue: '4234.56',
-	indirectRevenue: '42349.34'
+const statDatas = ref({
+	// margin_amount: 12, // 押金减免额度
+	// total_indirect_margin_amount: 5, // 间接推广收益
+	// total_direct_margin_amount: 7, // 直接推广收益
+	// count: 12382, // 累计推广人数
+	// direct_count: 4234, // 直接推广人数
+	// indirect_count: 8148, // 间接推广人数
 })
 
-const teamList = ref([
-	{
-		name: '张萌新',
-		avatar: 'https://picsum.photos/100?random=1',
-		directCount: 23,
-		account: '56375678',
-		totalRevenue: '5581.00',
-		orderCount: 49
-	},
-	{
-		name: '李梦一',
-		avatar: 'https://picsum.photos/100?random=2',
-		directCount: 21,
-		account: '56375678',
-		totalRevenue: '5581.00',
-		orderCount: 49
-	},
-	{
-		name: '何先森',
-		avatar: 'https://picsum.photos/100?random=3',
-		directCount: 20,
-		account: '56375678',
-		totalRevenue: '5581.00',
-		orderCount: 49
-	}
+const teamListDatas = ref([
+	// {	id: 1, 
+	// 	username: '张萌新', // 会员账户
+	// 	avatar: 'https://picsum.photos/100?random=1', // 会员头像
+	// 	nick_name: '张萌新', // 会员昵称
+	// 	total_margin_amount: '56375678', // 累计推广收益
+	// 	direct_margin_amount: '4234.56', // 直接推广收益
+	// 	total_task_completed_count: '42349', // 完成任务数
+	// },
+	// {	id: 2, 
+	// 	username: '李梦一', // 会员账户
+	// 	avatar: 'https://picsum.photos/100?random=2', // 会员头像
+	// 	nick_name: '李梦一', // 会员昵称
+	// 	total_margin_amount: '5581.00', // 累计推广收益
+	// 	direct_margin_amount: '4234.56', // 直接推广收益
+	// 	total_task_completed_count: '42349', // 完成任务数
+	// },
+	// {	id: 3, 
+	// 	username: '何先森', // 会员账户
+	// 	avatar: 'https://picsum.photos/100?random=3', // 会员头像
+	// 	nick_name: '何先森', // 会员昵称
+	// 	total_margin_amount: '56375678', // 累计推广收益
+	// 	direct_margin_amount: '5581.00', // 直接推广收益
+	// 	total_task_completed_count: '42349', // 完成任务数
+	// }
 ])
 
 const goToRevenue = () => {
@@ -148,27 +163,84 @@ const goToCode = () => {
 		url: '/pages/xn/my/promotion-code'
 	})
 }
+
+// 获取团队统计数据
+const getTeamStatistics = async () => {
+	const res = await teamStatistics()
+	if (res.code === 200) {
+		statDatas.value = res.data || {}
+	}
+}
+
+// 获取团队列表
+const getTeamList = async (reset = false) => {
+	if (reset) {
+		page.value = 1
+		loadStatus.value = 'loading'
+		refreshing.value = true
+	}
+	
+	const res = await teamLists({
+		keyword: keyword.value,
+		page: page.value,
+		limit: limit.value
+	})
+	
+	refreshing.value = false
+	
+	if (res.code === 200) {
+		const list = res.data.lists || []
+		if (reset) {
+			teamListDatas.value = list
+		} else {
+			teamListDatas.value = [...teamListDatas.value, ...list]
+		}
+		
+		if (list.length < limit.value) {
+			loadStatus.value = 'nomore'
+		} else {
+			loadStatus.value = 'loadmore'
+			page.value++
+		}
+	} else {
+		loadStatus.value = 'nomore'
+		uni.showToast({
+			title: res.msg || '获取数据失败',
+			icon: 'none'
+		})
+	}
+}
+
+const onRefresh = () => {
+	getTeamList(true)
+	getTeamStatistics()
+}
+
+const onScrollToLower = () => {
+	if (loadStatus.value === 'nomore') return
+	getTeamList()
+}
+
+onLoad(async () => {
+	 getTeamStatistics()
+	 getTeamList(true)
+})
 </script>
 
 <style lang="scss" scoped>
 .page-wrap {
-	min-height: 100vh;
-	background-image: url('/static/images/index/bg.png');
-	background-color: #691e23;
-	background-size: cover;
-	background-attachment: fixed;
-	display: flex;
-	flex-direction: column;
 }
 
 .page-content {
 	flex: 1;
-	padding: 30rpx;
-	padding-bottom: 200rpx;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 }
 
 .stats-grid {
 	margin-bottom: 30rpx;
+	flex-shrink: 0;
 }
 
 .stats-row {
@@ -203,6 +275,7 @@ const goToCode = () => {
 	border-radius: 16rpx;
 	padding: 24rpx;
 	margin-bottom: 30rpx;
+	flex-shrink: 0;
 }
 
 .notice-title {
@@ -223,8 +296,12 @@ const goToCode = () => {
 .ranking-card {
 	background: #fff;
 	border-radius: 30rpx;
-	min-height: 500rpx; // Ensure it fills bottom part visually if needed
+	min-height: 0;
+	flex: 1;
 	padding: 30rpx;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
 }
 
 .card-header {
@@ -232,6 +309,7 @@ const goToCode = () => {
 	justify-content: space-between;
 	align-items: center;
 	margin-bottom: 30rpx;
+	flex-shrink: 0;
 }
 
 .header-left {
@@ -271,6 +349,7 @@ const goToCode = () => {
 	align-items: center;
 	padding: 0 30rpx;
 	margin-bottom: 30rpx;
+	flex-shrink: 0;
 }
 
 .search-input {
@@ -284,7 +363,8 @@ const goToCode = () => {
 }
 
 .team-list {
-	
+	flex: 1;
+	overflow: hidden;
 }
 
 .team-item {

@@ -2,34 +2,34 @@
 <view class="grid-wrapper" :style="{ 'grid-template-columns': `repeat(${colNum}, 1fr)` }">
 	<view class="grid-column" v-for="(col, colIndex) in columns" :key="colIndex">
 		<view
-		  v-for="(wrapper, index) in col"
-		  :key="wrapper.originalIndex"
+		  v-for="(item, index) in col"
+		  :key="item.originalIndex"
 		  class="product-card"
+		  @click.stop="handleItemClick(item)"
 		>
 		  <view class="card-image-wrapper">
-			<image :src="wrapper.item.image" mode="aspectFill" class="card-image" />
+			<image :src="item.image" mode="aspectFill" class="card-image" />
 			<!-- <view class="artist-name">
-				<text class="artist">绣娘：{{ wrapper.item.artist }}</text>
+				<text class="artist">绣娘：{{ item.artist }}</text>
 			</view> -->
 			<view class="favorite-column">
 				<up-icon
 				 color="#7A5632"
 				 size="24"
-				 :name="wrapper.item.favoriteType||'heart-fill'"
-				></up-icon> {{ wrapper.item.likeCount || 126 }}
+				 :name="item.favoriteType||'heart-fill'"
+				></up-icon> {{ item.likeCount || 126 }}
 			</view>
 		  </view>
 		  <view class="card-content">
-			
-			<text class="title">{{ wrapper.item.title }}</text>
+			<text class="title">{{ item.title }} {{ item.originalIndex }}</text>
 			<view class="collect-price">
-				<text class="current-price">¥{{ wrapper.item.description  || '6467789'}}</text>
-				<text class="original-price"> ¥{{ wrapper.item.originalPrice || '6667789'}}</text>
+				<text class="current-price">¥{{ item.description  || '67789'}}</text>
+				<text class="original-price"> ¥{{ item.originalPrice || '67789'}}</text>
 			</view>
 			<view class="footer">
 			  <view class="tag-gradient">
 				 <CxTag
-					:text="wrapper.item.tag || 'NFT藏品'"
+					:text="item.tag || 'NFT藏品'"
 					:bgGradient="['rgba(7,70,133,0.1)', 'rgba(7,70,133,0.1)']"
 					shape="circle"
 					:customStyle="{
@@ -40,9 +40,9 @@
 						color: '#074685',
 						fontSize: '14rpx'
 					}"
-					v-if="wrapper.item.tag=='实物藏品'"
+					v-if="item.tag=='实物藏品'"
 				/> <CxTag
-					:text="wrapper.item.tag || '实物藏品'"
+					:text="item.tag || '实物藏品'"
 					:bgGradient="['rgba(122,86,50,0.1)', 'rgba(122,86,50,0.1)']"
 					shape="circle"
 					:customStyle="{
@@ -56,7 +56,7 @@
 					v-else
 				/>
 			  </view>
-			  <text class="watch-people">超{{ wrapper.item.price }}人围观</text>
+			  <text class="watch-people">超{{ item.price }}人围观</text>
 			</view>
 		  </view>
 		  
@@ -65,7 +65,6 @@
   </view>	
 </template>
 <script setup name="block">
-import CxTag from '@/components/CxTag.vue';
 const props = defineProps(
 	{
 		colNum: {
@@ -83,7 +82,7 @@ const columns = computed(() => {
 	const cols = Array.from({ length: props.colNum }, () => []);
 	props.productList.forEach((item, index) => {
 		cols[index % props.colNum].push({
-			item,
+			...item,
 			originalIndex: index
 		});
 	});
@@ -91,11 +90,8 @@ const columns = computed(() => {
 });
 
 const emit = defineEmits(['click']);
-const handleItemClick = (wrapper) => {
-	emit('click', {
-	item: wrapper.item,
-	index: wrapper.originalIndex
-	});
+const handleItemClick = (item) => {
+	emit('click', item);
 };
 </script>
 

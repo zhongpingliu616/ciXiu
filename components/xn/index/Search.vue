@@ -191,8 +191,14 @@ const handleGrab = (item) => {
     return
   }
    uni.navigateTo({
-   	url: `/pages/xn/my/deposit?id=${item.id}`
-   })
+					url: `/pages/xn/my/deposit?id=${item.id}`,
+					success: (res) => {
+						res.eventChannel.emit('sendMarginDatas', { marginResultData: item });
+					},
+					fail: (err) => {
+						console.error('跳转失败', err);
+					}
+				})
 }
 
 const confirmClear = async () => {

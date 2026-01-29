@@ -68,10 +68,10 @@
             </view>&nbsp;&nbsp;
           </template>
 
-          <!-- 待发成品:  制作完成 -->
+          <!-- 待发成品:  提交成品 -->
           <template v-else-if="item.status === 40">
             <view class="function-btn">
-              <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction({type:'produced',item})" text="制作完成"></CxComfirmBtn>
+              <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction({type:'produced',item})" text="提交成品"></CxComfirmBtn>
             </view>
           </template>
 			 </view>
@@ -149,7 +149,7 @@ let currentItem = {};
 const statusMap = {
   10: { text: '待支付', color: '#FF4D4F' },   // 红｜强提醒
   20: { text: '待发货', color: '#FA8C16' },   // 橙｜进行中
-  30: { text: '待接受材料', color: '#1890FF' }, // 蓝｜处理中
+  30: { text: '待接收材料', color: '#1890FF' }, // 蓝｜处理中
   40: { text: '待发成品', color: '#FA541C' },   // 深橙｜关键节点
   50: { text: '待接收成品', color: '#13C2C2' }, // 青｜物流流转
   60: { text: '待验收', color: '#722ED1' },     // 紫｜待确认
@@ -313,8 +313,14 @@ const handleAction = ({ type, item }) => {
   switch (type) {
     case 'pay': // 去支付
       uni.navigateTo({
-        url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`
-      })
+					url: `/pages/xn/my/deposit?id=${item.id}`,
+					success: (res) => {
+						res.eventChannel.emit('sendMarginDatas', { marginResultData: item });
+					},
+					fail: (err) => {
+						console.error('跳转失败', err);
+					}
+				})
       uni.showToast({ title: '跳转支付页面', icon: 'none' })
       break
     case 'remind':

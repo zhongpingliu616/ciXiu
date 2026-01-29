@@ -11,7 +11,7 @@
 				  <up-col 
 				  span="9">
 					  <view class="order-id">
-						  <text class="order-id-text">订单号: {{ item.order_id }}</text>
+						  <text class="order-id-text">订单号: {{ item.order_id }} {{ item.status }}</text>
 					  </view>
 				  </up-col>
 				  <up-col
@@ -63,7 +63,7 @@
 	   </view>
 	   <view class="status-function-bts">
 		   <!-- 待支付: 取消订单, 去支付 -->
-		   <template v-if="item.status === 10">
+		   <template v-if="item.status === 10 || item.status === 15">
 			   <view class="function-btn">
 				   <CxComfirmBtn 
 				   :btnStyle="cancelBtnStyle"
@@ -97,10 +97,10 @@
 			   </view>&nbsp;&nbsp;
 		   </template>
 
-		   <!-- 待发成品:  制作完成 -->
+		   <!-- 待发成品:  提交成品 -->
 		   <template v-else-if="item.status === 40">
 			   <view class="function-btn">
-				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('produced')" text="制作完成"></CxComfirmBtn>
+				   <CxComfirmBtn :btnStyle="cancelBtnStyle" @click.stop="handleAction('produced')" text="提交成品"></CxComfirmBtn>
 			   </view>
 		   </template>
 
@@ -150,8 +150,9 @@ const cancelBtnStyle = {
 // 状态映射
 const statusMap = {
   10: { text: '待支付', color: '#FF4D4F' },   // 红｜强提醒
+  15: { text: '待支付', color: '#FF4D4F' },   // 红｜强提醒
   20: { text: '待发货', color: '#FA8C16' },   // 橙｜进行中
-  30: { text: '待接受材料', color: '#1890FF' }, // 蓝｜处理中
+  30: { text: '待接收材料', color: '#1890FF' }, // 蓝｜处理中
   40: { text: '待发成品', color: '#FA541C' },   // 深橙｜关键节点
   50: { text: '待接收成品', color: '#13C2C2' }, // 青｜物流流转
   60: { text: '待验收', color: '#722ED1' },     // 紫｜待确认

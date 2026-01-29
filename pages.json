@@ -283,9 +283,33 @@
 			}
 		},
 		{
+			"path": "pages/gz/collectibles/recharge",
+			"style": {
+				"navigationBarTitleText": "NFT藏品买入"
+			}
+		},
+		{
+			"path": "pages/gz/collectibles/payment-result",
+			"style": {
+				"navigationBarTitleText": "NFT藏品 订单详情"
+			}
+		},
+		{
 			"path": "pages/gz/collection-detail/index",
 			"style": {
 				"navigationBarTitleText": "藏品详情"
+			}
+		},
+		{
+			"path": "pages/gz/collection-detail/physical",
+			"style": {
+				"navigationBarTitleText": "实物详情"
+			}
+		},
+		{
+			"path": "pages/gz/collection-detail/nft",
+			"style": {
+				"navigationBarTitleText": "NFT藏品详情"
 			}
 		},
 		{

@@ -15,6 +15,7 @@ import { createSSRApp } from 'vue'
 import * as Pinia from 'pinia';
 import uviewPlus from '@/uni_modules/uview-plus'
 import { useLoginStore } from '@/stores/userLogin'
+import { useConfigStore } from '@/stores/configStore'
 const safeAreaInfo = () => {
   const mobileSysInfo = uni.getSystemInfoSync()||({top:'40rpx',bottom:'0'})
 
@@ -40,8 +41,11 @@ export function createApp() {
   
   // 挂载全局用户信息
   const userStore = useLoginStore();
+  const configStore = useConfigStore();
+
   app.config.globalProperties.$globalUserInfoXn = userStore.userInfoXn;
   app.config.globalProperties.$globalUserInfoGz = userStore.userInfoGz;
+  app.config.globalProperties.$globalConfig = configStore.config;
   app.config.globalProperties.$safeAreaInfo = safeAreaInfo();
   return {
     app,

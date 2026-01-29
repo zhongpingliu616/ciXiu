@@ -154,9 +154,9 @@ const fetchData = async (isRefresh) => {
 	isRefreshing.value = false
   }
 }
-const handleProductItem = ({index,item})=>{
+const handleProductItem = (item)=>{
 		uni.navigateTo({
-			url:`/pages/my/login?title=${item.title}&index=${index}`
+			url:`/pages/my/login?title=${item.title}&index=${item.orderIndex}`
 		})
 	};
 const fetchProductList = async (page, pageSize) => {

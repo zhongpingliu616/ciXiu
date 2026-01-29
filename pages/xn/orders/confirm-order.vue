@@ -9,12 +9,12 @@
 						<u-icon name="map-fill" color="#fff" size="40rpx"></u-icon>
 					</view>
 				</view>
-				<view class="address-info" v-if="address.id">
+				<view class="address-info" v-if="addressInfo.id">
 					<view class="user-row">
-						<text class="name">{{ address.contact_person }}</text>
-						<text class="phone">{{ address.contact_phone }}</text>
+						<text class="name">{{ addressInfo.contact_person }}</text>
+						<text class="phone">{{ addressInfo.contact_phone }}</text>
 					</view>
-					<view class="addr-text">{{ address.resolvedAddress }}{{ address.detail_address }}</view>
+					<view class="addr-text">{{ addressInfo.resolvedAddress }}{{ addressInfo.detail_address }}</view>
 				</view>
 				<view class="address-info" v-else>
 					<text class="placeholder">请选择收货地址</text>
@@ -37,7 +37,7 @@
 						<view class="product-tags">
 							<CxTag
 							shape="circle"
-							:text="marginResultData.period"
+							:text="productInfo.period"
 							:textStyle="{
 								color: '#4A90E2'
 							}"
@@ -48,7 +48,7 @@
 							:textStyle="{
 								color: '#999'
 							}"
-							:text="marginResultData.difficulty"
+							:text="productInfo.difficulty"
 							:bgGradient="['#F5F5F5', '#F5F5F5']"
 							/>
 						</view>
@@ -64,12 +64,12 @@
 				</view>
 				<view class="summary-row">
 					<text class="label">运费</text>
-					<text class="value">¥ {{ productInfo.freight || '0.00' }}</text>
+					<text class="value">¥ {{ productInfo.shipping_fee || '0.00' }}</text>
 				</view>
 				<view class="divider"></view>
 				<view class="summary-row total-row">
 					<text class="label">订单总价</text>
-					<text class="value total-price">¥ {{ totalPrice }}</text>
+					<text class="value total-price">¥ {{ productInfo.final_amount }}</text>
 				</view>
 			</view>
 
@@ -77,11 +77,11 @@
 			<view class="info-card link-card">
 				<view class="card-title-row">
 					<view class="red-bar"></view>
-					<text class="card-title">订单保证金</text>
+					<text class="card-title">缴纳方式</text>
 				</view>
 				<view class="right-action">
-					<text>已缴纳</text>
-					<u-icon name="arrow-right" color="#999" size="24rpx"></u-icon>
+					<text>账户余额</text>
+					<!-- <u-icon name="arrow-right" color="#999" size="24rpx"></u-icon> -->
 				</view>
 			</view>
 
@@ -92,8 +92,9 @@
 					<text class="card-title">保证金减免</text>
 				</view>
 				<view class="deduction-desc">
-					<view class="main-text">使用“保证金减免额度” （可抵扣300元）</view>
-					<view class="sub-text">分享邀请二维码邀请好友注册并认证可获取“押金减免额度”，您当前额度为：{{ deductionQuota }}元</view>
+					<view class="main-text">使用“保证金减免额度” （可抵扣{{productInfo.deposit_reduction_amount}}元）</view>
+					<view class="sub-text">分享邀请二维码邀请好友注册并认证可获取“押金减免额度”</view>
+					 <!-- ，您当前额度为：{{ deductionQuota }}元 -->
 				</view>
 			</view>
 		</view>
@@ -106,22 +107,24 @@
 </template>
 
 <script setup name="confirmOrder">
-import { taskDetails, memberAddress, addOrder } from '@/api/xn.js';
+import { taskDetails, memberAddress, addOrder,orderPay,orderDetails } from '@/api/xn.js';
 import { getRegionName } from '@/utils/public.js';
-import { ref, computed, getCurrentInstance } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
 
 let title = ref("确认订单");
 let loading = ref(false);
 let productInfo = ref({
-	image: 'https://picsum.photos/200',
-	name: '古韵民族丝绸非遗刺绣',
-	id: '234515665132',
-	period: '工期30天',
-	difficulty: '锦初等级',
-	reward_amount: '188.00'
+	// image: 'https://picsum.photos/200',
+	// name: '古韵民族丝绸非遗刺绣',
+	// id: '234515665132',
+	// period: '工期30天',
+	// difficulty: '锦初等级',
+	// reward_amount: '188.00',
+	// deposit: '752.00',
+	// shipping_fee: '40.00',
+	// final_amount: '980.00',
+	// deposit_reduction_amount: '0.00'
 });
-let address = ref({});
+let addressInfo = ref({});
 let taskId = null;
 let deductionQuota = ref('30000'); // Mock data
 
@@ -133,7 +136,14 @@ const totalPrice = computed(() => {
 	const freight = parseFloat(productInfo.value.freight) || 0;
 	return (deposit + freight).toFixed(2);
 });
-
+const requireData = async () => {
+	const {code, msg ,data={}} = await orderDetails({order_id: marginResultData.value.order_id});
+	if(code == 200){
+		marginResultData.value = data.lists || { deposit: 0 };
+	} else {
+		uni.showToast({ title: msg || '获取保证金信息失败', icon: 'none' })
+	}
+}
 onLoad((options) => {
 	if (options.id) {
 		taskId = options.id;
@@ -174,14 +184,7 @@ const fetchTaskDetails = async (id) => {
 		console.error('获取详情失败', e);
 		// Mock data for display if API fails (or if using mock ID)
 		productInfo.value = {
-			image: 'https://picsum.photos/200',
-			title: '古韵民族丝绸非遗刺绣',
-			duration: '30天',
-			level: '锦初等级',
-			price: '188.00',
-			deposit: '752.00',
-			freight: '40.00'
-		};
+};
 	}
 };
 
@@ -201,7 +204,7 @@ const fetchDefaultAddress = async () => {
 };
 
 const setAddress = (item) => {
-	address.value = {
+	addressInfo.value = {
 		id: item.id,
 		contact_person: item.name || item.consignee || item.contact_person || '',
 		contact_phone: item.phone || item.mobile || item.contact_phone || '',
@@ -225,37 +228,40 @@ const goSelectAddress = () => {
 const goToDepositInfo = () => {
     // Navigate to deposit info or just placeholder
 };
-
+// 确认支付订单
 const handleConfirm = async () => {
-	if (!address.value.id) {
-		uni.showToast({ title: '请选择收货地址', icon: 'none' });
+	if (!addressInfo.value.id || !addressInfo.value.contact_phone || !addressInfo.value.contact_person || !addressInfo.value.detail_address) {
+		uni.showToast({ title: '请选择地址信息', icon: 'none' });
 		return;
 	}
+	uni.showToast({ title: '正在支付？', icon: 'none' });
 	loading.value = true;
 	try {
-		// Call addOrder API
 		const params = {
-			task_id: taskId,
-			address_id: address.value.id,
+			order_id: productInfo.value.order_id,
+			address_id: addressInfo.value.id,
 			// Add other params if needed
 		};
-		const res = await addOrder(params);
+		const res = await orderPay(params);
 		if (res.code === 200 || res.code === 0) {
 			const orderId = res.data.order_id || res.data.id; // Adjust based on actual API response
-			// Navigate to deposit page for payment
-			uni.navigateTo({
-				url: `/pages/xn/my/deposit?id=${taskId}&order_id=${orderId}`,
-				success: (res) => {
-					// Pass data if needed
-					res.eventChannel.emit('sendMarginDatas', { 
-						marginResultData: { 
-							deposit: productInfo.value.deposit,
-							order_id: orderId 
-						},
-						productInfo: productInfo.value
-					});
-				}
+			uni.switchTab({
+				url: `/pages/xn/orders/index?id=${productInfo.value.id}&order_id=${productInfo.value.order_id}`
 			});
+			
+			// uni.navigateTo({
+			// 	url: `/pages/xn/orders/detail?id=${taskId}&order_id=${orderId}`,
+			// 	success: (res) => {
+			// 		// Pass data if needed
+			// 		res.eventChannel.emit('sendMarginDatas', { 
+			// 			marginResultData: { 
+			// 				...productInfo.value,
+			// 				order_id: orderId 
+			// 			},
+			// 			productInfo: productInfo.value
+			// 		});
+			// 	}
+			// });
 		} else {
 			uni.showToast({ title: res.msg || '下单失败', icon: 'none' });
 		}

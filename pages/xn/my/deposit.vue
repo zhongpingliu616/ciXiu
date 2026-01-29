@@ -11,7 +11,7 @@
 					<view class="product-tags">
 						 <CxTag
 						 shape="circle"
-						:text="marginResultData.period"
+						:text="marginResultData.period || ''"
 						:textStyle="{
 							color: '#4A90E2'
 						}"
@@ -22,7 +22,7 @@
 						 :textStyle="{
 							color: '#999'
 						}"
-						:text="marginResultData.difficulty"
+						:text="marginResultData.difficulty || ''"
 						:bgGradient="['#F5F5F5', '#F5F5F5']"
 						/>
 					</view>
@@ -64,19 +64,19 @@
 					<text class="card-title">保证金减免</text>
 				</view>
 				<view class="deduction-options">
-					<view class="option-item" @click="selectedDeduction = 'use'">
+					<view class="option-item" @click="handleDeduction(true)">
 						<view class="radio-icon">
-							<u-icon v-if="selectedDeduction === 'use'" name="checkmark-circle-fill" color="#FF4D4F" size="40rpx"></u-icon>
+							<u-icon v-if="useDeduction" name="checkmark-circle-fill" color="#FF4D4F" size="40rpx"></u-icon>
 							<view v-else class="radio-circle"></view>
 						</view>
 						<view class="option-content">
-							<view class="option-title">使用“保证金减免额度” （可抵扣300元）</view>
-							<view class="option-desc">分享邀请二维码邀请好友注册并认证可获取“保证金”，您当前额度为：30000元</view>
+							<view class="option-title">使用“保证金减免额度” （可抵扣{{ marginResultData.discount_amount || 0 }}元）</view>
+							<view class="option-desc">分享邀请二维码邀请好友注册并认证可获取“保证金”，您当前额度为：{{ marginResultData.margin_amount || 0 }}元</view>
 						</view>
 					</view>
-					<view class="option-item" @click="selectedDeduction = 'none'">
+					<view class="option-item" @click="handleDeduction(false)">
 						<view class="radio-icon">
-							<u-icon v-if="selectedDeduction === 'none'" name="checkmark-circle-fill" color="#FF4D4F" size="40rpx"></u-icon>
+							<u-icon v-if="!useDeduction" name="checkmark-circle-fill" color="#FF4D4F" size="40rpx"></u-icon>
 							<view v-else class="radio-circle"></view>
 						</view>
 						<view class="option-content">
@@ -101,15 +101,7 @@
 
 		<!-- Fixed Bottom Button -->
 		<view class="fixed-bottom-btn">
-			<CxComfirmBtn text="立即缴纳" :loading="loading" @click="handleConfirm" 
-            :btnStyle="{
-                background: 'linear-gradient(90deg, #FF6B6B 0%, #FF9C6B 100%)',
-                borderRadius: '44rpx',
-                height: '88rpx',
-                fontSize: '32rpx',
-                fontWeight: 'bold',
-                boxShadow: '0 4rpx 12rpx rgba(255, 107, 107, 0.4)'
-            }"/>
+			<CxComfirmBtn text="立即缴纳" :loading="loading" @click="handleConfirm" />
 		</view>
 
 		<!-- Payment Method Popup -->
@@ -143,7 +135,7 @@
 </template>
 
 <script setup name="pay-deposit">
-import { getLevelLists, addOrder, orderPay, memberAddress } from '@/api/index'
+import { getLevelLists, addOrder, orderPay, orderDetails, memberAddress, beforeSelectDiscountInfo ,selectDiscount} from '@/api/index'
 
 const { proxy } = getCurrentInstance();
 const eventChannel = ref(null);
@@ -185,7 +177,7 @@ const currentPaymentMethodName = computed(() => {
 });
 
 // Deduction
-const selectedDeduction = ref('use'); // 'use' or 'none'
+const useDeduction = ref(false); // 是否使用押金减免
 
 let guarantees = ref([
 	'保证金单独支付，包含违约保证金和退货保证金两个部分；',
@@ -198,17 +190,64 @@ let guarantees = ref([
 // Address logic (hidden but kept for API requirement)
 let addressList = ref([]);
 let selectedAddressItem = ref({});
-
-const handleConfirm = () => {
-   uni.navigateTo({
-    url: '/pages/xn/orders/confirm-order',
-    success: (res) => {
-        // 传递 marginResultData 和 productInfo 到确认订单页面
-        res.eventChannel.emit('sendOrderData', {
-            marginResultData: marginResultData.value
-        });
-    }
-   })
+let discountResult = {};
+const handleDeduction = async (deduction) => {
+    useDeduction.value = deduction;
+	if(deduction){
+		let amount = marginResultData.value.margin_amount>marginResultData.value.discount_amount?marginResultData.value.discount_amount:marginResultData.value.margin_amount;
+		const {code, msg ,data={}} = await selectDiscount({
+			order_id: marginResultData.value.order_id,
+			amount
+		});
+		if(code == 200){
+			depositInformation();
+		} else {
+			uni.showToast({ title: msg || '选择减免额度失败', icon: 'none' })
+		}
+	}
+};
+const onConfirm = async()=>{
+	uni.navigateTo({
+			url: '/pages/xn/orders/confirm-order',
+			success: (res) => {
+				res.eventChannel.emit('sendOrderData', {
+					marginResultData: marginResultData.value
+				});
+			}
+		})
+	// showAddress.value = false;
+	// loading.value = true;
+	// const {code, msg ,data={}} = await orderPay({
+	// 	address_id: selectedAddressItem.value.id, 
+	// 	order_id: marginResultData.value.order_id
+	// });
+	// if(code == 200){
+	// 	uni.showToast({title: '缴纳压金成功', icon: 'success' })
+	// 	uni.navigateTo({
+	// 		url: '/pages/xn/orders/confirm-order',
+	// 		success: (res) => {
+	// 			// 传递 marginResultData 和 productInfo 到确认订单页面
+	// 			res.eventChannel.emit('sendOrderData', {
+	// 				marginResultData: discountResult
+	// 			});
+	// 		}
+	// 	})
+	// 	return
+	// }  else if(code == 100028){
+	// 	uni.showToast({ title: msg || '余额不足，请先充值', icon: 'none' })
+	// 	setTimeout(() => {
+	// 		uni.navigateTo({url: '/pages/xn/income/recharge'})
+	// 	}, 1500)
+	// 	return
+	// }else {
+	// 	uni.showToast({ title: msg || '缴纳压金失败', icon: 'none' })
+	// 	setTimeout(() => {
+	// 		uni.navigateBack()
+	// 	}, 1500)
+	// };
+}
+const handleConfirm = async () => {
+	onConfirm();
 }
 
 const onPaymentConfirm = async () => {
@@ -243,7 +282,14 @@ const onPaymentConfirm = async () => {
         loading.value = false;
     }
 }
-
+const depositInformation = async ()=>{
+	const {code, msg ,data={}} = await orderDetails({order_id: marginResultData.value.order_id});
+	if(code == 200){
+		marginResultData.value = data.lists || { deposit: 0 };
+	} else {
+		uni.showToast({ title: msg || '获取保证金信息失败', icon: 'none' })
+	}
+}; 
 const requireAddressList = async ()=>{
 	const {code, msg ,data={}} = await memberAddress({});
 	if(code == 200){
@@ -251,6 +297,8 @@ const requireAddressList = async ()=>{
         if (addressList.value.length > 0) {
             selectedAddressItem.value = addressList.value[0];
         }
+	} else {
+		uni.showToast({ title: msg || '获取地址列表失败', icon: 'none' })
 	}
 }; 
 
@@ -265,8 +313,9 @@ onLoad((options) => {
     };
     if (eventChannel.value) {
         eventChannel.value.on('sendMarginDatas', (data) => {
-			console.log("缴纳保证金数据", data.marginResultData);
+            console.log('Received marginResultData:', data.marginResultData);
             marginResultData.value  = data.marginResultData || { deposit: 0 };
+	        depositInformation();
             // Update product info if passed
             if (data.productInfo) {
                 Object.assign(productInfo.value, data.productInfo);

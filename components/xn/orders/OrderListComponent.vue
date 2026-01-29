@@ -5,7 +5,7 @@
     :isRefreshing="refreshing"
     :loadStatus="loadStatus"
     :iconType="iconType"
-    :enableRefresh="false"
+    :enableRefresh="true"
     :enableLoadMore="true"
     class="order-list"
     >
@@ -31,7 +31,7 @@
     content="确认完成了吗？"
     @confirm="confirmProduced"
   >
-      <view class="input-wrap">
+      <!-- <view class="input-wrap">
         <view style="font-size:28rpx; color:#333; margin-bottom:10rpx;">请输入物流单号,切勿填错</view>
         <u-input
           v-model="logisticsNumber"
@@ -43,7 +43,7 @@
             borderRadius: '10rpx'
           }"
         ></u-input>
-      </view>
+      </view> -->
   </CxModal>
   <CxModal
     v-model:show="showDeleOrder"
@@ -207,24 +207,15 @@ const confirmOrder = async ()=>{
 };
 // 确认完成作品
 const confirmProduced = async ()=>{
-  if(!logisticsNumber.value){
-    uni.showToast({ title: '请输入物流单号', icon: 'none' });
-    return;
-  };
-  const {msg,data,code}  = await editOrderSatus({
-    id:currentItem.id,
-    order_id:currentItem.order_id,
-    status:50,
-    finish_order_number:logisticsNumber.value
-  });
-  
-  if(code===200){
-    uni.showToast({ title: '订单已完成', icon: 'none' });
-    logisticsNumber.value = '';
-    onRefresh();
-  } else {
-    uni.showToast({ title: msg || '操作失败', icon: 'none' });
-  }
+  uni.navigateTo({
+    url: `/pages/xn/orders/submit-product?id=${currentItem.id}&order_id=${currentItem.order_id}`,
+    success: (res) => {
+      res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
+    },
+    fail: (err) => {
+      console.error('跳转失败', err);
+    }
+  })
 };
 // 提醒商家发货
 const remindOrder = async (item)=>{
@@ -248,26 +239,35 @@ const getOrderDetails = async (item)=>{
 		uni.showToast({ title: '订单ID不能为空', icon: 'none' })
 		return;
 	}
-	const {code, msg ,data={}} = await orderDetails({order_id:item.order_id});
-	
-	if(code == 200){
-		marginResultData.value = data.lists || {};
-		marginResultData.value.id = item.id;
-		uni.navigateTo({
+  uni.navigateTo({
         url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
         success: (res) => {
-          res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+          res.eventChannel.emit('sendMarginDatas', { marginResultData: item });
         },
         fail: (err) => {
           console.error('跳转失败', err);
         }
       })
-	} else {
-		uni.showToast({ title: msg || '订单详情获取失败', icon: 'none' })
-		// setTimeout(() => {
-		// 	uni.navigateBack()
-		// }, 1500)
-	};
+	// const {code, msg ,data={}} = await orderDetails({order_id:item.order_id});
+	
+	// if(code == 200){
+	// 	marginResultData.value = data.lists || {};
+	// 	marginResultData.value.id = item.id;
+	// 	uni.navigateTo({
+  //       url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
+  //       success: (res) => {
+  //         res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+  //       },
+  //       fail: (err) => {
+  //         console.error('跳转失败', err);
+  //       }
+  //     })
+	// } else {
+	// 	uni.showToast({ title: msg || '订单详情获取失败', icon: 'none' })
+	// 	// setTimeout(() => {
+	// 	// 	uni.navigateBack()
+	// 	// }, 1500)
+	// };
 }
 // 处理操作事件
 const handleAction = ({ type, item }) => {

@@ -246,14 +246,26 @@ const handlePayDeposit = ()=> {
   // 支付押金逻辑 - 跳转到压金页面
   if(detailData.value.rush_status==1) return;
   uni.navigateTo({
-    url: `/pages/xn/my/deposit?id=${detailData.value.id}`
-  })
+      url: `/pages/xn/my/deposit?id=${detailData.value.id}`,
+      success: (res) => {
+        res.eventChannel.emit('sendMarginDatas', { marginResultData: detailData.value });
+      },
+      fail: (err) => {
+        console.error('跳转失败', err);
+      }
+    })
 };
 const handleGrabOrder = ()=> {
   if(detailData.value.rush_status==1) {
       uni.navigateTo({
-        url: `/pages/xn/my/deposit?id=${detailData.value.id}`
-      });
+					url: `/pages/xn/my/deposit?id=${detailData.value.id}`,
+					success: (res) => {
+						res.eventChannel.emit('sendMarginDatas', { marginResultData: detailData.value });
+					},
+					fail: (err) => {
+						console.error('跳转失败', err);
+					}
+				})
      uni.showToast({
       title: '请支付押金后抢单',
       icon: 'success'

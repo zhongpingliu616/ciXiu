@@ -61,10 +61,12 @@
 
     <!-- Floating Cart -->
     <view class="floating-cart">
-      <view class="cart-icon-wrapper">
-        <u-icon name="shopping-cart" color="#fff" size="60rpx"></u-icon>
-        <view class="badge">10</view>
-      </view>
+      <navigator url="/pages/gz/my/shopping-cart">
+          <view class="cart-icon-wrapper">
+          <u-icon name="shopping-cart" color="#FFE185" size="60rpx"></u-icon>
+          <view class="badge">10</view>
+        </view>
+      </navigator>
     </view>
 
 <keep-alive>
@@ -166,8 +168,17 @@ const loadMore = () => {
   fetchData(false)
 }
 
-const handleItemClick = (data) => {
-  console.log('Item clicked:', data)
+const handleItemClick = (item) => {
+  console.log('Item clicked:', item)
+  if (item.tag.includes('NFT藏品')) {
+    uni.navigateTo({
+      url: '/pages/gz/collection-detail/nft?id=' + item.id
+    })
+  } else {
+    uni.navigateTo({
+      url: '/pages/gz/collection-detail/physical?id=' + item.id
+    })
+  }
   // Navigate to detail page
 }
 
@@ -239,14 +250,14 @@ onMounted(() => {
   .cart-icon-wrapper {
     width: 100rpx;
     height: 100rpx;
-    background: #FF6B6B; // Red color
+    background: #F8412D; // Red color
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     box-shadow: 0 4rpx 16rpx rgba(0,0,0,0.3);
     position: relative;
-    border: 4rpx solid #F3D89E; // Gold border per design style typically
+    border: 4rpx solid $app-border-color; // Gold border per design style typically
     
     .badge {
       position: absolute;

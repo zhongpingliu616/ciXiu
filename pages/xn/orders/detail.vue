@@ -1,38 +1,89 @@
 <template>
 	<view class="page-wrap order-detail">
-		<LayoutNavigation :title="title" />
-		<view class="page-content" v-if="item">
+		<LayoutNavigation :title="title" >
+			<template #right>
+				<CxIconFont code="&#xe88f;" size="38rpx" color="#fff" @tap="contactService"></CxIconFont>
+			</template>
+		</LayoutNavigation>
+		<view class="page-content" v-if="orderItemDetail">
 			<!-- 状态头部 -->
 			<view class="status-header">
-				<u-icon name="hourglass" size="50rpx" color="#fff" customStyle="margin-right: 16rpx"></u-icon>
-				<text class="status-text">{{ statusText }}</text>
+				<uni-icons custom-prefix="iconfont" type="icon-xiaohuoche" size="40rpx" color="#ffffff" v-if="orderItemDetail.status == 30 || orderItemDetail.status == 40"></uni-icons>
+				<uni-icons custom-prefix="iconfont" type="icon-leiji-yijiaofuxiangmushuliang" size="40rpx" color="#ffffff" v-else-if="orderItemDetail.status == 70"></uni-icons>
+				<u-icon name="hourglass" size="50rpx" color="#fff" v-else></u-icon>
+				&nbsp;&nbsp;
+				<text class="status-text" v-if="orderItemDetail.status === 30 && orderItemDetail.round_no > 0">已退回</text>
+				<text class="status-text" v-else>{{ statusText }}</text>
 			</view>
-
+			<!-- 备注信息 -->
+			<view class="card remark-card" v-if="orderItemDetail.remark || orderItemDetail.actual_amount > 0">
+				<view class="card-title-row">
+					<view class="indicator"></view>
+					<text class="title-text" v-if="orderItemDetail.status === 30 && orderItemDetail.round_no > 0">退回原因</text>
+					<text class="title-text" v-if="orderItemDetail.status === 40 && orderItemDetail.round_no > 0">退回原因</text>
+					<text class="title-text" v-if="orderItemDetail.status === 70">验收信息</text>
+					<text class="right-text" v-else>备注：</text>
+				</view>
+				<view class="remark-content" v-if="orderItemDetail.actual_amount > 0">
+					本次验收金额为：<text type="warning" class="value" style="font-size: 24rpx; color: #FF5500;">{{ orderItemDetail.actual_amount || '' }}</text> 金额已发放至你余额，请注意查收！
+					
+				</view>
+				<view class="remark-content" v-else>
+					{{ orderItemDetail.remark || '' }}
+				</view>
+			</view>
+			<!-- 平台收货地址信息 -->
+			<view class="card" v-if="orderItemDetail.finish_order_info">
+				<view class="card-title-row">
+					<view class="indicator"></view>
+					<text class="title-text">平台收货地址信息</text>
+				</view>
+				<view class="info-row">
+					<text class="label">联系人</text>
+					<text class="value">{{ orderItemDetail.finish_order_info?.contact_person || '' }}</text>
+				</view>
+				<view class="info-row">
+					<text class="label">联系电话</text>
+					<text class="value">{{ orderItemDetail.finish_order_info?.contact_phone || '' }}</text>
+				</view>
+				<view class="info-row">
+					<text class="label">收货地址</text>
+					<text class="value">{{ orderItemDetail.finish_order_info?.shipping_address || '' }}</text>
+				</view>
+				<view class="info-row">
+					<text class="label">物流单号</text>
+					<text class="value">{{ orderItemDetail.finish_order_info?.tracking_number || '' }}</text>
+				</view>
+				<view class="info-row">
+					<text class="label">物流公司</text>
+					<text class="value">{{ orderItemDetail.finish_order_info?.logistics_company || '快递' }}</text>
+				</view>
+			</view>
 			<!-- 地址卡片 -->
-			<view class="card address-card">
+			<view class="card address-card" v-if="orderItemDetail.address_info">
 				<view class="address-row">
 					<u-icon name="map-fill" color="#FF4D4F" size="50rpx"></u-icon>
-					<text class="name">{{ item.username || '' }}</text>
-					<text class="phone">{{ item.address?.contact_phone || '' }}</text>
-				</view>
+					<text class="name">{{ orderItemDetail.address_info?.contact_person || '' }}</text>
+						<text class="phone">{{ orderItemDetail.address_info?.contact_phone || '' }}</text>
+					</view>
 				<view class="address-detail">
-					{{ getRegionName(item.address) }} {{ item.detail_address || item.address?.detail_address || '' }}
+					{{ getRegionName(orderItemDetail.address_info.address) }} {{ orderItemDetail.address_info?.detail_address || '' }}
 				</view>
 			</view>
 
 			<!-- 物流信息 (待发成品/制作中 显示) -->
-			<view class="card" v-if="[30, 40].includes(item.status)">
+			<view class="card" v-if="[30, 40].includes(orderItemDetail.status)">
 				<view class="card-title-row">
 					<view class="indicator"></view>
 					<text class="title-text">物流信息</text>
 				</view>
 				<view class="info-row">
 					<text class="label">物流单号</text>
-					<text class="value">{{ item.logistics_no || '23840984923804423' }}</text>
+					<text class="value">{{ orderItemDetail.material_order_info?.tracking_number || '' }}</text>
 				</view>
 				<view class="info-row">
 					<text class="label">物流公司</text>
-					<text class="value">{{ item.logistics_company || '顺丰快递' }}</text>
+					<text class="value">{{ orderItemDetail.material_order_info?.logistics_company || '快递' }}</text>
 				</view>
 			</view>
 
@@ -64,15 +115,15 @@
 				<view class="fee-section">
 					<view class="fee-row">
 						<text class="label">订单押金 (共{{ orderInfoList.length }}件)</text>
-						<text class="value">¥ {{ Number(item.total_deposit || 752).toFixed(2) }}</text>
+						<text class="value">¥ {{ Number(orderItemDetail.deposit || 0).toFixed(2) }}</text>
 					</view>
 					<view class="fee-row">
 						<text class="label">运费</text>
-						<text class="value">¥ {{ Number(item.freight || 40).toFixed(2) }}</text>
+						<text class="value">¥ {{ Number(orderItemDetail.shipping_fee || 0).toFixed(2) }}</text>
 					</view>
 					<view class="fee-row total-row">
 						<text class="label">订单总价</text>
-						<text class="value total-price">¥ {{ Number(item.total_amount || 792).toFixed(2) }}</text>
+						<text class="value total-price">¥ {{ Number(orderItemDetail.final_amount || 0).toFixed(2) }}</text>
 					</view>
 				</view>
 
@@ -82,15 +133,15 @@
 				<view class="meta-section">
 					<view class="meta-row">
 						<text class="label">订单号</text>
-						<text class="value">{{ item.order_id }}</text>
+						<text class="value">{{ orderItemDetail.order_id }}</text>
 					</view>
 					<view class="meta-row">
 						<text class="label">下单时间</text>
-						<text class="value">{{ item.create_time || '2025-12-29 19:41:37' }}</text>
+						<text class="value">{{ orderItemDetail.create_time || '2025-12-29 19:41:37' }}</text>
 					</view>
 					<view class="meta-row">
 						<text class="label">支付状态</text>
-						<text class="value">{{ item.pay_status === 1 ? '已支付' : '已支付' }}</text>
+						<text class="value">{{ orderItemDetail.status  < 20 ? '未支付' : '已支付' }}</text>
 					</view>
 				</view>
 			</view>
@@ -118,49 +169,92 @@
 		</view>
 
 		<!-- 底部按钮 -->
-		<view class="footer-btns" v-if="item">
+		<view class="footer-btns" v-if="orderItemDetail">
 			<!-- 待发货 (待平台发货) -->
-			<template v-if="item.status === 20">
+			<template v-if="orderItemDetail.status === 20">
 				<view class="btn-wrapper">
 					<CxComfirmBtn 
 						text="看看其他" 
-						:btnStyle="outlineBtnStyle"
-						@click="goHome"
+						:btnStyle="{
+							background: 'transparent',
+							color: 'rgb(255, 225, 133)'
+						}"
+						@click="goOrder"
 					></CxComfirmBtn>
 				</view>
 				<view class="btn-wrapper">
 					<CxComfirmBtn 
-						text="取消抢单" 
-						:btnStyle="primaryBtnStyle"
-						@click="handleCancel"
+						text="取消抢单"
+						@click="handleAction({ type: 'cancel', orderItemDetail })"
 					></CxComfirmBtn>
 				</view>
 			</template>
-
+			<!-- 待收材料 -->
+			<template v-else-if="orderItemDetail.status === 30">
+				<view class="btn-wrapper">
+					<CxComfirmBtn 
+						text="看看其他"
+						:btnStyle="{
+							background: 'transparent',
+							color: 'rgb(255, 225, 133)'
+						}"
+						@click="goOrder"
+					></CxComfirmBtn>
+				</view>
+				<view class="btn-wrapper">
+					<CxComfirmBtn 
+						text="确认收货"
+						@click="handleAction({ type: 'receivingMaterials', orderItemDetail })"
+					></CxComfirmBtn>
+				</view>
+			</template>
 			<!-- 待发成品 (制作中) -->
-			<template v-else-if="item.status === 40">
+			<template v-else-if="orderItemDetail.status === 40">
 				<view class="btn-wrapper">
 					<CxComfirmBtn 
 						text="联系客服" 
-						:btnStyle="outlineBtnStyle"
+						:btnStyle="{
+							background: 'transparent',
+							color: 'rgb(255, 225, 133)'
+						}"
 						@click="contactService"
 					></CxComfirmBtn>
 				</view>
 				<view class="btn-wrapper">
 					<CxComfirmBtn 
-						text="提交成品" 
-						:btnStyle="primaryBtnStyle"
+						text="提交成品"
 						@click="handleSubmitProduct"
 					></CxComfirmBtn>
 				</view>
 			</template>
-
+			<!-- 验收成功 -->
+			<template v-else-if="orderItemDetail.status === 70">
+				<view class="btn-wrapper">
+					<CxComfirmBtn 
+						text="我的收益" 
+						:btnStyle="{
+							background: 'transparent',
+							color: 'rgb(255, 225, 133)'
+						}"
+						@click="goIncome"
+					></CxComfirmBtn>
+				</view>
+				<view class="btn-wrapper">
+					<CxComfirmBtn 
+						text="再做一单"
+						@click="goOrder"
+					></CxComfirmBtn>
+				</view>
+			</template>
 			<!-- 其他状态默认显示返回 -->
 			<template v-else>
 				<view class="btn-wrapper">
 					<CxComfirmBtn 
 						text="返回" 
-						:btnStyle="outlineBtnStyle"
+						:btnStyle="{
+							background: 'transparent',
+							color: 'rgb(255, 225, 133)'
+						}"
 						@click="goBack"
 					></CxComfirmBtn>
 				</view>
@@ -170,23 +264,58 @@
 <CxModal
 	v-model:show="showCancelModal"
 	content="取消订单后押金原路返回到您的账户，但'押金减免额度 '将无法退回"
-	@confirm="orderCancel"
+	@confirm="confirmCancelOrder"
+/>
+<CxModal
+	v-model:show="showConfirmOrder"
+	content="确定收到材料了吗"
+	@confirm="confirmOrder"
+/>
+<CxModal
+	v-model:show="showProduced"
+	content="确认完成了吗？"
+	@confirm="confirmProduced"
+>
+	<!-- <view class="input-wrap">
+		<view style="font-size:28rpx; color:#333; margin-bottom:10rpx;">请输入物流单号,切勿填错</view>
+		<u-input
+			v-model="logisticsNumber"
+			placeholder="请输入你的物流单号"
+			border="surround"
+			clearable
+			:customStyle="{
+			height: '52rpx',
+			borderRadius: '10rpx'
+			}"
+		></u-input>
+	</view> -->
+</CxModal>
+<CxModal
+	v-model:show="showDeleOrder"
+	content="确定要删除订单吗？"
+	@confirm="confirmDeleOrder"
 />
 </template>
 
 <script setup name="detail">
-import {orderDetails,editOrderSatus} from '@/api/index.js'
+import {orderDetails,editOrderSatus,orderRemind,beforePayInfo} from '@/api/index.js'
 import { getRegionName } from '@/utils/public.js';
 const { proxy } = getCurrentInstance();
 const title = ref("订单详情");
 const orderInfoList = ref([]);
-const item = ref({}); // Current Order Item
+const orderItemDetail = ref({}); // Current Order Item
 let parentItemInfo = ref({});
 let showCancelModal = ref(false);
+let showConfirmOrder = ref(false);
+let showProduced = ref(false);
+let showDeleOrder = ref(false);
+let logisticsNumber = ref('');
+let currentItem = {};
+let marginResultData = ref({});
 const statusMap = {
-  10: { text: '待支付', color: '#FF4D4F' },
+  10: { text: '待支付', color: '#FF4D4F' }, // 未使用减免金额
   20: { text: '待平台发货', color: '#FA8C16' }, 
-  30: { text: '待接受材料', color: '#1890FF' },
+  30: { text: '待接收材料', color: '#1890FF' },
   40: { text: '制作中', color: '#FA541C' },
   50: { text: '待接收成品', color: '#13C2C2' },
   60: { text: '待验收', color: '#722ED1' },
@@ -196,32 +325,14 @@ const statusMap = {
 };
 
 const statusText = computed(() => {
-	return statusMap[item.value.status]?.text || '未知状态';
+	return statusMap[orderItemDetail.value.status]?.text || '未知状态';
 });
 
-// 按钮样式
-const primaryBtnStyle = {
-	background: 'linear-gradient(90deg, #FF6034 0%, #EE0A24 100%)',
-	color: '#fff',
-	borderRadius: '44rpx',
-	height: '88rpx',
-	fontSize: '32rpx',
-	border: 'none',
-	width: '100%'
-};
-
-const outlineBtnStyle = {
-	background: 'transparent',
-	color: '#fff',
-	borderRadius: '44rpx',
-	height: '88rpx',
-	fontSize: '32rpx',
-	border: '1px solid rgba(255,255,255,0.6)',
-	width: '100%'
-};
-
-const goHome = () => {
+const goOrder = () => {
 	uni.switchTab({ url: '/pages/xn/orders/index' });
+};
+const goIncome = () => {
+	uni.switchTab({ url: '/pages/xn/income/index' });
 };
 
 const goBack = () => {
@@ -234,8 +345,8 @@ const contactService = () => {
 
 const orderCancel = async () => {
 	const { code=9999, data,msg } = await editOrderSatus({ 
-		id:item.value.id,
-		order_id: item.value.order_id, 
+		id:orderItemDetail.value.id,
+		order_id: orderItemDetail.value.order_id, 
 		status: 90 
 	});
 	if (code === 200) {
@@ -257,7 +368,7 @@ const handleSubmitProduct = () => {
 	uni.navigateTo({
 		url: '/pages/xn/orders/submit-product',
 		success: (res) => {
-			res.eventChannel.emit('sendOrderDatas', { orderInfo: item.value });
+			res.eventChannel.emit('sendOrderDatas', { orderInfo: orderItemDetail.value });
 		}
 	});
 };
@@ -266,17 +377,13 @@ const getOrderData = async ()=>{
 	const { code=9999, data,msg } = await orderDetails({ order_id: parentItemInfo.value.order_id });
 	if (code === 200) {
 		 if(data.lists){
-			// Assuming lists is a single object for detail or array? 
-			// Existing code treated it as object then wrapped in array.
-			// Let's assume it returns the order detail object directly.
-			// If it's a list, we take the first one or match ID.
-			// Based on previous code: orderInfoList.value = [data.lists];
+			
 			orderInfoList.value = [data.lists];
-			item.value = data.lists;
+			orderItemDetail.value = data.lists;
 			
 			// Mock data for display if missing
-			if(!item.value.address) {
-				item.value.address = { contact_phone: '18388888888' };
+			if(!orderItemDetail.value.address) {
+				orderItemDetail.value.address = {};
 			}
 		 };
 	} else {
@@ -286,14 +393,160 @@ const getOrderData = async ()=>{
 		});
 	}
 };
+// 确认收到材料
+const confirmOrder = async ()=>{
+	const {msg,data,code} = await editOrderSatus({
+    id:orderItemDetail.value.id,
+    order_id:orderItemDetail.value.order_id,
+    status:40
+  });
+  if(code===200){
+    uni.showToast({ title: '已确认收到材料', icon: 'none' });
+    showConfirmOrder.value = false;
+    getOrderData();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
+};
+// 确认完成作品
+const confirmProduced = async ()=>{
+  uni.navigateTo({
+    url: '/pages/xn/orders/submit-product',
+    success: (res) => {
+      res.eventChannel.emit('sendOrderDatas', { orderInfo: orderItemDetail.value });
+    }
+  });
+//   const {msg,data,code}  = await editOrderSatus({
+//     id:item.value.id,
+//     order_id:item.value.order_id,
+//     status:50,
+//     finish_order_number:logisticsNumber.value
+//   });
+  
+//   if(code===200){
+//     uni.showToast({ title: '订单已完成', icon: 'none' });
+//     logisticsNumber.value = '';
+//     showProduced.value = false;
+//     getOrderData();
+//   } else {
+//     uni.showToast({ title: msg || '操作失败', icon: 'none' });
+//   }
+};
+// 提醒商家发货
+const remindOrder = async (item)=>{
+	const {msg,data,code} = await orderRemind({
+    order_id:item.order_id
+  });
+  if(code===200){
+    uni.showToast({ title: '已提醒商家发货', icon: 'none' });
+    // getOrderData();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
+};
+// 删除订单
+const confirmDeleOrder = ()=>{
+	
+};
+// 获取订单详情向压金页面传递压金数据
+const getOrderDetails = async (item)=>{
+	if(!item.id){
+		uni.showToast({ title: '订单ID不能为空', icon: 'none' })
+		return;
+	}
+	const {code, msg ,data={}} = await orderDetails({order_id:item.order_id});
+	
+	if(code == 200){
+		marginResultData.value = data.lists || {};
+		marginResultData.value.id = item.id;
+		uni.navigateTo({
+        url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
+        success: (res) => {
+          res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+        },
+        fail: (err) => {
+          console.error('跳转失败', err);
+        }
+      })
+	} else {
+		uni.showToast({ title: msg || '订单详情获取失败', icon: 'none' })
+		// setTimeout(() => {
+		// 	uni.navigateBack()
+		// }, 1500)
+	};
+}
+// 取消订单
+const confirmCancelOrder = async () => {
+	const { code=9999, data,msg } = await editOrderSatus({ 
+		id:orderItemDetail.value.id,
+		order_id: orderItemDetail.value.order_id, 
+		status: 90 
+	});
+	if (code === 200) {
+		uni.showToast({ title: '取消订单成功', icon: 'none' });
+		showCancelModal.value = false;
+		getOrderData();
+	} else {
+		uni.showToast({
+			title: msg || '取消订单失败',
+			icon: 'none'
+		});
+	}
+};
 
+// 处理操作事件
+const handleAction = ({ type, item: actionItem }) => {
+  // Use actionItem if provided, otherwise fallback to page item
+  // Note: in detail page, usually actionItem IS item.value
+  currentItem = actionItem || orderItemDetail.value; 
+  switch (type) {
+    case 'cancel': // 取消订单
+	    showCancelModal.value = true;
+     break
+    case 'pay': // 去支付
+      // getOrderDetails(currentItem);
+	  uni.navigateTo({
+        url: `/pages/xn/my/deposit?id=${currentItem.id}&order_id=${currentItem.order_id}`,
+        success: (res) => {
+          res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
+        }
+      })
+      
+      // uni.showToast({ title: '跳转支付页面', icon: 'none' })
+      break
+    case 'remind': // 提醒商家发货
+      remindOrder(currentItem);
+      break
+    case 'logistics': // 查看物流详情
+      uni.navigateTo({
+        url: 'https://www.baidu.com/s?wd=773394725450239',
+        success: (res) => {
+          res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
+        }
+      })
+      uni.showToast({ title: '查看物流详情', icon: 'none' })
+      break
+    case 'receivingMaterials': // 确认收到材料
+	    showConfirmOrder.value = true;
+      break
+    case 'delete': // 删除订单
+	    showDeleOrder.value = true;
+      break
+    case 'produced': // 确认完成作品
+	    showProduced.value = true;
+      break
+    case 'detail': // 查看订单详情
+      // Current page is detail, no op
+      break
+    }
+}
 onLoad((options) => {
 		const eventChannel = proxy.getOpenerEventChannel();
 		eventChannel.on('sendOrderDatas', (data) => {
 			if(data && data.orderInfo){
 				parentItemInfo.value = data.orderInfo || {};
 				// Initialize item with parent info first to show something
-				item.value = parentItemInfo.value;
+				orderItemDetail.value = parentItemInfo.value;
 				orderInfoList.value = [parentItemInfo.value];
 				getOrderData();
 			}
@@ -364,28 +617,28 @@ onLoad((options) => {
 /* Address Card */
 .address-card {
 	.address-row {
-		display: flex;
-		align-items: center;
+			display: flex;
+			align-items: center;
 		margin-bottom: 16rpx;
-		
-		.name {
-			font-size: 32rpx;
-			font-weight: bold;
-			color: #333;
+
+			.name {
+				font-size: 32rpx;
+				font-weight: bold;
+				color: #333;
 			margin: 0 16rpx;
-		}
+			}
 		
-		.phone {
-			font-size: 30rpx;
+			.phone {
+				font-size: 30rpx;
 			color: #333;
+			}
 		}
-	}
 	
 	.address-detail {
-		font-size: 26rpx;
+			font-size: 26rpx;
 		color: #666;
 		padding-left: 48rpx;
-		line-height: 1.4;
+			line-height: 1.4;
 	}
 }
 

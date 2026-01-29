@@ -16,7 +16,7 @@ export const login = (data) => post('/embroid/login', data) // 登录
 export const register = (data) => post('/embroid/register', data) // 注册
 export const sendSms = (data) => post('/embroid/sms', data) // 发送短信验证码
 export const addAuthen = (data) => post('/embroid/user/authenAdd', data)    // 提交身份认证
-export const getConfigList = () => get('/embroid/config/lists') // 获取配置列表
+export const getConfigList = (data) => get('/embroid/config/lists', data) // 获取配置列表
 export const getUserInfo = () => get('/embroid/user/info') // 获取用户信息
 export const getBannerList = () => get('/embroid/banner/lists') // 获取轮播图列表
 export const taskLists = (data) => get('/embroid/task/lists', data) // 获取任务列表
@@ -26,6 +26,8 @@ export const taskDetails = (data) => get('/embroid/task/details', data) // 获�
 export const changeCollect = (data) => post('/embroid/task/changeCollect', data) // 任务收藏/取消收藏
 export const resetPassword = (data) => post('/embroid/forget', data) // 重置密码
 export const paymentDeposit = (data) => post('/user/payment-peposit', data) // 支付定金
+export const beforeSelectDiscountInfo = (data) => get('/embroid/order/beforeSelectDiscountInfo', data) // 保证金页面详情
+export const selectDiscount = (data) => post('/embroid/order/selectDiscount', data) // 选择保证金减免额度
 export const getTaskCode = (data) => get("/info-api/task-code", data) // 获取任务码
 export const getLevelLists = () => get('/embroid/user/levelLists') // 获取会员等级列表
 export const updateLevel = (data) => post('/embroid/user/updateLevel', data) // 更新会员等级
@@ -45,6 +47,7 @@ export const updateUserInfo = (data) => post('/embroid/user/updateInfo', data) /
 export const getPaymentTypes = () => get('/embroid/paymentTypes/lists') // 获取平台支持的支付方式列表
 export const editBank = (data) => post('/embroid/bank/edit', data) // 编辑银行卡
 export const bankLists = () => get('/embroid/bank/lists') // 获取支付方式列表
+export const beforePayInfo = (data) => get('/embroid/order/beforePayInfo', data) // 订单支付前信息
 export const deleteBank = (data) => post('/embroid/bank/del', data) // 删除银行卡
 export const addBank = (data) => post('/embroid/bank/add', data) // 新增银行卡
 export const addWithdrawalOrder = (data) => post('/embroid/withdrawalOrder/add', data) // 新增提现订单
@@ -55,7 +58,10 @@ export const addDepositOrder = (data) => post('/embroid/depositOrder/add', data)
 export const depositOrderLists = () => get('/embroid/depositOrder/lists') // 获取入款订单列表
 export const depositOrderDetails = (data) => get('/embroid/depositOrder/details', data) // 获取入款订单详情
 export const orderRemind = (data) => post('/embroid/order/remind', data) // 提醒平台发货
-
+export const teamStatistics = () => get('/embroid/team/statistics') // 团队统计
+export const teamPromotionCode = () => get('/embroid/team/promotion') // 我的推广码
+export const teamLists = (data) => get('/embroid/team/lists', data) // 团队列表
+export const teamRewardLog = (data) => get('/embroid/team/rewardLog', data) // 推广奖励记录列表
 
 
 export const uploadImage = (filePath) => { // 上传图片

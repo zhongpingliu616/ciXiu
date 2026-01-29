@@ -180,8 +180,10 @@ const getMessageListFunction = async () => {
   }
 };
 onMounted(() => {
-//   getBannerListFunction();
-//   getMessageListFunction();
+	if(currentRole.value === 'XN'){
+		getBannerListFunction();
+		getMessageListFunction();
+	}
 });
 onLaunch(() => {
   

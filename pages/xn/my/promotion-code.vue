@@ -10,18 +10,18 @@
 				<!-- Main Card -->
 				<view class="service-card">
 					<view class="avatar-wrapper">
-						<image class="avatar" :src="configStore.config.kefu_avatar || '/static/images/public_logo.png'" mode="aspectFill" />
+						<image class="avatar" :src="promotionInfo.avatar || '/static/images/public_logo.png'" mode="aspectFill" />
 					</view>
 					
 					<view class="info-content">
-						<view class="service-name">客服人员：{{ configStore.config.kefu_name || '李老师' }}</view>
+						<view class="service-name">客服人员：{{ promotionInfo.nick_name || '' }}</view>
 						
 						<view class="qr-section">
 							<view class="blur-bg"></view>
 							<!-- Use a placeholder QR code if none provided in config -->
 							<image 
 								class="qr-code" 
-								:src="configStore.config.kefu_qrcode || 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example'" 
+								:src="promotionInfo.qr_code || 'https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=Example'" 
 								mode="widthFix" 
 								@click="previewImage"
 							/>
@@ -31,7 +31,7 @@
 						
 						<view class="phone-row">
 							<text class="label">我的推广码：</text>
-							<text class="number">{{ configStore.config.kefu_phone || '0871-6666666' }}</text>
+							<text class="number">{{ promotionInfo.invite_code || '' }}</text>
 						</view>
 					</view>
 				</view>
@@ -42,11 +42,16 @@
 </template>
 
 <script setup name="promotionCode">
+	import { teamPromotionCode } from '@/api/xn'
 import { useConfigStore } from '@/stores/configStore'
 
 const title = ref('我的推广码')
-const configStore = useConfigStore()
-
+let promotionInfo = ref({ 
+	// "nick_name": "a11", 
+	// "avatar": "http://www.study-code-tpdan.com/image/embroid/20260113/6965a3e29e74c.jpg", 
+	// "invite_code": "A1234567", 
+	// "qr_code": ""
+})
 const previewImage = () => {
 	const url = configStore.config.kefu_qrcode
 	if (url) {
@@ -55,6 +60,17 @@ const previewImage = () => {
 		})
 	}
 }
+onLoad(async () => {
+	const { code, data, msg } = await teamPromotionCode()
+	if (code == 200) {
+		promotionInfo.value = data.lists;
+	}else{
+		uni.showToast({
+			title: msg,
+			icon: 'none'
+		})
+	}
+})
 </script>
 
 <style lang="scss" scoped>

@@ -20,7 +20,7 @@
 					@update:modelValue="clearError('accoutName')"
 				    placeholder-style="color: #999; font-size: 24rpx;"
 				  />
-				  <u-text class="error-text" v-if="errors.accoutName" :text="errors.accoutName" color="#ff4d4d" size="20" margin="0 0 0rpx 90rpx"></u-text>
+				  <text class="error-text" v-if="errors.accoutName">{{errors.accoutName}}</text>
 				</view>
 			    <!-- 手机号输入 -->
 			    <view class="input-item">
@@ -39,7 +39,7 @@
 					@update:modelValue="clearError('phone')"
 			        placeholder-style="color: #999; font-size: 24rpx;"
 			      />
-				  <u-text class="error-text" v-if="errors.phone" :text="errors.phone" color="#ff4d4d" size="20" margin="0 0 0rpx 90rpx"></u-text>
+				  <text class="error-text" v-if="errors.phone">{{errors.phone}}</text>
 			    </view>
 			
 			    <!-- 验证码输入 -->
@@ -66,9 +66,8 @@
 			      >
 			        {{ isCounting ? `${countdown}s后重试` : '获取验证码' }}
 			      </text>
-				  <u-text class="error-text" v-if="errors.code" :text="errors.code" color="#ff4d4d" size="20" margin="0 0 0rpx 90rpx"></u-text>
+				  <text class="error-text" v-if="errors.code">{{errors.code}}</text>
 			    </view>
-			
 			    <!-- 设置密码 -->
 			    <view class="input-item">
 			      <image
@@ -91,7 +90,7 @@
 			        color="#999"
 			        @click="togglePassword"
 			      ></u-icon>
-				  <u-text class="error-text" v-if="errors.password" :text="errors.password" color="#ff4d4d" size="20" margin="0 0 0rpx 90rpx"></u-text>
+				  <text class="error-text" v-if="errors.password">{{errors.password}}</text>
 			    </view>
 			
 			    <!-- 确认密码 -->
@@ -116,7 +115,21 @@
 			        color="#999"
 			        @click="toggleConfirmPassword"
 			      ></u-icon>
-				  <u-text class="error-text" v-if="errors.confirmPassword" :text="errors.confirmPassword" color="#ff4d4d" size="20" margin="0 0 0rpx 90rpx"></u-text>
+				  <text class="error-text" v-if="errors.confirmPassword">{{errors.confirmPassword}}</text>
+			    </view>
+
+          <!-- 邀请码输入 -->
+			    <view class="input-item">
+            <uni-icons custom-prefix="iconfont" type="icon-yaoqingma" size="40rpx" color="#6a4445"></uni-icons>
+			      <u-input
+			        v-model="form.invitationCode"
+			        placeholder="请输入邀请码"
+			        type="text"
+			        :border="'none'"
+			        input-align="left"
+			        placeholder-style="color: #999; font-size: 24rpx;"
+			      />
+				  <text class="error-text" v-if="errors.invitationCode">{{errors.invitationCode}}</text>
 			    </view>
 			  </view>
 			  
@@ -140,6 +153,7 @@ const form = reactive({
 	accoutName:"",
 	phone:"",
 	code:"",
+  invitationCode:'',
 	password:"",
 	confirmPassword:""
 });
@@ -213,8 +227,19 @@ const validateForm = () => {
     errors.confirmPassword = '两次输入的密码不一致';
     isValid = false;
   };
+    // 邀请码检验
+  if (proxy.$globalConfig?.reg_invite_check == 1 && !form.invitationCode) {
+    errors.invitationCode = '邀请码不能为空';
+    isValid = false;
+  } else if (proxy.$globalConfig?.reg_invite_check == 1 && (`${form.invitationCode.length}`).trim() < 6) { // 假设邀请码是大于6位
+    errors.invitationCode = '邀请码格式不正确'; 
+    isValid = false;
+  }
+
   return isValid;
 };
+
+
 
 // 注册提交
 const handleRegister = async () => {
@@ -319,12 +344,16 @@ const toggleConfirmPassword = () => {
 .input-item {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background-color: #fff;
   border-radius: 90rpx;
   padding: 20rpx 30rpx;
   margin-bottom: 30rpx;
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
-
+  .error-text{
+    font-size: 24rpx;
+    color: #ff4d4d;
+  }
   .u-input {
     flex: 1;
     margin-left: 20rpx;

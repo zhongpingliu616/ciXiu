@@ -156,23 +156,24 @@ const jumDetail = (item) => {
 		url: `/pages/xn/collection-detail/index?id=${item.id}`
 	})
 }
-const getDeposit = async (id)=>{
-	if(!id){
+const getDeposit = async (item)=>{
+	if(!item.id){
 		uni.showToast({ title: '订单ID不能为空', icon: 'none' })
 		return;
 	}
-	const {code, msg ,data={}} = await addOrder({id});
+	
+	const {code, msg ,data={}} = await addOrder({id: item.id});
 	
 	if(code == 200){
 		uni.showToast({title: '订单创建成功', icon: 'success' })
 		marginResultData.value = data.lists || {};
-		marginResultData.value.id = id;
+		marginResultData.value.id = item.id;
 		
 		setTimeout(() => {
 			uni.navigateTo({
-					url: `/pages/xn/my/deposit?id=${id}`,
+					url: `/pages/xn/my/deposit?id=${item.id}`,
 					success: (res) => {
-						res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
+						res.eventChannel.emit('sendMarginDatas', { marginResultData: {...item, ...marginResultData.value} });
 					},
 					fail: (err) => {
 						console.error('跳转失败', err);
@@ -188,7 +189,7 @@ const getDeposit = async (id)=>{
 }
 // 抢单按钮点击事件
 const handleGrab = (item, e) => {
-	getDeposit(item.id);
+	getDeposit(item);
 }
 
 // 页面加载时初始化数据
