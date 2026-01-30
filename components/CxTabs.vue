@@ -137,7 +137,7 @@ function tabSwitch(e){
   }
   tabActiveIndex.value = index
   emit('update:modelValue', index)
-  emit('changeTab', { index, item: props.tabItems[index] })
+  emit('changeTab', { index, item: props.tabItems[index],e })
 }
 </script>
 

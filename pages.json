@@ -343,6 +343,18 @@
 			}
 		},
 		{
+			"path": "pages/gz/my/index",
+			"style": {
+				"navigationBarTitleText": "我的"
+			}
+		},
+		{
+			"path": "pages/gz/my/orders",
+			"style": {
+				"navigationBarTitleText": "我的订单"
+			}
+		},
+		{
 			"path": "pages/gz/community/index",
 			"style": {
 				"navigationBarTitleText": "社区"

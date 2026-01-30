@@ -93,9 +93,13 @@ const passwordRef = ref(null)
 const loading = ref(false)
 const showPwd = ref(false)
 const form = ref({
-  accoutName: '13566578986',
-  password: 'lzp@123456'
+  accoutName: '',
+  password: ''
 })
+// const form = ref({
+//   accoutName: '13566578986',
+//   password: 'lzp@123456'
+// })
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -135,7 +139,7 @@ const userAgreement = () => {
 };
 const goToPhoneRegister = () => {
   uni.navigateTo({
-    url: '/pages/xn/my/regist'
+    url: '/pages/gz/my/regist'
   });
 };
 

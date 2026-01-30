@@ -246,11 +246,11 @@
 	  content="确定要退出登录吗？"
 	  @confirm="confirmLogout"
 	/>
-<up-popup :show="showWithdrawalMethod" zIndex="998" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
-	  <KeepAlive>
-		<XnIncomeWithdrawalMethod @close="showWithdrawalMethod = false"></XnIncomeWithdrawalMethod>
-	  </KeepAlive>
-</up-popup>
+	<up-popup :show="showWithdrawalMethod" zIndex="998" mode="right" :duration="100" safeAreaInsetTop customStyle="width: 750rpx;">
+		<KeepAlive>
+			<XnIncomeWithdrawalMethod @close="showWithdrawalMethod = false"></XnIncomeWithdrawalMethod>
+		</KeepAlive>
+	</up-popup>
 </template>
 
 <script setup>

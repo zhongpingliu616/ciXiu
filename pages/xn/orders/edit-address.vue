@@ -60,7 +60,7 @@
 			
 			<view class="submit-btn">
 				<CxComfirmBtn 
-					text="提交" 
+					text="提交"
 					:btnStyle="{
 						background: 'linear-gradient(90deg, #FF6034 0%, #EE0A24 100%)',
 						color: '#fff',
