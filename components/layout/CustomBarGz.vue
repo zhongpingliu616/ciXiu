@@ -46,9 +46,19 @@ const tabs = [
 
 const current = ref("")
 
-onShow(() => {
+const updateCurrentPath = () => {
   const pages = getCurrentPages();
-  current.value = '/' + pages[pages.length - 1].route
+  if (pages.length > 0) {
+    current.value = '/' + pages[pages.length - 1].route
+  }
+}
+
+onMounted(() => {
+  updateCurrentPath()
+})
+
+defineExpose({
+  updateCurrentPath
 })
 
 function go(path) {

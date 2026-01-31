@@ -92,14 +92,14 @@ const mobileRef = ref(null)
 const passwordRef = ref(null)
 const loading = ref(false)
 const showPwd = ref(false)
-const form = ref({
-  accoutName: '',
-  password: ''
-})
 // const form = ref({
-//   accoutName: '13566578986',
-//   password: 'lzp@123456'
+//   accoutName: '',
+//   password: ''
 // })
+const form = ref({
+  accoutName: '13566578986',
+  password: 'lzp@123456'
+})
 const props = defineProps({
   modelValue: {
     type: Boolean,
@@ -135,17 +135,17 @@ const rules = {
   ]
 }
 const userAgreement = () => {
-	uni.navigateTo({ url: '/pages/xn/my/user-agreement?role=GZ' });
+	uni.navigateTo({ url: '/pages-xn/my/user-agreement?role=GZ' });
 };
 const goToPhoneRegister = () => {
   uni.navigateTo({
-    url: '/pages/gz/my/regist'
+    url: '/pages-gz/my/regist'
   });
 };
 
 const goToForgotPassword = () => {
   uni.navigateTo({
-    url: '/pages/auth/forgot-password'
+    url: '/pages-gz/my/reset-psd'
   });
 };
 const validateLoginForm = async (cb) => {

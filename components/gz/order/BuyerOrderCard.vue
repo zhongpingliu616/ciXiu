@@ -9,11 +9,10 @@
     </view>
 
     <!-- Content: Product List -->
-    <!-- Support multiple goods if goods_list exists, otherwise fallback to single item props -->
-    <view class="goods-list" v-if="goodsList && goodsList.length > 0">
+    <view class="goods-list">
       <view 
         class="card-content-row" 
-        v-for="(goods, index) in goodsList" 
+        v-for="(goods, index) in displayGoodsList" 
         :key="index"
       >
         <image :src="goods.image" class="product-image" mode="aspectFill" />
@@ -30,31 +29,13 @@
           </view>
           <view class="price-row">
             <text class="price-symbol">¥ </text>
-            <text class="price-num">{{ goods.price }}</text>
+            <text class="price-num">{{ goods.price || goods.amount }}</text>
+            <view class="count-num">x{{ goods.num || goods.count || 1 }}</view>
           </view>
-          <view class="count-num">x{{ goods.num || 1 }}</view>
         </view>
       </view>
     </view>
     
-    <!-- Single Item Fallback (for backward compatibility if needed) -->
-    <view class="card-content-row" v-else>
-      <image :src="item.image" class="product-image" mode="aspectFill" />
-      <view class="product-info">
-        <view class="product-title">{{ item.name || item.title }}</view>
-        <view class="product-tags">
-          <view class="tag-item">
-            <text>{{ item.type === 'nft' ? 'NFT藏品' : '实物藏品' }}</text>
-          </view>
-        </view>
-        <view class="price-row">
-          <text class="price-symbol">¥ </text>
-          <text class="price-num">{{ item.price || item.amount }}</text>
-        </view>
-        <view class="count-num">x{{ item.num || item.count || 1 }}</view>
-      </view>
-    </view>
-
     <!-- Order No -->
     <view class="order-no-row">
       <text>订单号: {{ item.order_id }}</text>
@@ -64,7 +45,7 @@
     <view class="card-footer">
       <view class="total-row">
         <text>合计: </text>
-        <text class="total-price">¥ {{ item.total_amount || item.pay_price || 0 }}</text>
+        <text class="total-price">¥ {{ totalAmount }}</text>
       </view>
       
       <view class="action-buttons" v-if="showActions">
@@ -82,6 +63,7 @@
 
         <!-- Wait Receive (50) -->
         <template v-else-if="item.status === 50">
+          <!-- <view class="btn btn-outline" @click.stop="handleAction('logistics')">查看物流</view> -->
           <view class="btn btn-outline" @click.stop="handleAction('aftersales')">申请售后</view>
           <view class="btn btn-primary" @click.stop="handleAction('confirm')">确认收货</view>
         </template>
@@ -89,6 +71,7 @@
         <!-- Completed (70) -->
          <template v-else-if="item.status === 70">
            <view class="btn btn-outline" @click.stop="handleAction('delete')">删除订单</view>
+           <!-- <view class="btn btn-outline" @click.stop="handleAction('logistics')">查看物流</view> -->
            <view class="btn btn-primary" @click.stop="handleAction('buy_again')">再买一单</view>
          </template>
 
@@ -103,8 +86,6 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-
 const props = defineProps({
   item: {
     type: Object,
@@ -114,20 +95,40 @@ const props = defineProps({
 
 const emit = defineEmits(['action', 'click']);
 
-const goodsList = computed(() => {
-  if (props.item.goods_list && Array.isArray(props.item.goods_list)) {
+// Unify goods list logic: use goods_list if available, otherwise construct from single item props
+const displayGoodsList = computed(() => {
+  if (props.item.goods_list && Array.isArray(props.item.goods_list) && props.item.goods_list.length > 0) {
     return props.item.goods_list;
   }
-  return null;
+  // Fallback for old data structure
+  return [{
+    image: props.item.image,
+    title: props.item.name || props.item.title,
+    price: props.item.price || props.item.amount,
+    num: props.item.num || props.item.count || 1,
+    tags: props.item.tags || []
+  }];
+});
+
+const totalAmount = computed(() => {
+  if (props.item.total_amount) return props.item.total_amount;
+  
+  // Calculate from displayGoodsList
+  return displayGoodsList.value.reduce((sum, goods) => {
+    const price = parseFloat(goods.price || goods.amount || 0);
+    const num = parseInt(goods.num || goods.count || 1);
+    return sum + (price * num);
+  }, 0).toFixed(2);
 });
 
 const statusMap = {
   10: { text: '待付款', class: 'status-wait-pay' },
   20: { text: '待发货', class: 'status-wait-ship' },
-  50: { text: '已收货', class: 'status-received' }, // Using '已收货' based on typical flow or '待收货' depending on exact stage
+  50: { text: '待收货', class: 'status-received' }, 
   70: { text: '已完成', class: 'status-completed' },
-  90: { text: '退款售后', class: 'status-refund' } // Or '已取消'
+  90: { text: '退款售后', class: 'status-refund' } 
 };
+
 
 const statusText = computed(() => {
   // Allow override from item if needed, otherwise use map
@@ -205,6 +206,10 @@ const handleCardClick = () => {
   margin-bottom: 30rpx;
   position: relative;
   
+  &:last-child {
+    margin-bottom: 0;
+  }
+  
   .product-image {
     width: 160rpx;
     height: 160rpx;
@@ -263,14 +268,12 @@ const handleCardClick = () => {
     .price-num {
       font-size: 30rpx;
     }
-  }
-  
-  .count-num {
-    position: absolute;
-    right: 0;
-    bottom: 0; // Align with price
-    font-size: 26rpx;
-    color: #999;
+
+    .count-num {
+        margin-left: auto;
+        font-size: 26rpx;
+        color: #999;
+    }
   }
 }
 

@@ -3,6 +3,10 @@ import municipal from '@/static/municipal.js';
 import county from '@/static/county.js';
 import town from '@/static/town.js';
 
+export const maskPhone = (phone) => {
+  if (!phone) return ''
+  return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
+}
 // 解析区域名称的方法
 export const getRegionName = (addressStr) => {
 	if (!addressStr) return '';

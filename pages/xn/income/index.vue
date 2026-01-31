@@ -47,7 +47,7 @@
 								borderRadius: '100rpx',
 								plain: true
 							}"
-							@click="() => { uni.navigateTo({ url: '/pages/xn/income/recharge' }) }"
+							@click="() => { uni.navigateTo({ url: '/pages-xn/income/recharge' }) }"
 						></CxComfirmBtn>
 					</view>
 				</view>
@@ -116,7 +116,7 @@ const incomeList = ref([
 
 const handleWithdraw = () => {
 	uni.navigateTo({
-		url: '/pages/xn/income/withdraw-cash'
+		url: '/pages-xn/income/withdraw-cash'
 	});
 };
 
@@ -124,7 +124,7 @@ const handleItemClick = (item) => {
 	// 这里假设点击分期收益项可以跳转到某种详情，比如押金退还详情（根据任务描述关联）
 	// 实际业务中可能不同，这里为了演示跳转到退款详情页
 	uni.navigateTo({
-		url: '/pages/xn/income/refund-detail'
+		url: '/pages-xn/income/refund-detail'
 	});
 };
 const closeSearch = ()=>{

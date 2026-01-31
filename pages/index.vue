@@ -112,14 +112,14 @@ const seeSysNotice = ()=>{
 	// if(!hasSysNotice.value) return;
 	if(currentRole.value === 'XN'){
 		uni.navigateTo({
-			url: "/pages/xn/my/system-notification",
+			url: "/pages-xn/my/system-notification",
 			success: (res) => {
 				res.eventChannel.emit('sendMessageDatas', { messageListsData: messageListsData.value });
 			}
 		});
 	} else if(currentRole.value === 'GZ'){
 		uni.navigateTo({
-			url: "/pages/gz/my/system-notification",
+			url: "/pages-gz/my/system-notification",
 			success: (res) => {
 				res.eventChannel.emit('sendMessageDatas', { messageListsData: messageListsData.value });
 			}

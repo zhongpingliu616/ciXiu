@@ -48,7 +48,7 @@ const defaultInactiveStyle = {
 const defaultItemStyle = {
 			paddingLeft: "15rpx",
 			paddingRight: "15rpx",
-			height: "88rpx"
+			height: "80rpx"
 			
 		};
 const props = defineProps({

@@ -50,7 +50,7 @@
 			 <text class="board-desc">国际会展中心展出巨量藏品，快来一起看看</text>
 		 </view>
 		 <view class="board-btn">
-			 <navigator class="btn" url="/pages/gz/offline-exhibition" open-type="navigate">
+			 <navigator class="btn" url="/pages-gz/offline-exhibition" open-type="navigate">
 				 <text class="btn-text">立即报名</text>
 			 </navigator>
 		 </view>
@@ -95,16 +95,16 @@ const pageSize = 10
 let hasMore = true
 let isLoading = false // 防止重复触发
 const nftList = [
-	{ src: '/static/images/gz/index/my-clt.png', text: '我的藏品',path:'/pages/gz/nft/nft-collections' },
-	{ src: '/static/images/gz/index/my-collection.png', text: 'NFT',path:'/pages/gz/nft/index' },
-	{ src: '/static/images/gz/index/nft-logo.png', text: 'RWA',path:'/pages/gz/rwa/index' },
-	{ src: '/static/images/gz/index/rwa-logo.png', text: '社区',path:'/pages/gz/community/index' },
+	{ src: '/static/images/gz/index/my-clt.png', text: '我的藏品',path:'/pages-gz/nft/nft-collections' },
+	{ src: '/static/images/gz/index/my-collection.png', text: 'NFT',path:'/pages-gz/nft/index' },
+	{ src: '/static/images/gz/index/nft-logo.png', text: 'RWA',path:'/pages-gz/rwa/index' },
+	{ src: '/static/images/gz/index/rwa-logo.png', text: '社区',path:'/pages-gz/community/index' },
 	{ src: '/static/images/index/swiper-1.png', text: '您的第二期收益已到账”“NFT藏品XXX价格上涨10%2' },
 	{ src: '/static/images/index/swiper-3.png', text: '您的第三期收益已到账”“NFT藏品XXX价格上涨10%3 您的第二期收益已到账”“NFT藏品XXX价格上涨10%' },
 	{ src: '/static/images/index/swiper-1.png', text: '您的第四期收益已到账”“NFT藏品XXX价格上涨10%4' }
 ];
 const collectionList = [
-		{ src: '/static/images/index/community.png',title:'社区',funtionText: '管理',path:'/pages/gz/community/index' },
+		{ src: '/static/images/index/community.png',title:'社区',funtionText: '管理',path:'/pages-gz/community/index' },
 		{ src: '/static/images/index/activities.png',title:'活动',funtionText: '管理',path:'/pages/my/work-management' },
 		{ src: '/static/images/index/community.png',title:'订单管理',funtionText: '管理',path:'/pages/orders/index' },
 		{ src: '/static/images/index/activities.png',title:'作品管理',funtionText: '管理',path:'/pages/my/work-management' }

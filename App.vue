@@ -13,11 +13,11 @@ import { useConfigStore } from '@/stores/configStore'
 		const whiteList = [
 			// '/pages/index',
 			'/pages/login',
-			'/pages/xn/my/regist',
-			'/pages/xn/my/reset-psd',
-			'/pages/xn/orders/detail',
-			'/pages/xn/level/index',
-			'/pages/xn/my/user-agreement'
+			'/pages-xn/my/regist',
+			'/pages-xn/my/reset-psd',
+			'/pages-xn/orders/detail',
+			'/pages-xn/level/index',
+			'/pages-xn/my/user-agreement'
 		]
 	
 		const needLogin = (url) => {
@@ -50,7 +50,7 @@ import { useConfigStore } from '@/stores/configStore'
 		});
 		const preloadPages = [
 			'/pages/index',
-			'/pages/xn/iorders/index',
+			'/pages/xn/orders/index',
 			'/pages/xn/income/index',
 			'/pages/xn/my/index'
 			];
@@ -71,11 +71,11 @@ import { useConfigStore } from '@/stores/configStore'
 		// 白名单
 		const whiteList = [
 			'/pages/login',
-			'/pages/xn/my/regist',
-			'/pages/xn/my/reset-psd',
-			'/pages/xn/orders/detail',
-			'/pages/xn/level/index',
-			'/pages/xn/my/user-agreement'
+			'/pages-xn/my/regist',
+			'/pages-xn/my/reset-psd',
+			'/pages-xn/orders/detail',
+			'/pages-xn/level/index',
+			'/pages-xn/my/user-agreement'
 		]
 
 		// 获取当前页面路径

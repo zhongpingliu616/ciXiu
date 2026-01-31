@@ -208,7 +208,7 @@ const confirmOrder = async ()=>{
 // 确认完成作品
 const confirmProduced = async ()=>{
   uni.navigateTo({
-    url: `/pages/xn/orders/submit-product?id=${currentItem.id}&order_id=${currentItem.order_id}`,
+    url: `/pages-xn/orders/submit-product?id=${currentItem.id}&order_id=${currentItem.order_id}`,
     success: (res) => {
       res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
     },
@@ -240,7 +240,7 @@ const getOrderDetails = async (item)=>{
 		return;
 	}
   uni.navigateTo({
-        url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
+        url: `/pages-xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
         success: (res) => {
           res.eventChannel.emit('sendMarginDatas', { marginResultData: item });
         },
@@ -254,7 +254,7 @@ const getOrderDetails = async (item)=>{
 	// 	marginResultData.value = data.lists || {};
 	// 	marginResultData.value.id = item.id;
 	// 	uni.navigateTo({
-  //       url: `/pages/xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
+  //       url: `/pages-xn/my/deposit?id=${item.id}&order_id=${item.order_id}`,
   //       success: (res) => {
   //         res.eventChannel.emit('sendMarginDatas', { marginResultData: marginResultData.value });
   //       },
@@ -285,12 +285,8 @@ const handleAction = ({ type, item }) => {
       remindOrder(item);
       break
     case 'logistics': // 查看物流详情
-      uni.navigateTo({
-        url: 'https://www.baidu.com/s?wd=773394725450239',
-        success: (res) => {
-          res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
-        }
-      })
+      // TODO: Implement internal logistics page
+      // uni.navigateTo({ url: '/pages-xn/orders/logistics?id=' + currentItem.id })
       uni.showToast({ title: '查看物流详情', icon: 'none' })
       break
     case 'receivingMaterials': // 确认收到材料
@@ -304,7 +300,7 @@ const handleAction = ({ type, item }) => {
       break
     case 'detail': // 查看订单详情
       uni.navigateTo({
-        url: `/pages/xn/orders/detail`,
+        url: `/pages-xn/orders/detail`,
         success: (res) => {
           res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
         }

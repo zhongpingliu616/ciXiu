@@ -49,7 +49,7 @@
         </BaseProductList>
       </view>
     </view>
-   <LayoutCustomBarGz />
+   <LayoutCustomBarGz ref="customBarRef" />
   </view>
     <!-- Filter Popup -->
     <GzIndexFilterCriteria 
@@ -61,7 +61,7 @@
 
     <!-- Floating Cart -->
     <view class="floating-cart">
-      <navigator url="/pages/gz/my/shopping-cart">
+      <navigator url="/pages-gz/my/shopping-cart">
           <view class="cart-icon-wrapper">
           <u-icon name="shopping-cart" color="#FFE185" size="60rpx"></u-icon>
           <view class="badge">10</view>
@@ -77,7 +77,7 @@
 </template>
 
 <script setup>
-
+const customBarRef = ref(null)
 // State
 const currentTab = ref(0)
 const tabItems = [
@@ -172,11 +172,11 @@ const handleItemClick = (item) => {
   console.log('Item clicked:', item)
   if (item.tag.includes('NFT藏品')) {
     uni.navigateTo({
-      url: '/pages/gz/collection-detail/nft?id=' + item.id
+      url: '/pages-gz/collection-detail/nft?id=' + item.id
     })
   } else {
     uni.navigateTo({
-      url: '/pages/gz/collection-detail/physical?id=' + item.id
+      url: '/pages-gz/collection-detail/physical?id=' + item.id
     })
   }
   // Navigate to detail page
@@ -195,6 +195,10 @@ const handleSearch = () => {
 // Lifecycle
 onMounted(() => {
   fetchData(true)
+})
+
+onShow(() => {
+  customBarRef.value?.updateCurrentPath()
 })
 </script>
 

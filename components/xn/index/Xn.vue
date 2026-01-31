@@ -84,14 +84,14 @@
 		</template>
 	  <view class="index-order-list">
 		  <BaseProductList
-		  @onScrollToLower="onScrollToLower"
-		  @onRefresh="onRefresh"
-		  :isRefreshing="refreshing"
-		  :loadStatus="loadStatus"
-		  :iconType="iconType"
-		  :enableRefresh="false"
-		  :enableLoadMore="true"
-		  >
+			@onScrollToLower="onScrollToLower"
+			@onRefresh="onRefresh"
+			:isRefreshing="refreshing"
+			:loadStatus="loadStatus"
+			:iconType="iconType"
+			:enableRefresh="false"
+			:enableLoadMore="true"
+			>
 		  	<template #scrollContain>
 		  		<!-- 商品列表 -->
 		  		<template v-for="(item, index) in listData">
@@ -108,10 +108,8 @@
 import { taskLists,noticeLists,addOrder } from '@/api/index.js'
 let cxScrollViewRef = ref();
 const collectionList = [
-		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理',path:'/pages/xn/orders/order-management' },
-		{ src: '/static/images/index/work-management.png',title:'作品管理',funtionText: '管理',path:'/pages/xn/my/work-management' },
-		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理' },
-		{ src: '/static/images/index/work-management.png',title:'作品管理',funtionText: '管理' }
+		{ src: '/static/images/index/order-management.png',title:'订单管理',funtionText: '管理',path:'/pages-xn/orders/order-management' },
+		{ src: '/static/images/index/work-management.png',title:'作品管理',funtionText: '管理',path:'/pages-xn/my/work-management' }
 	];
 const announcementList = ref([
 //   { type: 'text', text: '您的第一期收益已到账”“NFT藏品XXX价格上涨10%' },
@@ -208,7 +206,7 @@ const onScrollToLower = () => {
 // 订单详情跳转
 const jumDetail = (item) => {
 	uni.navigateTo({
-		url: `/pages/xn/collection-detail/index?id=${item.id}`
+		url: `/pages-xn/collection-detail/index?id=${item.id}`
 	})
 }
 const getDeposit = async (item)=>{
@@ -225,7 +223,7 @@ const getDeposit = async (item)=>{
 		
 		setTimeout(() => {
 			uni.navigateTo({
-					url: `/pages/xn/my/deposit?id=${item.id}`,
+					url: `/pages-xn/my/deposit?id=${item.id}`,
 					success: (res) => {
 						res.eventChannel.emit('sendMarginDatas', { marginResultData: {...item,...marginResultData.value} });
 					},
@@ -302,7 +300,7 @@ const announcementDetail = (e)=>{
 		title: `跳转到公告详情${swiperUniIndex.value}`,
 		duration: 1000
 	});
-	uni.navigateTo({ url: `/pages/my/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp` });
+	uni.navigateTo({ url: `/pages/login?swiperUniIndex=${swiperUniIndex.value}&name=uniapp` });
 };	
 </script>
 

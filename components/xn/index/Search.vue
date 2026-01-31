@@ -181,7 +181,7 @@ const onScrollToLower = () => {
 };
 const jumpWorkDetail = (item)=>{
   uni.navigateTo({
-    url: `/pages/xn/collection-detail/index?id=${item.id}`
+    url: `/pages-xn/collection-detail/index?id=${item.id}`
   })
 };
 // 抢单按钮点击事件
@@ -191,7 +191,7 @@ const handleGrab = (item) => {
     return
   }
    uni.navigateTo({
-					url: `/pages/xn/my/deposit?id=${item.id}`,
+					url: `/pages-xn/my/deposit?id=${item.id}`,
 					success: (res) => {
 						res.eventChannel.emit('sendMarginDatas', { marginResultData: item });
 					},

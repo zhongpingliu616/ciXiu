@@ -9,12 +9,13 @@
 			<!-- 用户信息区域 -->
 			<view class="user-header">
 				<view class="user-info">
-					<image class="avatar" src="/static/images/my/avatar_default.png" mode="aspectFill"></image>
+					<up-avatar size="102rpx" src="/static/images/logo.png" class="personal-avatar"></up-avatar> &nbsp;	
+					<!-- <image class="avatar" src="/static/images/logo.png" mode="aspectFill"></image> -->
 					<view class="info-content">
 						<view class="nickname">南田玉暖</view>
-						<view class="phone-tag">
-							<image class="phone-icon" src="/static/images/common/phone_icon.png" mode="widthFix"></image>
-							<text>18888888888</text>
+						<view class="phone-tag" @tap="callPhone('13800138000')">
+							<up-icon name="phone" size="28rpx" color="#7A5632"></up-icon>
+							<text>{{ maskPhone('13800138000') }}</text>
 						</view>
 					</view>
 					<view class="header-icons">
@@ -25,19 +26,19 @@
 				
 				<view class="stats-row">
 					<view class="stat-item" @click="goTo('/pages/gz/income/index')">
-						<view class="stat-num">12</view>
+						<view class="stat-num">{{ incomeData.balance || 0 }}</view>
 						<view class="stat-label">账户余额</view>
 					</view>
-					<view class="stat-item" @click="goTo('/pages/gz/my/orders')">
-						<view class="stat-num">62</view>
+					<view class="stat-item" @click="goTo('/pages-gz/my/orders')">
+						<view class="stat-num">{{ incomeData.myOrders ?? 0 }}</view>
 						<view class="stat-label">我的订单</view>
 					</view>
 					<view class="stat-item" @click="goTo('/pages/gz/collectibles/index')">
-						<view class="stat-num">20.00</view>
-						<view class="stat-label">我的资产</view>
+						<view class="stat-num">{{ incomeData.collection_count ?? 0 }}</view>
+						<view class="stat-label">我的藏品</view>
 					</view>
 					<view class="stat-item">
-						<view class="stat-num">45</view>
+						<view class="stat-num">{{ incomeData.myLikes ?? 0 }}</view>
 						<view class="stat-label">我的喜欢</view>
 					</view>
 				</view>
@@ -45,7 +46,7 @@
 
 			<!-- 我的订单入口 -->
 			<view class="section-card order-section">
-				<view class="section-header" @click="goTo('/pages/gz/my/orders')">
+				<view class="section-header" @click="goTo('/pages-gz/my/orders')">
 					<text class="section-title">我的订单</text>
 					<view class="section-more">
 						全部订单 <uni-icons type="right" size="12" color="#999"></uni-icons>
@@ -104,8 +105,20 @@
 </template>
 
 <script setup name="myPage">
-const title = ref('我的')
+import { maskPhone } from '@/utils/public.js'
+const customBarRef = ref(null)
 
+onShow(() => {
+	customBarRef.value?.updateCurrentPath()
+})
+
+const title = ref('我的')
+let incomeData = ref({
+	balance: 0,
+	myOrders: 62,
+	collection_count: 0,
+	myLikes: 45,
+});
 const collectionList = ref([
 	{
 		id: 1,
@@ -148,14 +161,32 @@ const collectionList = ref([
 		price: '153',
 	}
 ])
-
+const callPhone = (phone) => {
+  if (!phone) return
+  uni.makePhoneCall({
+    phoneNumber: phone
+  })
+}
 const goTo = (url) => {
-	uni.navigateTo({ url })
+	const tabPages = [
+		'/pages/index',
+		'/pages/gz/collectibles/index',
+		'/pages/gz/income/index',
+		'/pages/gz/my/index',
+		'/pages/xn/orders/index',
+		'/pages/xn/income/index',
+		'/pages/xn/my/index'
+	];
+	if (tabPages.includes(url)) {
+		uni.switchTab({ url });
+	} else {
+		uni.navigateTo({ url });
+	}
 }
 
 const goToOrders = (type) => {
 	uni.navigateTo({
-		url: `/pages/gz/my/orders?type=${type}`
+		url: `/pages-gz/my/orders?type=${type}`
 	})
 }
 
@@ -166,6 +197,9 @@ const handleProductClick = (item) => {
 </script>
 
 <style lang="scss" scoped>
+.personal-avatar {
+	border: 4rpx solid rgba(255, 255, 255, 0.9);
+}
 .page-wrap {
 	background:url("/static/images/collection-detail/collection-detail-top-bg.png") no-repeat center top/contain, 
 	url("/static/images/index/bg.png") no-repeat center/cover;
@@ -206,10 +240,11 @@ const handleProductClick = (item) => {
 		.phone-tag {
 			display: inline-flex;
 			align-items: center;
-			background: rgba(255,255,255,0.2);
+			background: linear-gradient(90deg, rgba(237, 215, 160, 1), rgba(245, 234, 201, 0.6));
 			border-radius: 20rpx;
 			padding: 4rpx 16rpx;
 			font-size: 24rpx;
+			color: #7A5632;
 			
 			.phone-icon {
 				width: 24rpx;

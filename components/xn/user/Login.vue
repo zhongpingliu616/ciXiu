@@ -131,17 +131,17 @@ const rules = {
   ]
 }
 const userAgreement = () => {
-	uni.navigateTo({ url: '/pages/xn/my/user-agreement?role=XN' });
+	uni.navigateTo({ url: '/pages-xn/my/user-agreement?role=XN' });
 };
 const goToPhoneRegister = () => {
   uni.navigateTo({
-    url: '/pages/xn/my/regist?role=XN'
+    url: '/pages-xn/my/regist?role=XN'
   });
 };
 
 const goToForgotPassword = () => {
   uni.navigateTo({
-    url: '/pages/xn/my/reset-psd'
+    url: '/pages-xn/my/reset-psd'
   });
 };
 const validateLoginForm = async (cb) => {

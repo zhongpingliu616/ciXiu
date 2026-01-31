@@ -153,7 +153,7 @@ const onScrollToLower = () => {
 // 订单详情跳转
 const jumDetail = (item) => {
 	uni.navigateTo({
-		url: `/pages/xn/collection-detail/index?id=${item.id}`
+		url: `/pages-xn/collection-detail/index?id=${item.id}`
 	})
 }
 const getDeposit = async (item)=>{
@@ -171,7 +171,7 @@ const getDeposit = async (item)=>{
 		
 		setTimeout(() => {
 			uni.navigateTo({
-					url: `/pages/xn/my/deposit?id=${item.id}`,
+					url: `/pages-xn/my/deposit?id=${item.id}`,
 					success: (res) => {
 						res.eventChannel.emit('sendMarginDatas', { marginResultData: {...item, ...marginResultData.value} });
 					},

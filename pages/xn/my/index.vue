@@ -97,7 +97,7 @@
 						:border="false"
 						customStyle="padding: 20rpx 10rpx; background-color: #fff; font-size: 28rpx"
 						class="cell-item"
-						@tap="handleTeamClick('/pages/xn/my/my-team')"
+						@tap="handleTeamClick('/pages-xn/my/my-team')"
 					>
 						<template #title>
 						    <text class="cell-title">我的团队</text>
@@ -130,7 +130,7 @@
 						:border="false"
 						customStyle="padding: 20rpx 10rpx; padding-top:0rpx; background-color: #fff;  font-size: 28rpx"
 						class="cell-item"
-						@click="handleTeamClick('/pages/xn/orders/address-management')"
+						@click="handleTeamClick('/pages-xn/orders/address-management')"
 					>
 						<template #title>
 						    <text class="cell-title">收货地址</text>
@@ -149,7 +149,7 @@
 						:border="false"
 						customStyle="padding: 20rpx 10rpx; background-color: #fff; border-radius: 16rpx 16rpx 0 0; font-size: 28rpx"
 						class="cell-item"
-						@click="handleTeamClick('/pages/xn/my/customer-service')"
+						@click="handleTeamClick('/pages-xn/my/customer-service')"
 					>
 						<template #title>
 						    <text class="cell-title">帮助与客服</text>
@@ -254,6 +254,7 @@
 </template>
 
 <script setup>
+import { maskPhone } from '@/utils/public.js'
 import { orderLists } from '@/api/index.js'
 import { useLoginStore } from '@/stores/userLogin'
 import myWork1 from '@/static/images/user/my-work-1.png'
@@ -286,10 +287,7 @@ const worksList = ref([
 	// { src: 'https://cdn.uviewui.com/uview/album/4.jpg', id: 4 },
 	// { src: 'https://cdn.uviewui.com/uview/album/5.jpg', id: 5 },
 ]);
-function maskPhone(phone) {
-  if (!phone) return ''
-  return phone.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2')
-}
+
 const handleTeamClick = (path) => {
 	uni.navigateTo({
 		url: path
@@ -325,14 +323,14 @@ const handleOrderClick = (type) => {
 	}
 	
 	uni.navigateTo({
-		url: `/pages/xn/orders/order-management?tabIndex=${tabIndex}`
+		url: `/pages-xn/orders/order-management?tabIndex=${tabIndex}`
 	});
 };
 
 // 作品更多点击
 const handleWorksMore = () => {
 	uni.navigateTo({
-		url: '/pages/xn/my/work-management'
+		url: '/pages-xn/my/work-management'
 	});
 };
 
@@ -344,7 +342,7 @@ const workItemClick = ({item, index}) => {
 // 跳转电子合同
 const navigateToContract = () => {
 	uni.navigateTo({
-		url: '/pages/xn/level/electronic-contract'
+		url: '/pages-xn/level/electronic-contract'
 	});
 };
 const confirmLogout = ()=>{
@@ -362,7 +360,7 @@ const handleLogout = () => {
 // 跳转个人资料编辑
 const handleProfileClick = () => {
 	uni.navigateTo({
-		url: '/pages/xn/my/profile-edit',
+		url: '/pages-xn/my/profile-edit',
 		success(res) {
 				res.eventChannel.emit('sendUserData', {
 					reg_ip:proxy.$globalUserInfoXn.reg_ip,

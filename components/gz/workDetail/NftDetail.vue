@@ -174,7 +174,7 @@ const handlePayDeposit = ()=> {
   // 支付押金逻辑 - 跳转到压金页面
   console.log('支付押金');
   uni.navigateTo({
-    url: '/pages/my/deposit'
+    url: '/pages-gz/level/pay-deposit'
   })
 };
 const handleGrabOrder = ()=> {

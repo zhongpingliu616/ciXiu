@@ -14,36 +14,6 @@
 			}
 		},
 		{
-			"path": "pages/xn/orders/order-management",
-			"style": {
-				"navigationBarTitleText": "订单管理"
-			}
-		},
-		{
-			"path": "pages/xn/collection-detail/index",
-			"style": {
-				"navigationBarTitleText": "藏品详情"
-			}
-		},
-		{
-			"path": "pages/xn/orders/detail",
-			"style": {
-				"navigationBarTitleText": "订单详情"
-			}
-		},
-		{
-			"path": "pages/xn/orders/edit-address",
-			"style": {
-				"navigationBarTitleText": "编辑收货地址"
-			}
-		},
-		{
-			"path": "pages/xn/orders/address-management",
-			"style": {
-				"navigationBarTitleText": "收货地址"
-			}
-		},
-		{
 			"path": "pages/xn/income/index",
 			"style": {
 				"navigationBarTitleText": "收益"
@@ -56,290 +26,15 @@
 			}
 		},
 		{
-			"path": "pages/xn/my/customer-service",
-			"style": {
-				"navigationBarTitleText": "帮助与客服"
-			}
-		},
-		{
-			"path": "pages/xn/my/promotion-code",
-			"style": {
-				"navigationBarTitleText": "我的推广码"
-			}
-		},
-		{
-			"path": "pages/xn/my/my-team",
-			"style": {
-				"navigationBarTitleText": "我的团队"
-			}
-		},
-		{
-			"path": "pages/xn/my/promotion-revenue",
-			"style": {
-				"navigationBarTitleText": "推广收益明细"
-			}
-		},
-		{
-			"path": "pages/xn/my/regist",
-			"style": {
-				"navigationBarTitleText": "注册绣娘"
-			}
-		},
-		{
-			"path": "pages/xn/my/identity-authentication",
-			"style": {
-				"navigationBarTitleText": "身份认证"
-			}
-		},
-		{
-			"path": "pages/xn/level/index",
-			"style": {
-				"navigationBarTitleText": "等级选择"
-			}
-		},
-		{
-			"path": "pages/xn/level/electronic-contract",
-			"style": {
-				"navigationBarTitleText": "电子合同"
-			}
-		},
-		{
-			"path": "pages/xn/my/work-management",
-			"style": {
-				"navigationBarTitleText": "作品管理"
-			}
-		},
-		{
-			"path": "pages/xn/my/user-agreement",
-			"style": {
-				"navigationBarTitleText": "用户协议"
-			}
-		},
-		{
-			"path": "pages/login",
-			"style": {
-				"navigationBarTitleText": "登录"
-			}
-		},
-		{
-			"path": "pages/xn/my/system-notification",
-			"style": {
-				"navigationBarTitleText": "系统通知"
-			}
-		},
-		{
-			"path": "pages/xn/my/system-notification-detail",
-			"style": {
-				"navigationBarTitleText": "系统通知详情"
-			}
-		},
-		{
-			"path": "pages/xn/my/deposit",
-			"style": {
-				"navigationBarTitleText": "压金"
-			}
-		},
-		{
-			"path": "pages/xn/orders/confirm-order",
-			"style": {
-				"navigationBarTitleText": "确认订单"
-			}
-		},
-		{
-			"path": "pages/xn/orders/select-address",
-			"style": {
-				"navigationBarTitleText": "选择地址"
-			}
-		},
-		{
-			"path": "pages/xn/orders/submit-product",
-			"style": {
-				"navigationBarTitleText": "提交作品"
-			}
-		},
-		{
-			"path": "pages/xn/my/profile-edit",
-			"style": {
-				"navigationBarTitleText": "编辑资料"
-			}
-		},
-		{
-			"path": "pages/xn/income/withdraw",
-			"style": {
-				"navigationBarTitleText": "提现"
-			}
-		},
-		{
-			"path": "pages/xn/income/withdraw-cash",
-			"style": {
-				"navigationBarTitleText": "余额提现"
-			}
-		},
-		{
-			"path": "pages/xn/income/withdraw-cash-detail",
-			"style": {
-				"navigationBarTitleText": "提现详情"
-			}
-		},
-		{
-			"path": "pages/xn/income/withdrawal-record",
-			"style": {
-				"navigationBarTitleText": "提现记录"
-			}
-		},
-		{
-			"path": "pages/xn/income/recharge",
-			"style": {
-				"navigationBarTitleText": "余额充值"
-			}
-		},
-		{
-			"path": "pages/xn/income/recharge-record",
-			"style": {
-				"navigationBarTitleText": "充值记录"
-			}
-		},{
-			"path": "pages/xn/income/recharge-record-detail",
-			"style": {
-				"navigationBarTitleText": "充值记录详情"
-			}
-		},
-		{
-			"path": "pages/xn/income/refund-detail",
-			"style": {
-				"navigationBarTitleText": "押金退还"
-			}
-		},
-		{
-			"path": "pages/xn/my/reset-psd",
-			"style": {
-				"navigationBarTitleText": "重置密码"
-			}
-		},
-		{
-			"path": "pages/gz/my/shopping-cart",
-			"style": {
-				"navigationBarTitleText": "购物车"
-			}
-		},
-		{
-			"path": "pages/gz/my/system-notification",
-			"style": {
-				"navigationBarTitleText": "系统通知"
-			}
-		},
-		{
-			"path": "pages/gz/my/system-notification-detail",
-			"style": {
-				"navigationBarTitleText": "系统通知详情"
-			}
-		},
-		{
-			"path": "pages/gz/grab-order/index",
-			"style": {
-				"navigationBarTitleText": "一键抢单"
-			}
-		},
-		{
-			"path": "pages/gz/level/index",
-			"style": {
-				"navigationBarTitleText": "等级选择"
-			}
-		},
-		{
-			"path": "pages/gz/offline-exhibition",
-			"style": {
-				"navigationBarTitleText": "线下展会"
-			}
-		},
-		{
-			"path": "pages/gz/register-exhibition",
-			"style": {
-				"navigationBarTitleText": "报名展会"
-			}
-		},
-		{
-			"path": "pages/gz/registration-successful",
-			"style": {
-				"navigationBarTitleText": "报名成功"
-			}
-		},
-		{
-			"path": "pages/gz/level/pay-deposit",
-			"style": {
-				"navigationBarTitleText": "保证金"
-			}
-		},
-		{
-			"path": "pages/gz/level/electronic-contract",
-			"style": {
-				"navigationBarTitleText": "电子合同"
-			}
-		},
-		{
 			"path": "pages/gz/collectibles/index",
 			"style": {
 				"navigationBarTitleText": "藏品"
 			}
 		},
 		{
-			"path": "pages/gz/collectibles/recharge",
+			"path": "pages/gz/income/index",
 			"style": {
-				"navigationBarTitleText": "NFT藏品买入"
-			}
-		},
-		{
-			"path": "pages/gz/collectibles/payment-result",
-			"style": {
-				"navigationBarTitleText": "NFT藏品 订单详情"
-			}
-		},
-		{
-			"path": "pages/gz/collection-detail/index",
-			"style": {
-				"navigationBarTitleText": "藏品详情"
-			}
-		},
-		{
-			"path": "pages/gz/collection-detail/physical",
-			"style": {
-				"navigationBarTitleText": "实物详情"
-			}
-		},
-		{
-			"path": "pages/gz/collection-detail/nft",
-			"style": {
-				"navigationBarTitleText": "NFT藏品详情"
-			}
-		},
-		{
-			"path": "pages/gz/rwa/index",
-			"style": {
-				"navigationBarTitleText": "RWA"
-			}
-		},
-		{
-			"path": "pages/gz/nft/index",
-			"style": {
-				"navigationBarTitleText": "NFT"
-			}
-		},
-		{
-			"path": "pages/gz/nft/digital-products",
-			"style": {
-				"navigationBarTitleText": "NFT数字产品"
-			}
-		},
-		{
-			"path": "pages/gz/nft/nft-collections",
-			"style": {
-				"navigationBarTitleText": "NFT藏品"
-			}
-		},
-		{
-			"path": "pages/gz/my/sign-contract",
-			"style": {
-				"navigationBarTitleText": "签约绣娘"
+				"navigationBarTitleText": "收益"
 			}
 		},
 		{
@@ -349,22 +44,364 @@
 			}
 		},
 		{
-			"path": "pages/gz/my/orders",
+			"path": "pages/login",
 			"style": {
-				"navigationBarTitleText": "我的订单"
+				"navigationBarTitleText": "登录"
 			}
+		}
+	],
+	"subPackages": [
+		{
+			"root": "pages-xn",
+			"pages": [
+				{
+					"path": "orders/order-management",
+					"style": {
+						"navigationBarTitleText": "订单管理"
+					}
+				},
+				{
+					"path": "collection-detail/index",
+					"style": {
+						"navigationBarTitleText": "藏品详情"
+					}
+				},
+				{
+					"path": "orders/detail",
+					"style": {
+						"navigationBarTitleText": "订单详情"
+					}
+				},
+				{
+					"path": "orders/edit-address",
+					"style": {
+						"navigationBarTitleText": "编辑收货地址"
+					}
+				},
+				{
+					"path": "orders/address-management",
+					"style": {
+						"navigationBarTitleText": "收货地址"
+					}
+				},
+				{
+					"path": "my/customer-service",
+					"style": {
+						"navigationBarTitleText": "帮助与客服"
+					}
+				},
+				{
+					"path": "my/promotion-code",
+					"style": {
+						"navigationBarTitleText": "我的推广码"
+					}
+				},
+				{
+					"path": "my/my-team",
+					"style": {
+						"navigationBarTitleText": "我的团队"
+					}
+				},
+				{
+					"path": "my/promotion-revenue",
+					"style": {
+						"navigationBarTitleText": "推广收益明细"
+					}
+				},
+				{
+					"path": "my/regist",
+					"style": {
+						"navigationBarTitleText": "注册绣娘"
+					}
+				},
+				{
+					"path": "my/identity-authentication",
+					"style": {
+						"navigationBarTitleText": "身份认证"
+					}
+				},
+				{
+					"path": "level/index",
+					"style": {
+						"navigationBarTitleText": "等级选择"
+					}
+				},
+				{
+					"path": "level/electronic-contract",
+					"style": {
+						"navigationBarTitleText": "电子合同"
+					}
+				},
+				{
+					"path": "level/pay-deposit",
+					"style": {
+						"navigationBarTitleText": "保证金"
+					}
+				},
+				{
+					"path": "my/work-management",
+					"style": {
+						"navigationBarTitleText": "作品管理"
+					}
+				},
+				{
+					"path": "my/user-agreement",
+					"style": {
+						"navigationBarTitleText": "用户协议"
+					}
+				},
+				{
+					"path": "my/system-notification",
+					"style": {
+						"navigationBarTitleText": "系统通知"
+					}
+				},
+				{
+					"path": "my/system-notification-detail",
+					"style": {
+						"navigationBarTitleText": "系统通知详情"
+					}
+				},
+				{
+					"path": "my/deposit",
+					"style": {
+						"navigationBarTitleText": "压金"
+					}
+				},
+				{
+					"path": "orders/confirm-order",
+					"style": {
+						"navigationBarTitleText": "确认订单"
+					}
+				},
+				{
+					"path": "orders/select-address",
+					"style": {
+						"navigationBarTitleText": "选择地址"
+					}
+				},
+				{
+					"path": "orders/submit-product",
+					"style": {
+						"navigationBarTitleText": "提交作品"
+					}
+				},
+				{
+					"path": "my/profile-edit",
+					"style": {
+						"navigationBarTitleText": "编辑资料"
+					}
+				},
+				{
+					"path": "income/withdraw",
+					"style": {
+						"navigationBarTitleText": "提现"
+					}
+				},
+				{
+					"path": "income/withdraw-cash",
+					"style": {
+						"navigationBarTitleText": "余额提现"
+					}
+				},
+				{
+					"path": "income/withdraw-cash-detail",
+					"style": {
+						"navigationBarTitleText": "提现详情"
+					}
+				},
+				{
+					"path": "income/withdrawal-record",
+					"style": {
+						"navigationBarTitleText": "提现记录"
+					}
+				},
+				{
+					"path": "income/recharge",
+					"style": {
+						"navigationBarTitleText": "余额充值"
+					}
+				},
+				{
+					"path": "income/recharge-record",
+					"style": {
+						"navigationBarTitleText": "充值记录"
+					}
+				},
+				{
+					"path": "income/recharge-record-detail",
+					"style": {
+						"navigationBarTitleText": "充值记录详情"
+					}
+				},
+				{
+					"path": "income/refund-detail",
+					"style": {
+						"navigationBarTitleText": "押金退还"
+					}
+				},
+				{
+					"path": "my/reset-psd",
+					"style": {
+						"navigationBarTitleText": "重置密码"
+					}
+				}
+			]
 		},
 		{
-			"path": "pages/gz/community/index",
-			"style": {
-				"navigationBarTitleText": "社区"
-			}
-		},
-		{
-			"path": "pages/gz/community/released",
-			"style": {
-				"navigationBarTitleText": "发布动态"
-			}
+			"root": "pages-gz",
+			"pages": [
+				{
+					"path": "my/shopping-cart",
+					"style": {
+						"navigationBarTitleText": "购物车"
+					}
+				},
+				{
+					"path": "my/system-notification",
+					"style": {
+						"navigationBarTitleText": "系统通知"
+					}
+				},
+				{
+					"path": "my/system-notification-detail",
+					"style": {
+						"navigationBarTitleText": "系统通知详情"
+					}
+				},
+				{
+					"path": "grab-order/index",
+					"style": {
+						"navigationBarTitleText": "一键抢单"
+					}
+				},
+				{
+					"path": "level/index",
+					"style": {
+						"navigationBarTitleText": "等级选择"
+					}
+				},
+				{
+					"path": "offline-exhibition",
+					"style": {
+						"navigationBarTitleText": "线下展会"
+					}
+				},
+				{
+					"path": "register-exhibition",
+					"style": {
+						"navigationBarTitleText": "报名展会"
+					}
+				},
+				{
+					"path": "registration-successful",
+					"style": {
+						"navigationBarTitleText": "报名成功"
+					}
+				},
+				{
+					"path": "level/pay-deposit",
+					"style": {
+						"navigationBarTitleText": "保证金"
+					}
+				},
+				{
+					"path": "level/electronic-contract",
+					"style": {
+						"navigationBarTitleText": "电子合同"
+					}
+				},
+				{
+					"path": "collectibles/recharge",
+					"style": {
+						"navigationBarTitleText": "NFT藏品买入"
+					}
+				},
+				{
+					"path": "collectibles/payment-result",
+					"style": {
+						"navigationBarTitleText": "NFT藏品 订单详情"
+					}
+				},
+				{
+					"path": "collection-detail/index",
+					"style": {
+						"navigationBarTitleText": "藏品详情"
+					}
+				},
+				{
+					"path": "collection-detail/physical",
+					"style": {
+						"navigationBarTitleText": "实物详情"
+					}
+				},
+				{
+					"path": "collection-detail/nft",
+					"style": {
+						"navigationBarTitleText": "NFT藏品详情"
+					}
+				},
+				{
+					"path": "rwa/index",
+					"style": {
+						"navigationBarTitleText": "RWA"
+					}
+				},
+				{
+					"path": "nft/index",
+					"style": {
+						"navigationBarTitleText": "NFT"
+					}
+				},
+				{
+					"path": "nft/digital-products",
+					"style": {
+						"navigationBarTitleText": "NFT数字产品"
+					}
+				},
+				{
+					"path": "nft/nft-collections",
+					"style": {
+						"navigationBarTitleText": "NFT藏品"
+					}
+				},
+				{
+					"path": "my/sign-contract",
+					"style": {
+						"navigationBarTitleText": "签约绣娘"
+					}
+				},
+				{
+					"path": "my/regist",
+					"style": {
+						"navigationBarTitleText": "注册"
+					}
+				},
+				{
+					"path": "my/reset-psd",
+					"style": {
+						"navigationBarTitleText": "重置密码"
+					}
+				},
+				{
+					"path": "my/orders",
+					"style": {
+						"navigationBarTitleText": "我的订单"
+					}
+				},
+				{
+					"path": "community/index",
+					"style": {
+						"navigationBarTitleText": "社区"
+					}
+				},
+				{
+					"path": "community/released",
+					"style": {
+						"navigationBarTitleText": "发布动态"
+					}
+				}
+			]
 		}
 	],
 	"tabBar": {
@@ -379,12 +416,12 @@
 			{ "pagePath": "pages/xn/orders/index" },
 			{ "pagePath": "pages/xn/income/index" },
 			{ "pagePath": "pages/xn/my/index" },
+			
 			{ "pagePath": "pages/gz/collectibles/index" },
 			{ "pagePath": "pages/gz/income/index" },
 			{ "pagePath": "pages/gz/my/index" }
 		]
 	},
-
 	"globalStyle": {
 		"navigationStyle": "custom"
 	},

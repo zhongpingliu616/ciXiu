@@ -130,7 +130,7 @@ const xiuNiangLogin = () => {
 				password: password
 			});
 			
-			if (res.code === 200) {
+			if (res.code == 200) {
 				const { token, info } = res.data;
 				// 更新用户信息 (store + storage)
 				userStore.updateUserInfo('XN', {
@@ -158,9 +158,9 @@ const xiuNiangLogin = () => {
 
 				// 登录成功后的逻辑判断
 				// 1. 检查是否有等级 (level == 0 表示无等级)
-				if (info.level === 0) {
+				if (info.level == 0) {
 					uni.reLaunch({
-						url: '/pages/xn/level/index'
+						url: '/pages-xn/level/index'
 					});
 					uni.showToast({
 						title: '请先选择等级',
@@ -168,9 +168,9 @@ const xiuNiangLogin = () => {
 					});
 				} 
 				// 2. 检查是否实名认证 (real_name_check == 2 表示未实名)
-				else if (info.real_name_check === 2) {
+				else if (info.real_name_check == 2) {
 					uni.reLaunch({
-						url: '/pages/xn/my/identity-authentication'
+						url: '/pages-xn/my/identity-authentication'
 					});
 					uni.showToast({
 						title: '请先完成实名认证',

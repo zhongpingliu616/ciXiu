@@ -306,14 +306,25 @@ const confirmProduced = async ()=>{
     uni.showToast({ title: msg || '操作失败', icon: 'none' });
   }
 };
-
+// 提醒商家发货
+const remindOrder = async (item)=>{
+	const {msg,data,code} = await orderRemind({
+    order_id:item.order_id
+  });
+  if(code===200){
+    uni.showToast({ title: '已提醒商家发货', icon: 'none' });
+    // onRefresh();
+  } else {
+    uni.showToast({ title: msg || '操作失败', icon: 'none' });
+  }
+};
 // 处理操作事件
 const handleAction = ({ type, item }) => {
   currentItem = item;
   switch (type) {
     case 'pay': // 去支付
       uni.navigateTo({
-					url: `/pages/xn/my/deposit?id=${item.id}`,
+					url: `/pages-xn/my/deposit?id=${item.id}`,
 					success: (res) => {
 						res.eventChannel.emit('sendMarginDatas', { marginResultData: item });
 					},
@@ -324,17 +335,9 @@ const handleAction = ({ type, item }) => {
       uni.showToast({ title: '跳转支付页面', icon: 'none' })
       break
     case 'remind':
-      uni.showToast({ title: '已提醒商家发货', icon: 'success' })
-      window.location.href = 'https://www.baidu.com/s?wd=773394725450239'
-
+      remindOrder(item);
       break
     case 'logistics':
-      uni.navigateTo({
-        url: 'https://www.baidu.com/s?wd=773394725450239',
-        success: (res) => {
-          res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
-        }
-      })
       uni.showToast({ title: '查看物流详情', icon: 'none' })
       break
     case 'receivingMaterials':
@@ -345,7 +348,7 @@ const handleAction = ({ type, item }) => {
       break
     case 'detail':
       uni.navigateTo({
-        url: `/pages/xn/orders/detail`,
+        url: `/pages-xn/orders/detail`,
         success: (res) => {
           res.eventChannel.emit('sendOrderDatas', { orderInfo: currentItem });
         }

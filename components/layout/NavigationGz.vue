@@ -1,5 +1,5 @@
 <template>
-  <view class="nav" :style="{ top: statusBar + 'rpx' }">
+  <view class="nav" :style="{ paddingTop: statusBar + 'px' }">
     <view class="bar">
       <slot name="left">
         <up-icon name="arrow-left" color="#fff" size="40rpx" @click="back"></up-icon>
@@ -23,7 +23,7 @@
   </view>
 </template>
 
-<script name="navigation" setup>
+<script name="navigation-gz" setup>
 defineProps({
   title: String
 })
@@ -37,8 +37,8 @@ function back() {
 
 <style lang="scss" scoped>
 .nav {
-	position: sticky;
-	top: 40rpx;
+	/* position: sticky; */
+	/* top: 40rpx; */
 	z-index: 888;
 }
 .bar {
